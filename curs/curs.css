@@ -279,6 +279,37 @@ pre.code-example {
 .simulador-feedback.fb-ok { color: #16a34a; }
 .simulador-feedback.fb-ko { color: #dc2626; }
 
+/* Overlay de reload quan GeoGebra no renderitza */
+.ggb-reload-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 248, 248, 0.92);
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.ggb-reload-overlay:hover {
+  background: rgba(240, 240, 240, 0.96);
+}
+.ggb-reload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent, #2563eb);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.ggb-reload-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
 
 /* ══════════════════════════════════════════════════════
    PÀGINA INDEX DEL CURS

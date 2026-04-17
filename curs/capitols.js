@@ -210,13 +210,28 @@ function renderSimuladors() {
   }
 
   function _injectApplet(wrapper, doneCb) {
-    var cfg        = wrapper._ggbCfg;
+    var cfg         = wrapper._ggbCfg;
     var containerId = wrapper._ggbId;
     var container   = document.getElementById(containerId);
     if (!container) { doneCb(); return; }
 
+    // Neteja intents anteriors
+    wrapper._ggbApi = null;
+    container.innerHTML = '';
+
+    // Amaga overlay de reload si existeix
+    var oldOverlay = wrapper.querySelector('.ggb-reload-overlay');
+    if (oldOverlay) oldOverlay.style.display = 'none';
+
     var w = container.offsetWidth || 700;
     var h = parseInt(cfg.height, 10) || 420;
+
+    var doneFired = false;
+    function _fireDone() {
+      if (doneFired) return;
+      doneFired = true;
+      doneCb();
+    }
 
     var params = {
       appName:             cfg.app || 'geometry',
@@ -262,7 +277,14 @@ function renderSimuladors() {
           }).observe(container);
         }
 
-        doneCb();
+        // ── Detecció de renderitzat fallit ──
+        // Després de 5s, comprovem si hi ha un <canvas> dins el contenidor.
+        // Si no n'hi ha, el motor GWT no ha acabat de pintar → mostrem reload.
+        setTimeout(function() {
+          _checkCanvasOrShowReload(wrapper, container);
+        }, 5000);
+
+        _fireDone();
       }
     };
     if (cfg.tools) params.customToolBar = cfg.tools;
@@ -270,8 +292,51 @@ function renderSimuladors() {
     var applet = new GGBApplet(params, true);
     applet.inject(containerId);
 
-    // Fallback: si l'applet no crida appletOnLoad en 45 s, continuem
-    setTimeout(function() { if (!wrapper._ggbApi) doneCb(); }, 45000);
+    // Fallback: si appletOnLoad no arriba en 20s, mostrem reload
+    setTimeout(function() {
+      if (!wrapper._ggbApi) {
+        _showReloadOverlay(wrapper, container);
+        _fireDone();
+      }
+    }, 20000);
+  }
+
+  // Comprova si el canvas s'ha renderitzat; si no, mostra l'overlay
+  function _checkCanvasOrShowReload(wrapper, container) {
+    var canvas = container.querySelector('canvas');
+    if (canvas && canvas.width > 10 && canvas.height > 10) return; // OK
+    // Segona oportunitat: potser està dins un article/div niat
+    var anyCanvas = container.getElementsByTagName('canvas');
+    if (anyCanvas.length > 0) return; // Hi ha canvas, probablement OK
+    // No hi ha canvas → renderitzat fallit
+    _showReloadOverlay(wrapper, container);
+  }
+
+  // Mostra un overlay semitransparent amb botó "Toca per carregar"
+  function _showReloadOverlay(wrapper, container) {
+    // No duplicar
+    if (wrapper.querySelector('.ggb-reload-overlay')) {
+      wrapper.querySelector('.ggb-reload-overlay').style.display = 'flex';
+      return;
+    }
+
+    var overlay = document.createElement('div');
+    overlay.className = 'ggb-reload-overlay';
+    overlay.innerHTML =
+      '<div class="ggb-reload-content">' +
+        '<span class="ggb-reload-icon">↻</span>' +
+        '<span>Toca per carregar GeoGebra</span>' +
+      '</div>';
+    overlay.addEventListener('click', function() {
+      overlay.style.display = 'none';
+      _loadDeployGGB(function() {
+        _injectApplet(wrapper, function() {});
+      });
+    });
+
+    // Posicionar sobre el contenidor
+    container.style.position = 'relative';
+    container.appendChild(overlay);
   }
 
 
