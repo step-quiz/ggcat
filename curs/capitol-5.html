@@ -49,13 +49,13 @@
            SECCIÓ 1 — Mediatriu
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Mediatriu d'un segment: <code>PerpendicularBisector(A,B)</code></h2>
+        <h2>Mediatriu d'un segment: <code>Mediatriu(A,B)</code></h2>
 
         <p>La <strong>mediatriu</strong> d'un segment és la recta perpendicular al segment que passa exactament pel seu punt mig. Tots els punts de la mediatriu són equidistants dels dos extrems del segment:</p>
 
         <pre class="code-example">A=(-3,0)
 B=(3,0)
-PerpendicularBisector(A,B)</pre>
+Mediatriu(A,B)</pre>
 
         <div class="geogebra"
              data-commands="A=(-3,0)
@@ -81,7 +81,7 @@ m=PerpendicularBisector(A,B)"
         <pre class="code-example">A=(0,2)
 B=(4,0)
 C=(0,0)
-f=Line(B,C)
+f=Recta(B,C)
 Perpendicular(A,f)</pre>
 
         <div class="geogebra"
@@ -100,13 +100,13 @@ p=Perpendicular(A,f)"
            SECCIÓ 3 — Bisectriu d'angle
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Bisectriu d'angle: <code>AngleBisector(f,g)</code></h2>
+        <h2>Bisectriu d'angle: <code>Bisectriu(f,g)</code></h2>
 
-        <p>La <strong>bisectriu</strong> d'un angle és la semirecta que divideix l'angle en dues parts iguals. La comanda <code>AngleBisector(f,g)</code> rep dues rectes que es creuen i retorna les dues bisectrius (de l'angle i del seu suplement):</p>
+        <p>La <strong>bisectriu</strong> d'un angle és la semirecta que divideix l'angle en dues parts iguals. La comanda <code>Bisectriu(f,g)</code> rep dues rectes que es creuen i retorna les dues bisectrius (de l'angle i del seu suplement):</p>
 
-        <pre class="code-example">f=Line((0,0),(4,2))
-g=Line((0,0),(2,-3))
-AngleBisector(f,g)</pre>
+        <pre class="code-example">f=Recta((0,0),(4,2))
+g=Recta((0,0),(2,-3))
+Bisectriu(f,g)</pre>
 
         <div class="geogebra"
              data-commands="f=Line((0,0),(4,2))
@@ -175,7 +175,7 @@ s=Segment(A,B)"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Tres construccions clàssiques en una comanda: <code>PerpendicularBisector(A,B)</code> — recta perpendicular al segment que passa pel punt mig; <code>Perpendicular(A,f)</code> — recta per un punt perpendicular a una recta donada; <code>AngleBisector(f,g)</code> — semirectes que divideixen en dos un angle.</p>
+        <p>Tres construccions clàssiques en una comanda: <code>Mediatriu(A,B)</code> — recta perpendicular al segment que passa pel punt mig; <code>Perpendicular(A,f)</code> — recta per un punt perpendicular a una recta donada; <code>Bisectriu(f,g)</code> — semirectes que divideixen en dos un angle.</p>
       </section>
 
 
