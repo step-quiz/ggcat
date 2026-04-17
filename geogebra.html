@@ -16,7 +16,7 @@
 
   <!-- GeoGebra Apps API (CDN oficial) -->
   <script src="https://www.geogebra.org/apps/deployggb.js"
-          onerror="document.getElementById('ggb-error').hidden=false"></script>
+          onerror="if(window.GEO&&GEO._showLoadError)GEO._showLoadError();else document.getElementById('ggb-error').hidden=false"></script>
 
   <style>
     /* ── Estils específics del simulador GeoGebra ──────── */
@@ -227,9 +227,22 @@
      ══════════════════════════════════════════════════════ -->
 <div id="ggb-error" hidden
      style="position:fixed;top:0;left:0;right:0;z-index:999;
-            background:#f38ba8;color:#1e1e2e;padding:.6rem 1rem;
-            font-family:monospace;font-size:.85rem;text-align:center;">
-  ❌ No s'ha pogut carregar GeoGebra. Comprova la connexió a internet i recarrega la pàgina.
+            background:#1e1e2e;color:#f38ba8;
+            padding:.75rem 1.25rem;
+            font-family:monospace;font-size:.82rem;
+            display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+            border-bottom:2px solid #f38ba8;">
+  <span style="font-size:1.1rem">❌</span>
+  <span>
+    <strong>No s'ha pogut carregar GeoGebra.</strong>
+    Comprova que tens connexió a internet i
+    <a href="javascript:location.reload()"
+       style="color:#89b4fa;text-decoration:underline;cursor:pointer">
+      recarrega la pàgina</a>.
+  </span>
+  <span style="margin-left:auto;font-size:.72rem;color:#6c7086">
+    CDN: geogebra.org
+  </span>
 </div>
 
 <!-- ══════════════════════════════════════════════════════

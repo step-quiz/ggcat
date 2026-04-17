@@ -50,6 +50,12 @@ GEO.init = function(params) {
       window.ggbApplet = api;
       G.state.appletReady = true;
 
+      // Cancel·la el watchdog de timeout si estava actiu
+      if (GEO._loadTimer) {
+        clearTimeout(GEO._loadTimer);
+        GEO._loadTimer = null;
+      }
+
       // Aplica l'estat inicial (comandes + objectes fixos)
       GEO._applyInitialState(params.commands, params.fixed);
 
@@ -67,6 +73,13 @@ GEO.init = function(params) {
 
   var applet = new GGBApplet(appParams, true);
   applet.inject('ggb-container');
+
+  // Watchdog: si GeoGebra no respon en 20 s, mostra el banner d'error
+  GEO._loadTimer = setTimeout(function() {
+    if (!G.state.appletReady) {
+      GEO._showLoadError();
+    }
+  }, 20000);
 
   // Redimensiona l'applet quan canvia la finestra
   window.addEventListener('resize', function() {
@@ -143,5 +156,20 @@ GEO.check = function(validatorFn) {
   } catch(e) {
     console.warn('[GEO] validator error:', e);
     return false;
+  }
+};
+
+/**
+ * Mostra el banner d'error de càrrega de GeoGebra.
+ * Cridat pel watchdog de timeout o per l'onerror del script CDN.
+ */
+GEO._showLoadError = function() {
+  var banner = document.getElementById('ggb-error');
+  if (banner) banner.hidden = false;
+  // Posa el badge en estat d'error si existeix
+  var badge = document.getElementById('state-badge');
+  if (badge) {
+    badge.textContent = '❌ No s\'ha pogut carregar GeoGebra';
+    badge.className = 'state-badge state-wrong';
   }
 };
