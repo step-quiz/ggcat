@@ -140,8 +140,7 @@ function renderReptesSidebar(currentNum) {
 
 function renderSimuladors() {
   // Gestiona <div class="geogebra"> → iframes de geogebra.html
-  var allDivs = document.querySelectorAll('.geogebra');
-  allDivs.forEach(function(div, index) {
+  document.querySelectorAll('.geogebra').forEach(function(div) {
     var params = new URLSearchParams();
     params.set('embed', '1');
 
@@ -171,10 +170,7 @@ function renderSimuladors() {
     iframe.style.height = height + 'px';
     iframe.style.border = '1px solid #d0d0d0';
     iframe.style.borderRadius = '8px';
-    // Només aplica lazy loading als iframes que no són els primers 2,
-    // per evitar que el navegador difereixi la càrrega dels que ja
-    // són visibles al viewport inicial.
-    if (index >= 2) iframe.setAttribute('loading', 'lazy');
+    iframe.setAttribute('loading', 'lazy');
 
     // Substitueix el div per l'iframe
     var wrapper = document.createElement('div');
