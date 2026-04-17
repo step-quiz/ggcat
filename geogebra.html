@@ -15,9 +15,9 @@
   <!-- Estils del simulador -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- GeoGebra Apps API (CDN oficial) -->
-  <script src="https://www.geogebra.org/apps/deployggb.js"
-          onerror="if(window.GEO&&GEO._showLoadError)GEO._showLoadError();else document.getElementById('ggb-error').style.display='flex'"></script>
+  <!-- GeoGebra Apps API: carregada dinàmicament per georunner.js -->
+  <!-- (eliminat l'script síncron al <head> per evitar la race condition
+       entre el CDN i els scripts locals) -->
 
   <style>
     /* ── Estils específics del simulador GeoGebra ──────── */
