@@ -50,11 +50,13 @@ GEO.init = function(params) {
       window.ggbApplet = api;
       G.state.appletReady = true;
 
-      // Cancel·la el watchdog de timeout si estava actiu
+      // Cancel·la el watchdog i amaga el banner d'error (pot haver aparegut per timeout)
       if (GEO._loadTimer) {
         clearTimeout(GEO._loadTimer);
         GEO._loadTimer = null;
       }
+      var banner = document.getElementById('ggb-error');
+      if (banner) banner.hidden = true;
 
       // Aplica l'estat inicial (comandes + objectes fixos)
       GEO._applyInitialState(params.commands, params.fixed);
@@ -79,7 +81,7 @@ GEO.init = function(params) {
     if (!G.state.appletReady) {
       GEO._showLoadError();
     }
-  }, 20000);
+  }, 60000);  // 60 s — GeoGebra pot trigar molt en la primera càrrega
 
   // Redimensiona l'applet quan canvia la finestra
   window.addEventListener('resize', function() {
