@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repte 11 — La paral·lela | GeoCat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="curs.css">
+</head>
+<body>
+
+<header class="curs-header">
+  <button id="sidebar-toggle" aria-label="Mostra/amaga els reptes" aria-expanded="false">☰</button>
+  <span class="curs-header-logo">
+    <span class="logo-icon"></span>
+    GeoCat
+  </span>
+  <nav class="curs-nav">
+    <a href="capitol-1.html">Capítols</a>
+    <a href="repte-1.html" class="active">Reptes</a>
+    <a href="../geogebra.html">Simulador</a>
+  </nav>
+  <span class="curs-header-title">Repte 11 — La paral·lela</span>
+  <div class="curs-header-actions"></div>
+</header>
+
+<div class="curs-layout">
+  <div id="sidebar-overlay" aria-hidden="true"></div>
+  <nav id="sidebar" class="curs-sidebar" aria-label="Reptes del curs">
+    <div id="sidebar-nav"></div>
+  </nav>
+
+  <main class="curs-content">
+
+    <header class="chapter-header">
+      <span class="chapter-badge" style="background: #fef3c7; color: #92400e;">⚡ Repte 11 — Mitjà</span>
+      <h1>La paral·lela</h1>
+    </header>
+
+    <section class="chapter-section">
+      <h2>Objectiu</h2>
+      <p>La recta <strong>f</strong> i el punt <strong>P = (−1, 3)</strong>
+      ja estan construïts. Crea la recta <strong>paral·lela a f</strong>
+      que passi per P.</p>
+
+      <h2>Widget</h2>
+      <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+
+      <div class="geogebra"
+             data-commands="f=Recta((0,0),(4,1))
+P=(-1,3)"
+             data-fixed="f,P"
+           data-check="(api) => { var lines = api.getAllObjectNames('line'); return lines.some(function(l) {  if (l === 'f') return false;  var onP = api.getValue('IsOnPath(P,' + l + ')') === 1;  var par = api.getValue('AreParallel(f,' + l + ')') === 1;  return onP && par; });}"
+           data-goal-id="repte-11"
+           data-height="440">
+      </div>
+    </section>
+
+    <details style="margin-top: 1.5rem;">
+      <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
+      <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
+        <p>La comanda és <code>Paral·lela(f,P)</code>: primer la recta de referència,
+        després el punt per on ha de passar. La recta resultant
+        mai tallarà f (a la geometria euclidiana) i té exactament la mateixa
+        pendent.</p>
+      </div>
+    </details>
+
+    <nav class="chapter-nav">
+      <a href="repte-10.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-12.html" class="btn-nav btn-nav--next">Repte següent →</a>
+    </nav>
+
+  </main>
+</div>
+
+<script src="glossari-data.js"></script>
+<script src="capitols.js"></script>
+<script>
+  injectCursLogo();
+  renderReptesSidebar(11);
+  renderSimuladors();
+  initSidebarToggle();
+</script>
+
+</body>
+</html>

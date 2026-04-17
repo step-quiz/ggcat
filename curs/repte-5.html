@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repte 5 — El punt mig | GeoCat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="curs.css">
+</head>
+<body>
+
+<header class="curs-header">
+  <button id="sidebar-toggle" aria-label="Mostra/amaga els reptes" aria-expanded="false">☰</button>
+  <span class="curs-header-logo">
+    <span class="logo-icon"></span>
+    GeoCat
+  </span>
+  <nav class="curs-nav">
+    <a href="capitol-1.html">Capítols</a>
+    <a href="repte-1.html" class="active">Reptes</a>
+    <a href="../geogebra.html">Simulador</a>
+  </nav>
+  <span class="curs-header-title">Repte 5 — El punt mig</span>
+  <div class="curs-header-actions"></div>
+</header>
+
+<div class="curs-layout">
+  <div id="sidebar-overlay" aria-hidden="true"></div>
+  <nav id="sidebar" class="curs-sidebar" aria-label="Reptes del curs">
+    <div id="sidebar-nav"></div>
+  </nav>
+
+  <main class="curs-content">
+
+    <header class="chapter-header">
+      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 5 — Fàcil</span>
+      <h1>El punt mig</h1>
+    </header>
+
+    <section class="chapter-section">
+      <h2>Objectiu</h2>
+      <p>El segment <strong>AB</strong> amb <strong>A = (−4, 0)</strong>
+      i <strong>B = (2, 0)</strong> ja està construït. Crea el
+      <strong>punt mig M</strong> del segment AB. M ha d'estar exactament
+      a la meitat (marge ±0,15).</p>
+
+      <h2>Widget</h2>
+      <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+
+      <div class="geogebra"
+             data-commands="A=(-4,0)
+B=(2,0)
+s=Segment(A,B)"
+             data-fixed="A,B,s"
+           data-check="(api) => { var pts = api.getAllObjectNames('point'); return pts.some(function(p) {  if (p === 'A' || p === 'B') return false;  return Math.abs(api.getXcoord(p) - (-1)) < 0.15 &&         Math.abs(api.getYcoord(p) - 0) < 0.15; });}"
+           data-goal-id="repte-5"
+           data-height="440">
+      </div>
+    </section>
+
+    <details style="margin-top: 1.5rem;">
+      <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
+      <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
+        <p>El punt mig entre (−4,0) i (2,0) té coordenada X = (−4+2)/2 = −1.
+        Usa la comanda <code>PuntMig(A,B)</code> o calcula-ho manualment: <code>M=(-1,0)</code>.</p>
+      </div>
+    </details>
+
+    <nav class="chapter-nav">
+      <a href="repte-4.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-6.html" class="btn-nav btn-nav--next">Repte següent →</a>
+    </nav>
+
+  </main>
+</div>
+
+<script src="glossari-data.js"></script>
+<script src="capitols.js"></script>
+<script>
+  injectCursLogo();
+  renderReptesSidebar(5);
+  renderSimuladors();
+  initSidebarToggle();
+</script>
+
+</body>
+</html>

@@ -187,62 +187,62 @@ Per a cada capítol, seguir l'esquelet de `pycat/curs/capitol-1.html` adaptat a 
 Cada capítol ha de tenir: header, sidebar, 2–4 seccions amb widgets `<div class="geogebra">`,
 navegació anterior/següent, i un exercici final amb `data-goal-id`.
 
-### T3.1 — `curs/capitol-1.html` — Benvingut a GeoGebra ✅
+### T3.1 — `curs/capitol-1.html` — Benvingut a GeoGebra ⬜
 Conceptes: la interfície, punts, el pla de coordenades.
 Comandes: `A=(x,y)`, `Punt(x,y)`.
 Widget demo (readonly): mostrar alguns punts pre-construïts.
 Widget exercici: l'alumne construeix el punt `P=(3,2)`.
 `data-goal-id="cap-1-ex"`
 
-### T3.2 — `curs/capitol-2.html` — Rectes i segments ✅
+### T3.2 — `curs/capitol-2.html` — Rectes i segments ⬜
 Conceptes: recta per dos punts, segment, punt mig.
 Comandes: `Recta(A,B)`, `Segment(A,B)`, `PuntMig(A,B)`.
 Widget exercici: construir el punt mig d'un segment donat.
 `data-goal-id="cap-2-ex"`
 
-### T3.3 — `curs/capitol-3.html` — Circumferències ✅
+### T3.3 — `curs/capitol-3.html` — Circumferències ⬜
 Conceptes: circumferència per centre i radi, per tres punts.
 Comandes: `Cercle(A,r)`, `Cercle(A,B,C)`.
 Widget exercici: circumferència de radi 3 centrada en l'origen.
 `data-goal-id="cap-3-ex"`
 
-### T3.4 — `curs/capitol-4.html` — Mesures ✅
+### T3.4 — `curs/capitol-4.html` — Mesures ⬜
 Conceptes: distància, angle, perímetre, àrea.
 Comandes: `Distància(A,B)`, `Angle(A,B,C)`, `Àrea(p)`.
 Widget exercici: mesurar l'angle d'un triangle donat.
 `data-goal-id="cap-4-ex"`
 
-### T3.5 — `curs/capitol-5.html` — Construccions clàssiques I ✅
+### T3.5 — `curs/capitol-5.html` — Construccions clàssiques I ⬜
 Conceptes: mediatriu, bisectriu d'angle, perpendicular.
 Comandes: `Mediatriu(A,B)`, `Bisectriu(f,g)`, `Perpendicular(A,f)`.
 Widget exercici: construir la mediatriu d'un segment AB donat.
 `data-goal-id="cap-5-ex"`
 
-### T3.6 — `curs/capitol-6.html` — Construccions clàssiques II ✅
+### T3.6 — `curs/capitol-6.html` — Construccions clàssiques II ⬜
 Conceptes: recta paral·lela, cercle inscrit/circumscrit d'un triangle.
 Comandes: `Paral·lela(f,A)`, `CercleInscrit(p)`, `CercleCircumscrit(p)`.
 Widget exercici: construir una recta paral·lela a una donada passant per un punt.
 `data-goal-id="cap-6-ex"`
 
-### T3.7 — `curs/capitol-7.html` — Polígons ✅
+### T3.7 — `curs/capitol-7.html` — Polígons ⬜
 Conceptes: triangle, quadrilàter, polígon regular.
 Comandes: `Polígon(A,B,C)`, `PolígonRegular(A,B,n)`.
 Widget exercici: construir un hexàgon regular.
 `data-goal-id="cap-7-ex"`
 
-### T3.8 — `curs/capitol-8.html` — Transformacions ✅
+### T3.8 — `curs/capitol-8.html` — Transformacions ⬜
 Conceptes: translació, rotació, reflexió, homotècia.
 Comandes: `Translació(obj,v)`, `Rotació(obj,A,α)`, `Reflexió(obj,f)`.
 Widget exercici: reflexió d'un triangle respecte un eix donat.
 `data-goal-id="cap-8-ex"`
 
-### T3.9 — `curs/capitol-9.html` — Funcions i gràfiques ✅
+### T3.9 — `curs/capitol-9.html` — Funcions i gràfiques ⬜
 Conceptes: definir funcions, gràfica, intersecció.
 Comandes: `f(x)=x²-3`, `Intersecció(f,g)`, lliscadors bàsics.
 Widget exercici: definir la funció `f(x) = 2x + 1` i trobar-ne la intersecció amb l'eix X.
 `data-goal-id="cap-9-ex"`
 
-### T3.10 — `curs/capitol-10.html` — Lliscadors i construccions dinàmiques ✅
+### T3.10 — `curs/capitol-10.html` — Lliscadors i construccions dinàmiques ⬜
 Conceptes: lliscadors, paràmetres dinàmics, lloc geomètric.
 Comandes: `Lliscador(min,max,pas)`, `Lloc(B,A)`.
 Widget exercici/projecte: construcció dinàmica lliure amb lliscador.
@@ -256,49 +256,49 @@ Per a cada repte, seguir l'esquelet de `pycat/curs/repte-1.html`.
 Cada repte té: header amb badge de dificultat, descripció de l'objectiu,
 un widget `<div class="geogebra">` amb validació, i un bloc `<details>` de pista.
 
-### T4.1 — `curs/repte-1.html` — El primer punt ⬜ (Fàcil)
+### T4.1 — `curs/repte-1.html` — El primer punt ✅ (Fàcil)
 Validator: punt A existeix a les coordenades especificades (±0.1).
 
-### T4.2 — `curs/repte-2.html` — Un segment ⬜ (Fàcil)
+### T4.2 — `curs/repte-2.html` — Un segment ✅ (Fàcil)
 Validator: segment AB existeix entre dos punts donats.
 
-### T4.3 — `curs/repte-3.html` — La circumferència ⬜ (Fàcil)
+### T4.3 — `curs/repte-3.html` — La circumferència ✅ (Fàcil)
 Validator: circumferència de radi r centrada en un punt donat.
 
-### T4.4 — `curs/repte-4.html` — El triangle ⬜ (Fàcil)
+### T4.4 — `curs/repte-4.html` — El triangle ✅ (Fàcil)
 Validator: triangle amb tres vèrtexs especificats existeix.
 
-### T4.5 — `curs/repte-5.html` — El punt mig ⬜ (Fàcil)
+### T4.5 — `curs/repte-5.html` — El punt mig ✅ (Fàcil)
 Validator: punt col·locat correctament al mig d'un segment donat.
 
-### T4.6 — `curs/repte-6.html` — La perpendicular ⬜ (Mitjà)
+### T4.6 — `curs/repte-6.html` — La perpendicular ✅ (Mitjà)
 Validator: recta perpendicular a una recta donada passant per un punt donat.
 
-### T4.7 — `curs/repte-7.html` — La mediatriu ⬜ (Mitjà)
+### T4.7 — `curs/repte-7.html` — La mediatriu ✅ (Mitjà)
 Validator: mediatriu d'un segment AB donat (passa pel punt mig i és perpendicular).
 
-### T4.8 — `curs/repte-8.html` — La bisectriu ⬜ (Mitjà)
+### T4.8 — `curs/repte-8.html` — La bisectriu ✅ (Mitjà)
 Validator: bisectriu de l'angle format per dues rectes donades.
 
-### T4.9 — `curs/repte-9.html` — Triangle equilàter ⬜ (Mitjà)
+### T4.9 — `curs/repte-9.html` — Triangle equilàter ✅ (Mitjà)
 Validator: tots tres costats iguals (±eps).
 
-### T4.10 — `curs/repte-10.html` — Triangle isòsceles ⬜ (Mitjà)
+### T4.10 — `curs/repte-10.html` — Triangle isòsceles ✅ (Mitjà)
 Validator: exactament dos costats iguals.
 
-### T4.11 — `curs/repte-11.html` — La paral·lela ⬜ (Mitjà)
+### T4.11 — `curs/repte-11.html` — La paral·lela ✅ (Mitjà)
 Validator: recta paral·lela a una recta donada passant per un punt donat.
 
-### T4.12 — `curs/repte-12.html` — Cercle circumscrit ⬜ (Difícil)
+### T4.12 — `curs/repte-12.html` — Cercle circumscrit ✅ (Difícil)
 Validator: circumferència que passa pels tres vèrtexs d'un triangle donat.
 
-### T4.13 — `curs/repte-13.html` — Translació ⬜ (Difícil)
+### T4.13 — `curs/repte-13.html` — Translació ✅ (Difícil)
 Validator: objecte correctament transladat per un vector donat.
 
-### T4.14 — `curs/repte-14.html` — Reflexió ⬜ (Difícil)
+### T4.14 — `curs/repte-14.html` — Reflexió ✅ (Difícil)
 Validator: objecte correctament reflectit respecte un eix donat.
 
-### T4.15 — `curs/repte-15.html` — La funció quadràtica ⬜ (Difícil)
+### T4.15 — `curs/repte-15.html` — La funció quadràtica ✅ (Difícil)
 Validator: paràbola que passa per tres punts especificats.
 
 ---
@@ -335,16 +335,21 @@ Per a cada repte (T4.1–T4.15):
 
 ## Completat
 
-- **T3.1** `curs/capitol-1.html` — Benvingut a GeoGebra: interfície, punts, coordenades. Exercici: punt P=(3,2). *(2026-04-17)*
-- **T3.2** `curs/capitol-2.html` — Rectes i segments: Recta, Segment, PuntMig. Exercici: punt mig de AB. *(2026-04-17)*
-- **T3.3** `curs/capitol-3.html` — Circumferències: Cercle(A,r), Cercle(A,B), Cercle(A,B,C). Exercici: cercle radi 3 a l'origen. *(2026-04-17)*
-- **T3.4** `curs/capitol-4.html` — Mesures: Distància, Angle, Àrea, Perímetre. Exercici: mesurar angle d'un triangle. *(2026-04-17)*
-- **T3.5** `curs/capitol-5.html` — Construccions clàssiques I: Mediatriu, Perpendicular, Bisectriu. Exercici: mediatriu de AB. *(2026-04-17)*
-- **T3.6** `curs/capitol-6.html` — Construccions clàssiques II: Paral·lela, CercleCircumscrit, CercleInscrit. Exercici: paral·lela per P. *(2026-04-17)*
-- **T3.7** `curs/capitol-7.html` — Polígons: Polígon, PolígonRegular. Exercici: hexàgon regular. *(2026-04-17)*
-- **T3.8** `curs/capitol-8.html` — Transformacions: Translació, Rotació, Reflexió, Homotècia. Exercici: reflexió d'un triangle. *(2026-04-17)*
-- **T3.9** `curs/capitol-9.html` — Funcions i gràfiques: f(x)=..., Intersecció, eixos. Exercici: f(x)=2x+1 i zeros. *(2026-04-17)*
-- **T3.10** `curs/capitol-10.html` — Lliscadors i construccions dinàmiques: Slider, Lloc, animació. Projecte lliure. *(2026-04-17)*
+- **T4.1**  `curs/repte-1.html`  — El primer punt (Fàcil): punt P=(2,3). *(2026-04-17)*
+- **T4.2**  `curs/repte-2.html`  — Un segment (Fàcil): segment AB donat. *(2026-04-17)*
+- **T4.3**  `curs/repte-3.html`  — La circumferència (Fàcil): cercle radi 2 a (1,1). *(2026-04-17)*
+- **T4.4**  `curs/repte-4.html`  — El triangle (Fàcil): polígon ABC donat. *(2026-04-17)*
+- **T4.5**  `curs/repte-5.html`  — El punt mig (Fàcil): M de segment AB. *(2026-04-17)*
+- **T4.6**  `curs/repte-6.html`  — La perpendicular (Mitjà): Perpendicular(P,f). *(2026-04-17)*
+- **T4.7**  `curs/repte-7.html`  — La mediatriu (Mitjà): Mediatriu(A,B). *(2026-04-17)*
+- **T4.8**  `curs/repte-8.html`  — La bisectriu (Mitjà): Bisectriu(f,g). *(2026-04-17)*
+- **T4.9**  `curs/repte-9.html`  — Triangle equilàter (Mitjà): tots 3 costats iguals. *(2026-04-17)*
+- **T4.10** `curs/repte-10.html` — Triangle isòsceles (Mitjà): exactament 2 costats iguals. *(2026-04-17)*
+- **T4.11** `curs/repte-11.html` — La paral·lela (Mitjà): Paral·lela(f,P). *(2026-04-17)*
+- **T4.12** `curs/repte-12.html` — Cercle circumscrit (Difícil): circumferència per A,B,C. *(2026-04-17)*
+- **T4.13** `curs/repte-13.html` — Translació (Difícil): Translació(t,v). *(2026-04-17)*
+- **T4.14** `curs/repte-14.html` — Reflexió (Difícil): Reflexió(t,f) respecte eix Y. *(2026-04-17)*
+- **T4.15** `curs/repte-15.html` — La funció quadràtica (Difícil): f(x)=2x²+1 per 3 punts. *(2026-04-17)*
 
 - **T0.1** `js/constants.js` — Namespace `P`→`G`, claus `pycat_*`→`geocat_*`, eliminat Pyodide, afegit `G.GEOGEBRA_CDN`, `G.DEFAULT_APP`. *(2026-04-17)*
 - **T0.2** `js/state.js` — Estat adaptat a GeoCat: eliminats camps Pyodide/Python, afegits `appletReady`, `validatorFn`, `initialCmds`, `fixedLabels`, `readonly`. *(2026-04-17)*
