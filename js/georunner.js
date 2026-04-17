@@ -58,6 +58,20 @@ GEO.init = function(params) {
       var banner = document.getElementById('ggb-error');
       if (banner) banner.style.display = 'none';
 
+      // Correcció de mida: quan GeoGebra s'inicialitza dins un iframe,
+      // el contenidor pot no tenir encara la seva amplada final.
+      // Esperem un tick perquè el navegador acabi el layout i llavors
+      // ajustem la mida real.
+      requestAnimationFrame(function() {
+        var c = document.getElementById('ggb-container');
+        if (c && c.offsetWidth > 0) {
+          try { api.setWidth(c.offsetWidth); } catch(_) {}
+        }
+        if (c && c.offsetHeight > 0) {
+          try { api.setHeight(c.offsetHeight); } catch(_) {}
+        }
+      });
+
       // Aplica l'estat inicial (comandes + objectes fixos)
       GEO._applyInitialState(params.commands, params.fixed);
 
