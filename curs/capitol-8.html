@@ -56,7 +56,7 @@
         <pre class="code-example">A=(0,0)
 B=(3,2)
 C=(1,4)
-t=Polígon(A,B,C)
+t=Polygon(A,B,C)
 v=(3,1)
 t2=Translació(t,v)</pre>
 
@@ -64,7 +64,7 @@ t2=Translació(t,v)</pre>
              data-commands="A=(0,0)
 B=(3,2)
 C=(1,4)
-t=Polígon(A,B,C)
+t=Polygon(A,B,C)
 v=(3,1)
 t2=Translate(t,v)"
              data-readonly="true"
@@ -87,7 +87,7 @@ t2=Translate(t,v)"
 B=(3,1)
 C=(4,3)
 D=(1,2)
-p=Polígon(A,B,C,D)
+p=Polygon(A,B,C,D)
 O=(0,0)
 p2=Rotació(p,O,90°)</pre>
 
@@ -95,7 +95,7 @@ p2=Rotació(p,O,90°)</pre>
              data-commands="B=(3,1)
 C=(4,3)
 D=(1,2)
-p=Polígon(B,C,D)
+p=Polygon(B,C,D)
 O=(0,0)
 p2=Rotate(p,O,90°)"
              data-readonly="true"
@@ -117,16 +117,16 @@ p2=Rotate(p,O,90°)"
         <pre class="code-example">A=(1,1)
 B=(4,1)
 C=(3,4)
-t=Polígon(A,B,C)
-eix=Recta((0,0),(0,1))
+t=Polygon(A,B,C)
+eix=Line((0,0),(0,1))
 t2=Reflexió(t,eix)</pre>
 
         <div class="geogebra"
              data-commands="A=(1,1)
 B=(4,1)
 C=(3,4)
-t=Polígon(A,B,C)
-eix=Recta((0,0),(0,1))
+t=Polygon(A,B,C)
+eix=Line((0,0),(0,1))
 t2=Reflect(t,eix)"
              data-readonly="true"
              data-height="400">
@@ -148,7 +148,7 @@ t2=Reflect(t,eix)"
              data-commands="A=(1,1)
 B=(3,1)
 C=(2,3)
-t=Polígon(A,B,C)
+t=Polygon(A,B,C)
 O=(0,0)
 t2=Dilate(t,O,2)"
              data-readonly="true"
@@ -173,8 +173,8 @@ t2=Dilate(t,O,2)"
              data-commands="A=(1,1)
 B=(4,1)
 C=(2,4)
-t=Polígon(A,B,C)
-f=Recta((0,-5),(0,5))"
+t=Polygon(A,B,C)
+f=Line((0,-5),(0,5))"
              data-fixed="A,B,C,t,f"
              data-check="(api) => {
                var polys = api.getAllObjectNames('polygon');

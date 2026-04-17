@@ -49,8 +49,8 @@
       <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
 
       <div class="geogebra"
-             data-commands="f=Recta((0,0),(3,1))
-g=Recta((0,0),(1,3))
+             data-commands="f=Line((0,0),(3,1))
+g=Line((0,0),(1,3))
 I=Intersect(f,g)"
              data-fixed="f,g,I"
            data-check="(api) => { var lines = api.getAllObjectNames('line'); return lines.some(function(l) {  if (l === 'f' || l === 'g') return false;  return api.getValue('IsOnPath(I,' + l + ')') === 1; });}"
@@ -62,7 +62,7 @@ I=Intersect(f,g)"
     <details style="margin-top: 1.5rem;">
       <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
       <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
-        <p>La comanda és <code>Bisectriu(f,g)</code>. GeoGebra retorna dues rectes
+        <p>La comanda és <code>AngleBisector(f,g)</code>. GeoGebra retorna dues rectes
         bisectrius (de l'angle i del seu suplementari). Totes dues passen per I
         i formen el mateix angle amb f i g.</p>
       </div>

@@ -52,8 +52,8 @@
              data-commands="A=(1,1)
 B=(4,1)
 C=(2,4)
-t=Polígon(A,B,C)
-f=Recta((0,-5),(0,5))"
+t=Polygon(A,B,C)
+f=Line((0,-5),(0,5))"
              data-fixed="A,B,C,t,f"
            data-check="(api) => { var polys = api.getAllObjectNames('polygon'); if (polys.length < 2) return false; var ax = api.getXcoord('A'), ay = api.getYcoord('A'); var pts = api.getAllObjectNames('point'); return pts.some(function(p) {  if (p==='A'||p==='B'||p==='C') return false;  return Math.abs(api.getXcoord(p) - (-ax)) < 0.2 &&         Math.abs(api.getYcoord(p) - ay) < 0.2; });}"
            data-goal-id="repte-14"

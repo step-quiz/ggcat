@@ -52,7 +52,7 @@
              data-commands="A=(0,4)
 B=(-3,0)
 C=(3,0)
-t=Polígon(A,B,C)"
+t=Polygon(A,B,C)"
              data-fixed="A,B,C,t"
            data-check="(api) => { var cs = api.getAllObjectNames('conic'); return cs.some(function(c) {  return api.getValue('IsOnPath(A,' + c + ')') === 1 &&         api.getValue('IsOnPath(B,' + c + ')') === 1 &&         api.getValue('IsOnPath(C,' + c + ')') === 1; });}"
            data-goal-id="repte-12"
