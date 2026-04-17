@@ -139,8 +139,26 @@ function renderReptesSidebar(currentNum) {
 // ── Renderitzador de widgets GeoGebra ─────────────────────
 
 function renderSimuladors() {
-  // Gestiona <div class="geogebra"> → iframes de geogebra.html
-  document.querySelectorAll('.geogebra').forEach(function(div) {
+  // ── Gestiona <div class="geogebra"> → iframes de geogebra.html ──
+  //
+  // IMPORTANT: NO creem tots els iframes alhora. Cada iframe carrega
+  // el motor complet de GeoGebra (~5 MB de GWT), i si 5 iframes
+  // competeixen simultàniament pel CDN i la CPU, el primer (in-viewport)
+  // pot quedar amb el canvas buit o congelat.
+  //
+  // Estratègia:
+  //  1) Substituïm cada .geogebra per un wrapper buit (placeholder).
+  //  2) Usem IntersectionObserver per detectar quan un wrapper entra
+  //     al viewport (amb marge de 200px per anticipar l'scroll).
+  //  3) Posem la creació d'iframe en una cua seqüencial: no en creem
+  //     un de nou fins que l'anterior hagi disparat 'load'.
+  //     Això garanteix que el motor GeoGebra de cada iframe tingui
+  //     els recursos que necessita sense competir.
+
+  var pending = [];   // Cua de wrappers pendents de rebre iframe
+  var loading = false; // Hi ha un iframe carregant-se ara?
+
+  function _buildIframeSrc(div) {
     var params = new URLSearchParams();
     params.set('embed', '1');
 
@@ -153,42 +171,124 @@ function renderSimuladors() {
     var check = div.getAttribute('data-check') || '';
     if (check) params.set('check', btoa(unescape(encodeURIComponent(check))));
 
-    var goalId  = div.getAttribute('data-goal-id') || '';
+    var goalId   = div.getAttribute('data-goal-id') || '';
     var readonly = div.getAttribute('data-readonly') === 'true';
-    var app     = div.getAttribute('data-app') || '';
-    var tools   = div.getAttribute('data-tools') || '';
-    var height  = div.getAttribute('data-height') || '420';
+    var app      = div.getAttribute('data-app') || '';
+    var tools    = div.getAttribute('data-tools') || '';
 
     if (goalId)   params.set('goalId',   goalId);
     if (readonly) params.set('readonly', '1');
     if (app)      params.set('app',      app);
     if (tools)    params.set('tools',    tools);
 
+    return '../geogebra.html?' + params.toString();
+  }
+
+  // Processa el següent element de la cua
+  function _processNext() {
+    if (loading || pending.length === 0) return;
+    loading = true;
+
+    var item = pending.shift();
+    var wrapper = item.wrapper;
+    var src     = item.src;
+    var height  = item.height;
+
     var iframe = document.createElement('iframe');
-    iframe.src = '../geogebra.html?' + params.toString();
-    iframe.style.width = '100%';
+    iframe.style.width  = '100%';
     iframe.style.height = height + 'px';
     iframe.style.border = '1px solid #d0d0d0';
     iframe.style.borderRadius = '8px';
-    iframe.setAttribute('loading', 'lazy');
 
-    // Substitueix el div per l'iframe
+    // Quan l'iframe acaba de carregar (deployggb.js carregat, DOM llest),
+    // passem al següent de la cua. Timeout de seguretat per si l'event
+    // 'load' no arriba mai (ex: CDN bloquejat).
+    var done = false;
+    function _onDone() {
+      if (done) return;
+      done = true;
+      loading = false;
+      // Petit delay per deixar que GeoGebra comenci a renderitzar
+      // abans de llançar el següent iframe
+      setTimeout(_processNext, 300);
+    }
+    iframe.addEventListener('load', _onDone);
+    setTimeout(_onDone, 30000); // fallback 30s
+
+    // Inserim l'iframe ABANS del feedback (si n'hi ha)
+    var fb = wrapper.querySelector('.simulador-feedback');
+    if (fb) {
+      wrapper.insertBefore(iframe, fb);
+    } else {
+      wrapper.appendChild(iframe);
+    }
+
+    // Posem el src DESPRÉS d'inserir al DOM per tenir layout estable
+    iframe.src = src;
+  }
+
+  // Encua un wrapper per rebre el seu iframe
+  function _enqueue(wrapper, src, height) {
+    pending.push({ wrapper: wrapper, src: src, height: height });
+    _processNext();
+  }
+
+  // ── Fase 1: crear wrappers i observar-los ──
+
+  var divs = document.querySelectorAll('.geogebra');
+
+  // Preparem les dades de cada div ABANS de fer replaceWith
+  // (un cop reemplaçat, els atributs del div original es perden)
+  var entries = [];
+  divs.forEach(function(div) {
+    entries.push({
+      div:    div,
+      src:    _buildIframeSrc(div),
+      height: div.getAttribute('data-height') || '420',
+      goalId: div.getAttribute('data-goal-id') || ''
+    });
+  });
+
+  var observer = null;
+  if (typeof IntersectionObserver !== 'undefined') {
+    observer = new IntersectionObserver(function(ioEntries) {
+      ioEntries.forEach(function(ioEntry) {
+        if (ioEntry.isIntersecting) {
+          var w = ioEntry.target;
+          observer.unobserve(w);
+          _enqueue(w, w._ggbSrc, w._ggbHeight);
+        }
+      });
+    }, { rootMargin: '200px' }); // 200px d'anticipació
+  }
+
+  entries.forEach(function(entry) {
     var wrapper = document.createElement('div');
     wrapper.className = 'geogebra-wrap';
-    wrapper.appendChild(iframe);
+    wrapper.style.minHeight = entry.height + 'px'; // placeholder visual
 
-    if (goalId) {
+    if (entry.goalId) {
       var fb = document.createElement('div');
       fb.className = 'simulador-feedback';
-      fb.setAttribute('data-goal-id', goalId);
-      if (isGoalCompleted(goalId)) {
+      fb.setAttribute('data-goal-id', entry.goalId);
+      if (isGoalCompleted(entry.goalId)) {
         fb.className = 'simulador-feedback fb-ok';
         fb.textContent = '✓ Completat anteriorment.';
       }
       wrapper.appendChild(fb);
     }
 
-    div.replaceWith(wrapper);
+    entry.div.replaceWith(wrapper);
+
+    if (observer) {
+      // Guardem les dades al wrapper perquè el callback les trobi
+      wrapper._ggbSrc    = entry.src;
+      wrapper._ggbHeight = entry.height;
+      observer.observe(wrapper);
+    } else {
+      // Fallback sense IntersectionObserver: encuem directament
+      _enqueue(wrapper, entry.src, entry.height);
+    }
   });
 }
 
