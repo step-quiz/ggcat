@@ -310,6 +310,7 @@ function renderSimuladors() {
       enableRightClick:    !cfg.readonly,
       enableLabelDrags:    !cfg.readonly,
       enableShiftDragZoom: true,
+      showKeyboardOnFocus: false,
       language:            'ca',
       id:                  cfg.id,
       appletOnLoad: function(api) {
