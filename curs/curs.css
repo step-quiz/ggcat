@@ -207,14 +207,65 @@ pre.code-example {
 
 
 /* ══════════════════════════════════════════════════════
-   WIDGETS GEOGEBRA INCRUSTATS
+   WIDGETS GEOGEBRA INCRUSTATS (embed directe, sense iframe)
 ══════════════════════════════════════════════════════ */
 
 .geogebra {
   margin: 1rem 0;
 }
-.geogebra iframe {
-  display: block;
+.geogebra-wrap {
+  margin: 1rem 0;
+}
+
+/* Toolbar inline (Comprova + Reinicia + badge) */
+.ggb-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface, #f5f5f5);
+  border: 1px solid var(--border, #d0d0d0);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  font-family: var(--mono);
+}
+
+.ggb-badge {
+  font-size: 0.78rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #6b7280;
+  font-weight: 700;
+}
+.ggb-ready { background: #e5e7eb; color: #6b7280; }
+.ggb-ok    { background: #dcfce7; color: #16a34a; }
+.ggb-ko    { background: #fee2e2; color: #dc2626; }
+
+.ggb-btn {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.ggb-btn:hover { opacity: 0.8; }
+
+.ggb-btn-check {
+  background: var(--accent, #2563eb);
+  color: #fff;
+  border: none;
+}
+.ggb-btn-reset {
+  background: transparent;
+  color: var(--muted, #6b7280);
+  border: 1px solid var(--border, #d0d0d0);
+}
+.ggb-btn-reset:hover {
+  border-color: var(--text, #1a1a1a);
+  color: var(--text, #1a1a1a);
 }
 
 /* Feedback de validació */

@@ -136,162 +136,333 @@ function renderReptesSidebar(currentNum) {
 }
 
 
-// ── Renderitzador de widgets GeoGebra ─────────────────────
+// ── Renderitzador de widgets GeoGebra (EMBED DIRECTE) ────
+//
+// Com ho fan els llibres/activitats de GeoGebra:
+//  1. Carreguem deployggb.js UNA SOLA VEGADA a la pàgina
+//  2. Per a cada .geogebra, injectem l'applet DIRECTAMENT al DOM
+//  3. Sense iframes intermediaris, sense curses de layout
+//
+// Avantatges:
+//  - Un sol motor GeoGebra compartit per tots els widgets
+//  - Sense problemes d'alçada/amplada d'iframe
+//  - Validació directa, sense postMessage
+
+var _ggbScriptLoaded = false;
+var _ggbScriptCallbacks = [];
+var _ggbWidgetCount = 0;
+
+function _loadDeployGGB(callback) {
+  if (typeof GGBApplet !== 'undefined') { callback(); return; }
+  _ggbScriptCallbacks.push(callback);
+  if (_ggbScriptLoaded) return;        // ja s'està carregant
+  _ggbScriptLoaded = true;
+
+  var script = document.createElement('script');
+  script.src = 'https://www.geogebra.org/apps/deployggb.js';
+  script.onload = function() {
+    var cbs = _ggbScriptCallbacks.slice();
+    _ggbScriptCallbacks = [];
+    cbs.forEach(function(cb) { cb(); });
+  };
+  script.onerror = function() {
+    console.error('[GeoCat] No s\'ha pogut carregar deployggb.js');
+  };
+  document.head.appendChild(script);
+}
+
+// Carrega geovalidator.js dinàmicament (per als validators que usen GV)
+var _gvLoaded = false;
+function _loadGV(callback) {
+  if (typeof GV !== 'undefined') { callback(); return; }
+  if (_gvLoaded) { callback(); return; }
+  _gvLoaded = true;
+  var script = document.createElement('script');
+  script.src = '../js/geovalidator.js';
+  script.onload = callback;
+  script.onerror = callback;  // Continua encara que falli
+  document.head.appendChild(script);
+}
+
 
 function renderSimuladors() {
-  // ── Gestiona <div class="geogebra"> → iframes de geogebra.html ──
-  //
-  // IMPORTANT: NO creem tots els iframes alhora. Cada iframe carrega
-  // el motor complet de GeoGebra (~5 MB de GWT), i si 5 iframes
-  // competeixen simultàniament pel CDN i la CPU, el primer (in-viewport)
-  // pot quedar amb el canvas buit o congelat.
-  //
-  // Estratègia:
-  //  1) Substituïm cada .geogebra per un wrapper buit (placeholder).
-  //  2) Usem IntersectionObserver per detectar quan un wrapper entra
-  //     al viewport (amb marge de 200px per anticipar l'scroll).
-  //  3) Posem la creació d'iframe en una cua seqüencial: no en creem
-  //     un de nou fins que l'anterior hagi disparat 'load'.
-  //     Això garanteix que el motor GeoGebra de cada iframe tingui
-  //     els recursos que necessita sense competir.
+  var divs = document.querySelectorAll('.geogebra');
+  if (divs.length === 0) return;
 
-  var pending = [];   // Cua de wrappers pendents de rebre iframe
-  var loading = false; // Hi ha un iframe carregant-se ara?
+  // Cua seqüencial: injectem un applet a la vegada
+  var pending = [];
+  var injecting = false;
 
-  function _buildIframeSrc(div) {
-    var params = new URLSearchParams();
-    params.set('embed', '1');
-
-    var commands = div.getAttribute('data-commands') || '';
-    if (commands) params.set('commands', btoa(unescape(encodeURIComponent(commands))));
-
-    var fixed = div.getAttribute('data-fixed') || '';
-    if (fixed) params.set('fixed', btoa(fixed));
-
-    var check = div.getAttribute('data-check') || '';
-    if (check) params.set('check', btoa(unescape(encodeURIComponent(check))));
-
-    var goalId   = div.getAttribute('data-goal-id') || '';
-    var readonly = div.getAttribute('data-readonly') === 'true';
-    var app      = div.getAttribute('data-app') || '';
-    var tools    = div.getAttribute('data-tools') || '';
-
-    if (goalId)   params.set('goalId',   goalId);
-    if (readonly) params.set('readonly', '1');
-    if (app)      params.set('app',      app);
-    if (tools)    params.set('tools',    tools);
-
-    return '../geogebra.html?' + params.toString();
-  }
-
-  // Processa el següent element de la cua
   function _processNext() {
-    if (loading || pending.length === 0) return;
-    loading = true;
-
-    var item = pending.shift();
-    var wrapper = item.wrapper;
-    var src     = item.src;
-    var height  = item.height;
-
-    var iframe = document.createElement('iframe');
-    iframe.style.width  = '100%';
-    iframe.style.height = height + 'px';
-    iframe.style.border = '1px solid #d0d0d0';
-    iframe.style.borderRadius = '8px';
-
-    // Quan l'iframe acaba de carregar (deployggb.js carregat, DOM llest),
-    // passem al següent de la cua. Timeout de seguretat per si l'event
-    // 'load' no arriba mai (ex: CDN bloquejat).
-    var done = false;
-    function _onDone() {
-      if (done) return;
-      done = true;
-      loading = false;
-      // Petit delay per deixar que GeoGebra comenci a renderitzar
-      // abans de llançar el següent iframe
-      setTimeout(_processNext, 300);
-    }
-    iframe.addEventListener('load', _onDone);
-    setTimeout(_onDone, 30000); // fallback 30s
-
-    // Inserim l'iframe ABANS del feedback (si n'hi ha)
-    var fb = wrapper.querySelector('.simulador-feedback');
-    if (fb) {
-      wrapper.insertBefore(iframe, fb);
-    } else {
-      wrapper.appendChild(iframe);
-    }
-
-    // Posem el src DESPRÉS d'inserir al DOM per tenir layout estable
-    iframe.src = src;
+    if (injecting || pending.length === 0) return;
+    injecting = true;
+    var w = pending.shift();
+    _injectApplet(w, function() {
+      injecting = false;
+      // Petit delay perquè GeoGebra estabilitzi el renderitzat
+      setTimeout(_processNext, 400);
+    });
   }
 
-  // Encua un wrapper per rebre el seu iframe
-  function _enqueue(wrapper, src, height) {
-    pending.push({ wrapper: wrapper, src: src, height: height });
+  function _enqueue(wrapper) {
+    pending.push(wrapper);
     _processNext();
   }
 
-  // ── Fase 1: crear wrappers i observar-los ──
+  function _injectApplet(wrapper, doneCb) {
+    var cfg        = wrapper._ggbCfg;
+    var containerId = wrapper._ggbId;
+    var container   = document.getElementById(containerId);
+    if (!container) { doneCb(); return; }
 
-  var divs = document.querySelectorAll('.geogebra');
+    var w = container.offsetWidth || 700;
+    var h = parseInt(cfg.height, 10) || 420;
 
-  // Preparem les dades de cada div ABANS de fer replaceWith
-  // (un cop reemplaçat, els atributs del div original es perden)
+    var params = {
+      appName:             cfg.app || 'geometry',
+      width:               w,
+      height:              h,
+      showToolBar:         !cfg.readonly,
+      showAlgebraInput:    !cfg.readonly,
+      showMenuBar:         false,
+      showResetIcon:       false,
+      enableRightClick:    false,
+      enableShiftDragZoom: true,
+      showZoomButtons:     true,
+      errorDialogsActive:  false,
+      language:            'ca',
+      appletOnLoad:        function(api) {
+        wrapper._ggbApi = api;
+
+        // Aplica comandes inicials
+        if (cfg.commands) {
+          cfg.commands.forEach(function(cmd) {
+            if (cmd) try { api.evalCommand(cmd); } catch(e) {}
+          });
+        }
+        // Fixa objectes
+        if (cfg.fixed) {
+          cfg.fixed.forEach(function(lbl) {
+            if (lbl) try {
+              api.setFixed(lbl, true, false);
+              api.setColor(lbl, 60, 100, 220);
+            } catch(e) {}
+          });
+        }
+
+        // Actualitza el badge
+        var badge = wrapper.querySelector('.ggb-badge');
+        if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
+
+        // ResizeObserver per adaptar-se a canvis de mida
+        if (typeof ResizeObserver !== 'undefined') {
+          new ResizeObserver(function() {
+            var cw = container.offsetWidth, ch = container.offsetHeight;
+            if (cw > 50 && ch > 50) try { api.setSize(cw, ch); } catch(_) {}
+          }).observe(container);
+        }
+
+        doneCb();
+      }
+    };
+    if (cfg.tools) params.customToolBar = cfg.tools;
+
+    var applet = new GGBApplet(params, true);
+    applet.inject(containerId);
+
+    // Fallback: si l'applet no crida appletOnLoad en 45 s, continuem
+    setTimeout(function() { if (!wrapper._ggbApi) doneCb(); }, 45000);
+  }
+
+
+  // ── Llegim les dades de cada div ABANS de tocar el DOM ──
+
   var entries = [];
   divs.forEach(function(div) {
+    var id = 'ggb-w' + (_ggbWidgetCount++);
+
+    var commandsRaw = div.getAttribute('data-commands') || '';
+    var fixedRaw    = div.getAttribute('data-fixed')    || '';
+    var checkRaw    = div.getAttribute('data-check')    || '';
+
+    var commands = commandsRaw
+      ? commandsRaw.split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
+      : [];
+    var fixed = fixedRaw
+      ? fixedRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean)
+      : [];
+
+    var validatorFn = null;
+    if (checkRaw) {
+      try { validatorFn = new Function('api', 'GV', 'return (' + checkRaw + ')(api)'); }
+      catch(_) { try { validatorFn = new Function('api', 'GV', checkRaw); } catch(e) {} }
+    }
+
     entries.push({
-      div:    div,
-      src:    _buildIframeSrc(div),
-      height: div.getAttribute('data-height') || '420',
-      goalId: div.getAttribute('data-goal-id') || ''
+      div:       div,
+      id:        id,
+      commands:  commands,
+      fixed:     fixed,
+      readonly:  div.getAttribute('data-readonly') === 'true',
+      goalId:    div.getAttribute('data-goal-id') || '',
+      app:       div.getAttribute('data-app') || '',
+      tools:     div.getAttribute('data-tools') || '',
+      height:    div.getAttribute('data-height') || '420',
+      validator: validatorFn
     });
   });
+
+
+  // ── Construïm el DOM i observem visibilitat ──
 
   var observer = null;
   if (typeof IntersectionObserver !== 'undefined') {
     observer = new IntersectionObserver(function(ioEntries) {
-      ioEntries.forEach(function(ioEntry) {
-        if (ioEntry.isIntersecting) {
-          var w = ioEntry.target;
-          observer.unobserve(w);
-          _enqueue(w, w._ggbSrc, w._ggbHeight);
-        }
+      ioEntries.forEach(function(io) {
+        if (!io.isIntersecting) return;
+        observer.unobserve(io.target);
+        _loadDeployGGB(function() { _enqueue(io.target); });
       });
-    }, { rootMargin: '200px' }); // 200px d'anticipació
+    }, { rootMargin: '300px' });
   }
 
-  entries.forEach(function(entry) {
+  entries.forEach(function(cfg) {
     var wrapper = document.createElement('div');
     wrapper.className = 'geogebra-wrap';
-    wrapper.style.minHeight = entry.height + 'px'; // placeholder visual
 
-    if (entry.goalId) {
+    // Contenidor on GeoGebra injectarà l'applet
+    var ggbDiv = document.createElement('div');
+    ggbDiv.id = cfg.id;
+    ggbDiv.style.width = '100%';
+    ggbDiv.style.height = cfg.height + 'px';
+    ggbDiv.style.border = '1px solid var(--border, #d0d0d0)';
+    ggbDiv.style.borderRadius = '8px';
+    ggbDiv.style.overflow = 'hidden';
+    ggbDiv.style.background = '#f8f8f8';
+    wrapper.appendChild(ggbDiv);
+
+    // Toolbar per a widgets no-readonly
+    if (!cfg.readonly) {
+      var tb = document.createElement('div');
+      tb.className = 'ggb-toolbar';
+      tb.innerHTML =
+        '<span class="ggb-badge">—</span>' +
+        (cfg.validator
+          ? '<button class="ggb-btn ggb-btn-check" type="button">✓ Comprova</button>'
+          : '') +
+        '<button class="ggb-btn ggb-btn-reset" type="button">↺ Reinicia</button>';
+      wrapper.appendChild(tb);
+
+      // ── Botó Comprova ──
+      if (cfg.validator) {
+        (function(cfg, wrapper, tb) {
+          tb.querySelector('.ggb-btn-check').addEventListener('click', function() {
+            var api = wrapper._ggbApi;
+            if (!api) return;
+            var badge = tb.querySelector('.ggb-badge');
+            badge.textContent = '…'; badge.className = 'ggb-badge';
+
+            // GV global per als validators que l'usin
+            var prev = window.ggbApplet;
+            window.ggbApplet = api;
+            var GVref = (typeof GV !== 'undefined') ? GV : {};
+
+            setTimeout(function() {
+              var ok = false;
+              try { ok = !!cfg.validator(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
+              window.ggbApplet = prev;
+
+              badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
+              badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
+
+              if (cfg.goalId) {
+                var fb = wrapper.querySelector('.simulador-feedback');
+                if (ok) {
+                  if (fb) { fb.className = 'simulador-feedback fb-ok'; fb.textContent = '✓ Correcte! Construcció validada.'; }
+                  saveGoalCompleted(cfg.goalId);
+                  _refreshSidebar();
+                } else {
+                  if (fb) { fb.className = 'simulador-feedback fb-ko'; fb.textContent = '✗ Encara no és correcte. Revisa la construcció.'; }
+                }
+              }
+            }, 100);
+          });
+        })(cfg, wrapper, tb);
+      }
+
+      // ── Botó Reinicia ──
+      (function(cfg, wrapper, tb) {
+        tb.querySelector('.ggb-btn-reset').addEventListener('click', function() {
+          var api = wrapper._ggbApi;
+          if (!api) return;
+          try { api.reset(); } catch(e) {}
+          cfg.commands.forEach(function(cmd) { if (cmd) try { api.evalCommand(cmd); } catch(e) {} });
+          cfg.fixed.forEach(function(lbl) {
+            if (lbl) try { api.setFixed(lbl, true, false); api.setColor(lbl, 60, 100, 220); } catch(e) {}
+          });
+          var badge = tb.querySelector('.ggb-badge');
+          if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
+        });
+      })(cfg, wrapper, tb);
+    }
+
+    // Feedback de validació
+    if (cfg.goalId) {
       var fb = document.createElement('div');
       fb.className = 'simulador-feedback';
-      fb.setAttribute('data-goal-id', entry.goalId);
-      if (isGoalCompleted(entry.goalId)) {
+      fb.setAttribute('data-goal-id', cfg.goalId);
+      if (isGoalCompleted(cfg.goalId)) {
         fb.className = 'simulador-feedback fb-ok';
         fb.textContent = '✓ Completat anteriorment.';
       }
       wrapper.appendChild(fb);
     }
 
-    entry.div.replaceWith(wrapper);
+    wrapper._ggbId  = cfg.id;
+    wrapper._ggbCfg = cfg;
 
+    cfg.div.replaceWith(wrapper);
+
+    // Observem o encuem directament
     if (observer) {
-      // Guardem les dades al wrapper perquè el callback les trobi
-      wrapper._ggbSrc    = entry.src;
-      wrapper._ggbHeight = entry.height;
       observer.observe(wrapper);
     } else {
-      // Fallback sense IntersectionObserver: encuem directament
-      _enqueue(wrapper, entry.src, entry.height);
+      _loadDeployGGB(function() { _enqueue(wrapper); });
     }
   });
+
+  // Carreguem GV si algun widget té validator
+  if (entries.some(function(e) { return !!e.validator; })) {
+    _loadGV(function() {});
+  }
 }
 
+
+// ── Listener de resultats (MANTINGUT per compatibilitat amb
+//    pàgines que encara puguin usar iframes) ──────────────────
+
+window.addEventListener('message', function(e) {
+  var sameOrigin = e.origin === window.location.origin
+                || e.origin === 'null'
+                || e.origin === '';
+  if (!sameOrigin || !e.data) return;
+
+  if (e.data.type === 'geocat-result') {
+    var goalId  = e.data.goalId;
+    var success = e.data.success;
+    var fb = goalId
+      ? document.querySelector('.simulador-feedback[data-goal-id="' + CSS.escape(goalId) + '"]')
+      : null;
+
+    if (success) {
+      if (fb) { fb.className = 'simulador-feedback fb-ok'; fb.textContent = '✓ Correcte! Construcció validada.'; }
+      saveGoalCompleted(goalId);
+      _refreshSidebar();
+    } else {
+      if (fb) { fb.className = 'simulador-feedback fb-ko'; fb.textContent = '✗ Encara no és correcte. Revisa la construcció.'; }
+    }
+  }
+});
 
 // ── Sidebar toggle (hamburger mòbil) ─────────────────────
 
@@ -319,41 +490,6 @@ function initSidebarToggle() {
   if (overlay) overlay.addEventListener('click', close);
 }
 
-
-// ── Listener de resultats des dels iframes GeoGebra ──────
-
-window.addEventListener('message', function(e) {
-  // Acceptem missatges del mateix origen, o de file:// (origin = "null" o "")
-  var sameOrigin = e.origin === window.location.origin
-                || e.origin === 'null'
-                || e.origin === '';
-  if (!sameOrigin) return;
-  if (!e.data) return;
-
-  var type   = e.data.type;
-  var goalId = e.data.goalId;
-
-  if (type === 'geocat-result') {
-    var success = e.data.success;
-    var fb = goalId
-      ? document.querySelector('.simulador-feedback[data-goal-id="' + CSS.escape(goalId) + '"]')
-      : null;
-
-    if (success) {
-      if (fb) {
-        fb.className = 'simulador-feedback fb-ok';
-        fb.textContent = '✓ Correcte! Construcció validada.';
-      }
-      saveGoalCompleted(goalId);
-      _refreshSidebar();
-    } else {
-      if (fb) {
-        fb.className = 'simulador-feedback fb-ko';
-        fb.textContent = '✗ Encara no és correcte. Revisa la construcció.';
-      }
-    }
-  }
-});
 
 // Refresca la sidebar actual
 function _refreshSidebar() {
