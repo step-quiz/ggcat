@@ -31,6 +31,30 @@ GEO.init = function(params) {
 
   var container = document.getElementById('ggb-container');
 
+  // ── CORE FIX: Càrrega dinàmica i serialitzada del CDN ──────────────
+  // En lloc d'un <script> estàtic al <head> (race condition), carreguem
+  // deployggb.js ara i esperem el seu onload abans de fer res més.
+  // Així GGBApplet existeix GARANTIT quan intentem instanciar-lo.
+  function _loadGeoGebraScript(callback) {
+    // Si ja estava carregat (p.ex. segon embed a la mateixa pàgina), continuem
+    if (typeof GGBApplet !== 'undefined') {
+      callback();
+      return;
+    }
+    var script = document.createElement('script');
+    script.src = G.GEOGEBRA_CDN;
+    script.async = true;
+    script.onload = function() {
+      console.log('[GeoCat] GeoGebra API carregada correctament.');
+      callback();
+    };
+    script.onerror = function() {
+      console.error('[GeoCat] No s\'ha pogut carregar el CDN de GeoGebra.');
+      GEO._showLoadError();
+    };
+    document.head.appendChild(script);
+  }
+
   // Espera que el contenidor tingui una amplada ESTABLE (dos frames
   // consecutius amb el mateix valor ≥ 150 px) abans de crear l'applet.
   // Això evita instanciar GeoGebra amb amplades transitòries que es
@@ -51,6 +75,8 @@ GEO.init = function(params) {
     })();
   }
 
+  // Seqüència garantida: 1) CDN carregat → 2) layout estable → 3) applet
+  _loadGeoGebraScript(function() {
   _waitStableLayout(function(containerW) {
     var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
 
@@ -124,7 +150,8 @@ GEO.init = function(params) {
         GEO._showLoadError();
       }
     }, 60000);
-  });
+  }); // fi _waitStableLayout
+  }); // fi _loadGeoGebraScript
 };
 
 /**
