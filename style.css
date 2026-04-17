@@ -1,0 +1,355 @@
+/* ════════════════════════════════════════════════════════
+   style.css — GeoCat
+   Derivat de PyCat: mateixa estètica, applet GeoGebra en lloc de consola
+════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:         #000000;
+  --surface:    #141414;
+  --border:     #2a2a2a;
+  --text:       #ddddd8;
+  --muted:      #8a8a85;
+  --accent:     #2563eb;
+  --accent-dim: rgba(37,99,235,0.13);
+  --error:      #ff5252;
+  --error-dim:  rgba(255,82,82,0.13);
+  --ok:         #4ade80;
+  --ok-dim:     rgba(74,222,128,0.10);
+  --mono:       'Space Mono','Courier New',monospace;
+  --topbar-h:   46px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+/* ── MODE CLAR ─────────────────────────────────────── */
+body.light {
+  --bg:         #ffffff;
+  --surface:    #f5f5f5;
+  --border:     #d0d0d0;
+  --text:       #1a1a1a;
+  --muted:      #6b7280;
+  --accent:     #2563eb;
+  --accent-dim: rgba(37,99,235,0.08);
+  --error:      #dc2626;
+  --error-dim:  rgba(220,38,38,0.08);
+  --ok:         #16a34a;
+  --ok-dim:     rgba(22,163,74,0.08);
+}
+body.light { background: var(--bg); color: var(--text); }
+
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   CAPÇALERA
+══════════════════════════════════════════════════════ */
+
+.topbar {
+  height: var(--topbar-h);
+  min-height: var(--topbar-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 0.9rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+/* Navegació global */
+.topbar-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+.topbar-nav-link {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: var(--muted);
+  transition: background 0.15s, color 0.15s;
+}
+.topbar-nav-link:hover  { background: var(--accent); color: #fff; }
+.topbar-nav-link.active { background: var(--accent); color: #fff; }
+body.light .topbar-nav-link        { color: var(--muted); }
+body.light .topbar-nav-link:hover  { background: var(--accent); color: #fff; }
+body.light .topbar-nav-link.active { background: var(--accent); color: #fff; }
+
+/* Amaga la nav en mode embed (iframes del curs) */
+body.embed .topbar-nav { display: none; }
+
+@media (max-width: 500px) {
+  .topbar-nav-link { font-size: 0.6rem; padding: 3px 7px; }
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Badge d'estat */
+#state-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+#state-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+#state-dot.idle    { background: var(--muted); }
+#state-dot.loading { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; animation: pulse-dot 1.2s ease-in-out infinite; }
+#state-dot.ready   { background: var(--ok);   box-shadow: 0 0 8px var(--ok); }
+#state-dot.correct { background: var(--ok);   box-shadow: 0 0 8px var(--ok); }
+#state-dot.wrong   { background: var(--error); box-shadow: 0 0 8px var(--error); }
+#state-dot.checking { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse-dot 1s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+
+/* ══════════════════════════════════════════════════════
+   BOTONS
+══════════════════════════════════════════════════════ */
+
+.btn {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.p { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.p:hover { filter: brightness(1.15); }
+.btn.r { background: var(--error); color: #fff; border-color: var(--error); }
+.btn.r:hover { filter: brightness(1.15); }
+
+body.light .btn       { border-color: var(--border); background: #fff; color: var(--text); }
+body.light .btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+body.light .btn.p     { background: var(--accent); color: #fff; }
+body.light .btn.r     { background: var(--error); color: #fff; }
+
+.btn-theme {
+  padding: 5px 8px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Selector d'idioma */
+.lang-select {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  line-height: 1.2;
+}
+.lang-select:focus { border-color: var(--accent); }
+body.light .lang-select { background: #fff; border-color: var(--border); color: var(--text); }
+body.embed .lang-select { display: none; }
+
+
+/* ══════════════════════════════════════════════════════
+   LAYOUT PRINCIPAL — Applet GeoGebra
+══════════════════════════════════════════════════════ */
+
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Contenidor de l'applet GeoGebra */
+#ggb-container {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════
+   GEO-TOOLBAR — Barra de controls de l'applet
+   (substitueix la .toolbar de PyCat)
+══════════════════════════════════════════════════════ */
+
+.geo-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Badge d'estat de l'applet */
+.state-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.state-badge .state-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+.state-badge.loading .state-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: pulse-dot 1.2s ease-in-out infinite; }
+.state-badge.ready   .state-dot { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.state-badge.correct .state-dot { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.state-badge.wrong   .state-dot { background: var(--error); box-shadow: 0 0 6px var(--error); }
+.state-badge.checking .state-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse-dot 1s ease-in-out infinite; }
+
+/* Botó de comprovar */
+.btn-check {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-check:hover { filter: brightness(1.15); }
+
+/* Botó reinicia */
+.btn-reset {
+  /* usa l'estil .btn base */
+}
+
+body.light .geo-toolbar { background: #f5f5f5; border-top-color: #d0d0d0; }
+
+
+/* ══════════════════════════════════════════════════════
+   MODE EMBED — Per a iframes dins del curs
+══════════════════════════════════════════════════════ */
+
+body.embed .topbar { display: none; }
+body.embed { font-size: 12px; }
+
+/* En mode embed la toolbar queda integrada a l'iframe */
+body.embed .geo-toolbar {
+  padding: 4px 10px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   TECLAT VIRTUAL MÒBIL (kbd-accessory.js)
+══════════════════════════════════════════════════════ */
+
+.kbd-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  transform: translateY(100%);
+  transition: transform 0.15s ease;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.kbd-bar.visible { transform: translateY(0); }
+
+.kbd-scroll {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.kbd-scroll::-webkit-scrollbar { display: none; }
+
+.kbd-key {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  min-width: 34px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.kbd-key:active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.kbd-sep {
+  flex-shrink: 0;
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+body.embed .kbd-bar { display: none; }
+@media (min-width: 701px) and (hover: hover) {
+  .kbd-bar { display: none; }
+}
+
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+
+@media (max-width: 400px) {
+  .topbar { padding: 0 8px; gap: 8px; }
+  .geo-toolbar { padding: 4px 8px; }
+}
