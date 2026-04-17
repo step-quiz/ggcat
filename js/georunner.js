@@ -55,30 +55,69 @@ GEO.init = function(params) {
     document.head.appendChild(script);
   }
 
-  // Espera que el contenidor tingui una amplada ESTABLE (dos frames
-  // consecutius amb el mateix valor ≥ 150 px) abans de crear l'applet.
-  // Això evita instanciar GeoGebra amb amplades transitòries que es
-  // donen quan l'iframe acaba d'entrar al DOM i el layout flex del
-  // pare encara no s'ha estabilitzat.
+  // Espera que el contenidor tingui dimensions ESTABLES abans de crear
+  // l'applet. Utilitza ResizeObserver (event-driven) quan és disponible,
+  // amb un debounce de STABLE_MS ms sense canvis. Fallback a rAF polling
+  // per a navegadors antics. Un hard timeout de TIMEOUT_MS garanteix que
+  // mai es quedi penjat indefinidament.
+  //
+  // callback(w, h) — dimensions del contenidor en el moment de la crida
   function _waitStableLayout(callback) {
-    var lastW = -1;
-    var stableCount = 0;
-    (function tick() {
+    var STABLE_MS  = 150;   // ms sense canvis per considerar el layout estable
+    var MIN_W      = 150;   // amplada mínima vàlida (px)
+    var TIMEOUT_MS = 8000;  // hard timeout de seguretat (ms)
+
+    var done  = false;
+    var timer = null;
+    var ro    = null;
+
+    function _resolve() {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      clearTimeout(hardTimeout);
+      if (ro) { try { ro.disconnect(); } catch(_) {} }
+      var w = container ? container.offsetWidth  : 0;
+      var h = container ? container.offsetHeight : 0;
+      callback(w, h);
+    }
+
+    function _onResize() {
       var w = container ? container.offsetWidth : 0;
-      if (w >= 150 && w === lastW) {
-        if (++stableCount >= 2) return callback(w);
-      } else {
-        stableCount = 0;
-        lastW = w;
-      }
-      requestAnimationFrame(tick);
-    })();
+      if (w < MIN_W) return;   // layout encara no preparat
+      clearTimeout(timer);
+      timer = setTimeout(_resolve, STABLE_MS);
+    }
+
+    // Hard timeout: si el layout no s'estabilitza, continuem igualment
+    var hardTimeout = setTimeout(function() {
+      console.warn('[GEO] _waitStableLayout: timeout de ' + TIMEOUT_MS + 'ms — continuem amb la mida actual.');
+      _resolve();
+    }, TIMEOUT_MS);
+
+    if (typeof ResizeObserver !== 'undefined' && container) {
+      // Camí ràpid: ResizeObserver notifica quan les dimensions canvien
+      ro = new ResizeObserver(_onResize);
+      ro.observe(container);
+      _onResize(); // comprova immediatament per si ja té la mida correcta
+    } else {
+      // Fallback: rAF polling per a navegadors molt antics
+      var lastW = -1, stableCount = 0;
+      (function tick() {
+        if (done) return;
+        var w = container ? container.offsetWidth : 0;
+        if (w >= MIN_W && w === lastW) {
+          if (++stableCount >= 2) return _resolve();
+        } else { stableCount = 0; lastW = w; }
+        requestAnimationFrame(tick);
+      })();
+    }
   }
 
   // Seqüència garantida: 1) CDN carregat → 2) layout estable → 3) applet
   _loadGeoGebraScript(function() {
-  _waitStableLayout(function(containerW) {
-    var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
+  _waitStableLayout(function(containerW, containerH) {
+    containerH = (containerH && containerH > 50) ? containerH : (params.height || 420);
 
     var appParams = {
       appName:            params.app || G.DEFAULT_APP,
