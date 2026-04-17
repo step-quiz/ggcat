@@ -31,19 +31,27 @@ GEO.init = function(params) {
 
   var container = document.getElementById('ggb-container');
 
-  // El contenidor pot no tenir la mida final si estem dins un iframe
-  // que encara no ha fet el layout. Esperem fins que tingui una amplada
-  // raonable (> 100px) abans de crear l'applet de GeoGebra.
-  function _waitForLayout(callback) {
-    var w = container ? container.offsetWidth : 0;
-    if (w > 100) {
-      callback(w);
-    } else {
-      requestAnimationFrame(function() { _waitForLayout(callback); });
-    }
+  // Espera que el contenidor tingui una amplada ESTABLE (dos frames
+  // consecutius amb el mateix valor ≥ 150 px) abans de crear l'applet.
+  // Això evita instanciar GeoGebra amb amplades transitòries que es
+  // donen quan l'iframe acaba d'entrar al DOM i el layout flex del
+  // pare encara no s'ha estabilitzat.
+  function _waitStableLayout(callback) {
+    var lastW = -1;
+    var stableCount = 0;
+    (function tick() {
+      var w = container ? container.offsetWidth : 0;
+      if (w >= 150 && w === lastW) {
+        if (++stableCount >= 2) return callback(w);
+      } else {
+        stableCount = 0;
+        lastW = w;
+      }
+      requestAnimationFrame(tick);
+    })();
   }
 
-  _waitForLayout(function(containerW) {
+  _waitStableLayout(function(containerW) {
     var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
 
     var appParams = {
@@ -70,6 +78,27 @@ GEO.init = function(params) {
         }
         var banner = document.getElementById('ggb-error');
         if (banner) banner.style.display = 'none';
+
+        // Reconcilia la mida de l'applet amb el layout final del
+        // contenidor (pot haver canviat entre la creació i ara).
+        var finalW = container ? container.offsetWidth  : containerW;
+        var finalH = container ? container.offsetHeight : containerH;
+        if (finalW > 50 && finalH > 50) {
+          try { api.setSize(finalW, finalH); } catch(_) {}
+        }
+
+        // ── ResizeObserver: redimensiona l'applet si el contenidor
+        //    canvia (rotació mòbil, sidebar, zoom del navegador…) ──
+        if (typeof ResizeObserver !== 'undefined' && container) {
+          var ro = new ResizeObserver(function() {
+            var cw = container.offsetWidth;
+            var ch = container.offsetHeight;
+            if (cw > 50 && ch > 50) {
+              try { api.setSize(cw, ch); } catch(_) {}
+            }
+          });
+          ro.observe(container);
+        }
 
         // Aplica l'estat inicial (comandes + objectes fixos)
         GEO._applyInitialState(params.commands, params.fixed);
