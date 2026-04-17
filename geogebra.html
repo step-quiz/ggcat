@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GeoCat — Simulador GeoGebra</title>
 
-  <!-- Preload del script GeoGebra per reduir el temps de càrrega -->
-  <link rel="preload" href="https://www.geogebra.org/apps/deployggb.js" as="script">
+  <!-- GeoGebra Apps API: el preload s'ha tret perquè era redundant
+       amb el <script> síncron i sense crossorigin coincident pot
+       provocar fetches duplicats al CDN. -->
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
