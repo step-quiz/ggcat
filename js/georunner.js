@@ -56,7 +56,7 @@ GEO.init = function(params) {
         GEO._loadTimer = null;
       }
       var banner = document.getElementById('ggb-error');
-      if (banner) banner.hidden = true;
+      if (banner) banner.style.display = 'none';
 
       // Aplica l'estat inicial (comandes + objectes fixos)
       GEO._applyInitialState(params.commands, params.fixed);
@@ -167,7 +167,7 @@ GEO.check = function(validatorFn) {
  */
 GEO._showLoadError = function() {
   var banner = document.getElementById('ggb-error');
-  if (banner) banner.hidden = false;
+  if (banner) banner.style.display = 'flex';
   // Posa el badge en estat d'error si existeix
   var badge = document.getElementById('state-badge');
   if (badge) {
