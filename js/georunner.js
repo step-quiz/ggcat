@@ -30,83 +30,71 @@ GEO.init = function(params) {
   params = params || {};
 
   var container = document.getElementById('ggb-container');
-  var containerW = container ? (container.offsetWidth  || window.innerWidth)  : 800;
-  var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
 
-  var appParams = {
-    appName:            params.app || G.DEFAULT_APP,
-    width:              containerW,
-    height:             containerH,
-    showToolBar:        !params.readonly,
-    showAlgebraInput:   !params.readonly,
-    showMenuBar:        false,
-    showResetIcon:      false,
-    enableRightClick:   false,
-    enableShiftDragZoom: true,
-    showZoomButtons:    true,
-    errorDialogsActive: false,
-    language:           'ca',
-    appletOnLoad:       function(api) {
-      window.ggbApplet = api;
-      G.state.appletReady = true;
-
-      // Cancel·la el watchdog i amaga el banner d'error (pot haver aparegut per timeout)
-      if (GEO._loadTimer) {
-        clearTimeout(GEO._loadTimer);
-        GEO._loadTimer = null;
-      }
-      var banner = document.getElementById('ggb-error');
-      if (banner) banner.style.display = 'none';
-
-      // Correcció de mida: quan GeoGebra s'inicialitza dins un iframe,
-      // el contenidor pot no tenir encara la seva amplada final.
-      // Esperem un tick perquè el navegador acabi el layout i llavors
-      // ajustem la mida real.
-      requestAnimationFrame(function() {
-        var c = document.getElementById('ggb-container');
-        if (c && c.offsetWidth > 0) {
-          try { api.setWidth(c.offsetWidth); } catch(_) {}
-        }
-        if (c && c.offsetHeight > 0) {
-          try { api.setHeight(c.offsetHeight); } catch(_) {}
-        }
-      });
-
-      // Aplica l'estat inicial (comandes + objectes fixos)
-      GEO._applyInitialState(params.commands, params.fixed);
-
-      // Notifica el mòdul principal
-      if (typeof params.onReady === 'function') {
-        params.onReady(api);
-      }
+  // El contenidor pot no tenir la mida final si estem dins un iframe
+  // que encara no ha fet el layout. Esperem fins que tingui una amplada
+  // raonable (> 100px) abans de crear l'applet de GeoGebra.
+  function _waitForLayout(callback) {
+    var w = container ? container.offsetWidth : 0;
+    if (w > 100) {
+      callback(w);
+    } else {
+      requestAnimationFrame(function() { _waitForLayout(callback); });
     }
-  };
-
-  // Restricció de toolbar si s'han especificat tools concrets
-  if (params.tools) {
-    appParams.customToolBar = params.tools;
   }
 
-  var applet = new GGBApplet(appParams, true);
-  applet.inject('ggb-container');
+  _waitForLayout(function(containerW) {
+    var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
 
-  // Watchdog: si GeoGebra no respon en 20 s, mostra el banner d'error
-  GEO._loadTimer = setTimeout(function() {
-    if (!G.state.appletReady) {
-      GEO._showLoadError();
-    }
-  }, 60000);  // 60 s — GeoGebra pot trigar molt en la primera càrrega
+    var appParams = {
+      appName:            params.app || G.DEFAULT_APP,
+      width:              containerW,
+      height:             containerH,
+      showToolBar:        !params.readonly,
+      showAlgebraInput:   !params.readonly,
+      showMenuBar:        false,
+      showResetIcon:      false,
+      enableRightClick:   false,
+      enableShiftDragZoom: true,
+      showZoomButtons:    true,
+      errorDialogsActive: false,
+      language:           'ca',
+      appletOnLoad:       function(api) {
+        window.ggbApplet = api;
+        G.state.appletReady = true;
 
-  // Redimensiona l'applet quan canvia la finestra
-  window.addEventListener('resize', function() {
-    if (!window.ggbApplet) return;
-    var c = document.getElementById('ggb-container');
-    if (c && c.offsetWidth > 0) {
-      try { ggbApplet.setWidth(c.offsetWidth); } catch(_) {}
+        // Cancel·la el watchdog i amaga el banner d'error
+        if (GEO._loadTimer) {
+          clearTimeout(GEO._loadTimer);
+          GEO._loadTimer = null;
+        }
+        var banner = document.getElementById('ggb-error');
+        if (banner) banner.style.display = 'none';
+
+        // Aplica l'estat inicial (comandes + objectes fixos)
+        GEO._applyInitialState(params.commands, params.fixed);
+
+        // Notifica el mòdul principal
+        if (typeof params.onReady === 'function') {
+          params.onReady(api);
+        }
+      }
+    };
+
+    // Restricció de toolbar si s'han especificat tools concrets
+    if (params.tools) {
+      appParams.customToolBar = params.tools;
     }
-    if (c && c.offsetHeight > 0) {
-      try { ggbApplet.setHeight(c.offsetHeight); } catch(_) {}
-    }
+
+    var applet = new GGBApplet(appParams, true);
+    applet.inject('ggb-container');
+
+    // Watchdog: si GeoGebra no respon en 60 s, mostra el banner d'error
+    GEO._loadTimer = setTimeout(function() {
+      if (!G.state.appletReady) {
+        GEO._showLoadError();
+      }
+    }, 60000);
   });
 };
 
