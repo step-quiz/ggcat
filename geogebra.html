@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoCat — Simulador GeoGebra</title>
+
+  <!-- Preload del script GeoGebra per reduir el temps de càrrega -->
+  <link rel="preload" href="https://www.geogebra.org/apps/deployggb.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Estils del simulador -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- GeoGebra Apps API (CDN oficial) -->
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+  <style>
+    /* ── Estils específics del simulador GeoGebra ──────── */
+
+    /* Reset base per a l'iframe */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg, #1e1e2e);
+      color: var(--fg, #cdd6f4);
+      font-family: 'Space Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* En mode embed (iframe dins del curs) s'amaga la topbar */
+    body.embed .geo-topbar { display: none; }
+    body.embed { height: 100%; }
+
+    /* ── Topbar (visible només en mode simulador lliure) ── */
+    .geo-topbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--surface, #313244);
+      border-bottom: 1px solid var(--border, #45475a);
+      flex-shrink: 0;
+    }
+
+    .geo-topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .geo-topbar .logo-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .geo-topbar-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+    }
+
+    .geo-topbar-nav a {
+      font-size: 0.78rem;
+      color: var(--muted, #6c7086);
+      text-decoration: none;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .geo-topbar-nav a:hover,
+    .geo-topbar-nav a.active {
+      background: var(--accent-soft, rgba(137,180,250,0.12));
+      color: var(--accent, #89b4fa);
+    }
+
+    /* ── Contenidor de l'applet ──────────────────────────── */
+    #ggb-container {
+      flex: 1;
+      width: 100%;
+      min-height: 0;   /* imprescindible per a flex */
+      overflow: hidden;
+    }
+
+    /* En mode embed, l'applet ocupa tot l'espai excepte la toolbar */
+    body.embed #ggb-container {
+      flex: 1;
+    }
+
+    /* ── Toolbar inferior (Comprova + badge d'estat) ─────── */
+    .geo-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.75rem;
+      background: var(--surface, #313244);
+      border-top: 1px solid var(--border, #45475a);
+      flex-shrink: 0;
+    }
+
+    /* Badge d'estat */
+    .state-badge {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: var(--surface2, #45475a);
+      color: var(--muted, #6c7086);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .state-badge.state-loading  { background: #45475a; color: #a6adc8; }
+    .state-badge.state-ready    { background: #313244; color: #6c7086; }
+    .state-badge.state-checking { background: #fab387; color: #1e1e2e; }
+    .state-badge.state-correct  { background: #a6e3a1; color: #1e1e2e; }
+    .state-badge.state-wrong    { background: #f38ba8; color: #1e1e2e; }
+
+    /* Botó Comprova */
+    .btn-check {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.3rem 0.85rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: var(--accent, #89b4fa);
+      color: #1e1e2e;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-check:hover  { opacity: 0.88; }
+    .btn-check:active { transform: scale(0.96); }
+    .btn-check:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Botó Reinicia */
+    .btn-reset {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border, #45475a);
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted, #6c7086);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--fg, #cdd6f4);
+      color: var(--fg, #cdd6f4);
+    }
+
+    /* Mode readonly: amaga la toolbar inferior si no hi ha res a mostrar */
+    body.is-readonly .geo-toolbar {
+      display: none;
+    }
+
+    /* Mode clar (light) */
+    body.light {
+      --bg:          #eff1f5;
+      --fg:          #4c4f69;
+      --surface:     #e6e9ef;
+      --surface2:    #dce0e8;
+      --border:      #ccd0da;
+      --muted:       #8c8fa1;
+      --accent:      #1e66f5;
+      --accent-soft: rgba(30,102,245,0.10);
+    }
+
+    body.light .state-badge.state-ready   { background: #dce0e8; color: #9ca0b0; }
+    body.light .state-badge.state-correct { background: #40a02b; color: #fff; }
+    body.light .state-badge.state-wrong   { background: #d20f39; color: #fff; }
+    body.light .state-badge.state-checking{ background: #fe640b; color: #fff; }
+  </style>
+</head>
+<body>
+
+<!-- Mode embed + tema: aplicat immediatament per evitar flash -->
+<script>
+  (function() {
+    var p = new URLSearchParams(location.search);
+    if (p.get('embed') === '1') document.body.classList.add('embed');
+    var saved = null;
+    try { saved = localStorage.getItem('geocat-theme'); } catch(_) {}
+    if (saved !== 'dark') document.body.classList.add('light');
+  })();
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════
+     TOPBAR (mode simulador lliure, amagada en mode embed)
+     ══════════════════════════════════════════════════════ -->
+<header class="geo-topbar">
+  <a href="." class="logo" aria-label="GeoCat — inici">
+    <span class="logo-icon">📐</span>
+    <span>GeoCat</span>
+  </a>
+
+  <nav class="geo-topbar-nav">
+    <a href="curs/capitol-1.html">Capítols</a>
+    <a href="curs/repte-1.html">Reptes</a>
+    <a href="geogebra.html" class="active">Simulador</a>
+  </nav>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════
+     APPLET GEOGEBRA
+     ══════════════════════════════════════════════════════ -->
+<div id="ggb-container" role="application" aria-label="Espai de construcció GeoGebra"></div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     TOOLBAR INFERIOR (Comprova + badge + Reinicia)
+     ══════════════════════════════════════════════════════ -->
+<div class="geo-toolbar" id="geo-toolbar">
+  <span id="state-badge" class="state-badge" aria-live="polite">—</span>
+  <button id="btn-check" class="btn-check" hidden>✓ Comprova</button>
+  <button id="btn-reset" class="btn-reset">↺ Reinicia</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     Scripts — Ordre de càrrega obligatori
+     ══════════════════════════════════════════════════════ -->
+<script src="js/constants.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/state.js"></script>
+<script src="js/geovalidator.js"></script>
+<script src="js/georunner.js"></script>
+<script src="js/geomain.js"></script>
+
+</body>
+</html>
