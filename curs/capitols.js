@@ -136,216 +136,28 @@ function renderReptesSidebar(currentNum) {
 }
 
 
-// ── Renderitzador de widgets GeoGebra (EMBED DIRECTE) ────
+// ── Renderitzador de widgets GeoGebra ─────────────────────
 //
-// Com ho fan els llibres/activitats de GeoGebra:
-//  1. Carreguem deployggb.js UNA SOLA VEGADA a la pàgina
-//  2. Per a cada .geogebra, injectem l'applet DIRECTAMENT al DOM
-//  3. Sense iframes intermediaris, sense curses de layout
+// VERSIÓ SIMPLIFICADA — patró idèntic a experiment_geogebra.html
 //
-// Avantatges:
-//  - Un sol motor GeoGebra compartit per tots els widgets
-//  - Sense problemes d'alçada/amplada d'iframe
-//  - Validació directa, sense postMessage
+// Requisit: <script src="https://www.geogebra.org/apps/deployggb.js">
+//           carregat síncronament al <head> de cada pàgina HTML.
+//
+// Això garanteix que GGBApplet existeix quan renderSimuladors() s'executa.
+// Sense càrrega dinàmica, sense cues, sense IntersectionObserver.
 
-var _ggbScriptLoaded = false;
-var _ggbScriptCallbacks = [];
 var _ggbWidgetCount = 0;
-
-function _loadDeployGGB(callback) {
-  if (typeof GGBApplet !== 'undefined') { callback(); return; }
-  _ggbScriptCallbacks.push(callback);
-  if (_ggbScriptLoaded) return;        // ja s'està carregant
-  _ggbScriptLoaded = true;
-
-  var script = document.createElement('script');
-  script.src = 'https://www.geogebra.org/apps/deployggb.js';
-  script.onload = function() {
-    var cbs = _ggbScriptCallbacks.slice();
-    _ggbScriptCallbacks = [];
-    cbs.forEach(function(cb) { cb(); });
-  };
-  script.onerror = function() {
-    console.error('[GeoCat] No s\'ha pogut carregar deployggb.js');
-  };
-  document.head.appendChild(script);
-}
-
-// Carrega geovalidator.js dinàmicament (per als validators que usen GV)
-var _gvLoaded = false;
-function _loadGV(callback) {
-  if (typeof GV !== 'undefined') { callback(); return; }
-  if (_gvLoaded) { callback(); return; }
-  _gvLoaded = true;
-  var script = document.createElement('script');
-  script.src = '../js/geovalidator.js';
-  script.onload = callback;
-  script.onerror = callback;  // Continua encara que falli
-  document.head.appendChild(script);
-}
 
 
 function renderSimuladors() {
   var divs = document.querySelectorAll('.geogebra');
   if (divs.length === 0) return;
 
-  // Cua seqüencial: injectem un applet a la vegada
-  var pending = [];
-  var injecting = false;
-
-  function _processNext() {
-    if (injecting || pending.length === 0) return;
-    injecting = true;
-    var w = pending.shift();
-    _injectApplet(w, function() {
-      injecting = false;
-      // Petit delay perquè GeoGebra estabilitzi el renderitzat
-      setTimeout(_processNext, 400);
-    });
-  }
-
-  function _enqueue(wrapper) {
-    pending.push(wrapper);
-    _processNext();
-  }
-
-  function _injectApplet(wrapper, doneCb) {
-    var cfg         = wrapper._ggbCfg;
-    var containerId = wrapper._ggbId;
-    var container   = document.getElementById(containerId);
-    if (!container) { doneCb(); return; }
-
-    // Neteja intents anteriors
-    wrapper._ggbApi = null;
-    container.innerHTML = '';
-
-    // Amaga overlay de reload si existeix
-    var oldOverlay = wrapper.querySelector('.ggb-reload-overlay');
-    if (oldOverlay) oldOverlay.style.display = 'none';
-
-    var w = container.offsetWidth || 700;
-    var h = parseInt(cfg.height, 10) || 420;
-
-    var doneFired = false;
-    function _fireDone() {
-      if (doneFired) return;
-      doneFired = true;
-      doneCb();
-    }
-
-    var params = {
-      appName:             cfg.app || 'geometry',
-      width:               w,
-      height:              h,
-      showToolBar:         !cfg.readonly,
-      showAlgebraInput:    !cfg.readonly,
-      showMenuBar:         false,
-      showResetIcon:       false,
-      enableRightClick:    false,
-      enableShiftDragZoom: true,
-      showZoomButtons:     true,
-      errorDialogsActive:  false,
-      language:            'ca',
-      appletOnLoad:        function(api) {
-        wrapper._ggbApi = api;
-
-        // Aplica comandes inicials
-        if (cfg.commands) {
-          cfg.commands.forEach(function(cmd) {
-            if (cmd) try { api.evalCommand(cmd); } catch(e) {}
-          });
-        }
-        // Fixa objectes
-        if (cfg.fixed) {
-          cfg.fixed.forEach(function(lbl) {
-            if (lbl) try {
-              api.setFixed(lbl, true, false);
-              api.setColor(lbl, 60, 100, 220);
-            } catch(e) {}
-          });
-        }
-
-        // Actualitza el badge
-        var badge = wrapper.querySelector('.ggb-badge');
-        if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
-
-        // ResizeObserver per adaptar-se a canvis de mida
-        if (typeof ResizeObserver !== 'undefined') {
-          new ResizeObserver(function() {
-            var cw = container.offsetWidth, ch = container.offsetHeight;
-            if (cw > 50 && ch > 50) try { api.setSize(cw, ch); } catch(_) {}
-          }).observe(container);
-        }
-
-        // ── Detecció de renderitzat fallit ──
-        // Després de 5s, comprovem si hi ha un <canvas> dins el contenidor.
-        // Si no n'hi ha, el motor GWT no ha acabat de pintar → mostrem reload.
-        setTimeout(function() {
-          _checkCanvasOrShowReload(wrapper, container);
-        }, 5000);
-
-        _fireDone();
-      }
-    };
-    if (cfg.tools) params.customToolBar = cfg.tools;
-
-    var applet = new GGBApplet(params, true);
-    applet.inject(containerId);
-
-    // Fallback: si appletOnLoad no arriba en 20s, mostrem reload
-    setTimeout(function() {
-      if (!wrapper._ggbApi) {
-        _showReloadOverlay(wrapper, container);
-        _fireDone();
-      }
-    }, 20000);
-  }
-
-  // Comprova si el canvas s'ha renderitzat; si no, mostra l'overlay
-  function _checkCanvasOrShowReload(wrapper, container) {
-    var canvas = container.querySelector('canvas');
-    if (canvas && canvas.width > 10 && canvas.height > 10) return; // OK
-    // Segona oportunitat: potser està dins un article/div niat
-    var anyCanvas = container.getElementsByTagName('canvas');
-    if (anyCanvas.length > 0) return; // Hi ha canvas, probablement OK
-    // No hi ha canvas → renderitzat fallit
-    _showReloadOverlay(wrapper, container);
-  }
-
-  // Mostra un overlay semitransparent amb botó "Toca per carregar"
-  function _showReloadOverlay(wrapper, container) {
-    // No duplicar
-    if (wrapper.querySelector('.ggb-reload-overlay')) {
-      wrapper.querySelector('.ggb-reload-overlay').style.display = 'flex';
-      return;
-    }
-
-    var overlay = document.createElement('div');
-    overlay.className = 'ggb-reload-overlay';
-    overlay.innerHTML =
-      '<div class="ggb-reload-content">' +
-        '<span class="ggb-reload-icon">↻</span>' +
-        '<span>Toca per carregar GeoGebra</span>' +
-      '</div>';
-    overlay.addEventListener('click', function() {
-      overlay.style.display = 'none';
-      _loadDeployGGB(function() {
-        _injectApplet(wrapper, function() {});
-      });
-    });
-
-    // Posicionar sobre el contenidor
-    container.style.position = 'relative';
-    container.appendChild(overlay);
-  }
-
-
-  // ── Llegim les dades de cada div ABANS de tocar el DOM ──
+  // ── Llegim data-attributes de cada div ──
 
   var entries = [];
   divs.forEach(function(div) {
     var id = 'ggb-w' + (_ggbWidgetCount++);
-
     var commandsRaw = div.getAttribute('data-commands') || '';
     var fixedRaw    = div.getAttribute('data-fixed')    || '';
     var checkRaw    = div.getAttribute('data-check')    || '';
@@ -364,10 +176,7 @@ function renderSimuladors() {
     }
 
     entries.push({
-      div:       div,
-      id:        id,
-      commands:  commands,
-      fixed:     fixed,
+      div: div, id: id, commands: commands, fixed: fixed,
       readonly:  div.getAttribute('data-readonly') === 'true',
       goalId:    div.getAttribute('data-goal-id') || '',
       app:       div.getAttribute('data-app') || '',
@@ -377,25 +186,12 @@ function renderSimuladors() {
     });
   });
 
-
-  // ── Construïm el DOM i observem visibilitat ──
-
-  var observer = null;
-  if (typeof IntersectionObserver !== 'undefined') {
-    observer = new IntersectionObserver(function(ioEntries) {
-      ioEntries.forEach(function(io) {
-        if (!io.isIntersecting) return;
-        observer.unobserve(io.target);
-        _loadDeployGGB(function() { _enqueue(io.target); });
-      });
-    }, { rootMargin: '300px' });
-  }
+  // ── Construïm wrappers al DOM ──
 
   entries.forEach(function(cfg) {
     var wrapper = document.createElement('div');
     wrapper.className = 'geogebra-wrap';
 
-    // Contenidor on GeoGebra injectarà l'applet
     var ggbDiv = document.createElement('div');
     ggbDiv.id = cfg.id;
     ggbDiv.style.width = '100%';
@@ -406,19 +202,17 @@ function renderSimuladors() {
     ggbDiv.style.background = '#f8f8f8';
     wrapper.appendChild(ggbDiv);
 
-    // Toolbar per a widgets no-readonly
     if (!cfg.readonly) {
       var tb = document.createElement('div');
       tb.className = 'ggb-toolbar';
       tb.innerHTML =
-        '<span class="ggb-badge">—</span>' +
+        '<span class="ggb-badge">carregant…</span>' +
         (cfg.validator
           ? '<button class="ggb-btn ggb-btn-check" type="button">✓ Comprova</button>'
           : '') +
         '<button class="ggb-btn ggb-btn-reset" type="button">↺ Reinicia</button>';
       wrapper.appendChild(tb);
 
-      // ── Botó Comprova ──
       if (cfg.validator) {
         (function(cfg, wrapper, tb) {
           tb.querySelector('.ggb-btn-check').addEventListener('click', function() {
@@ -426,20 +220,15 @@ function renderSimuladors() {
             if (!api) return;
             var badge = tb.querySelector('.ggb-badge');
             badge.textContent = '…'; badge.className = 'ggb-badge';
-
-            // GV global per als validators que l'usin
             var prev = window.ggbApplet;
             window.ggbApplet = api;
             var GVref = (typeof GV !== 'undefined') ? GV : {};
-
             setTimeout(function() {
               var ok = false;
               try { ok = !!cfg.validator(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
               window.ggbApplet = prev;
-
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
-
               if (cfg.goalId) {
                 var fb = wrapper.querySelector('.simulador-feedback');
                 if (ok) {
@@ -455,7 +244,6 @@ function renderSimuladors() {
         })(cfg, wrapper, tb);
       }
 
-      // ── Botó Reinicia ──
       (function(cfg, wrapper, tb) {
         tb.querySelector('.ggb-btn-reset').addEventListener('click', function() {
           var api = wrapper._ggbApi;
@@ -471,7 +259,6 @@ function renderSimuladors() {
       })(cfg, wrapper, tb);
     }
 
-    // Feedback de validació
     if (cfg.goalId) {
       var fb = document.createElement('div');
       fb.className = 'simulador-feedback';
@@ -485,22 +272,77 @@ function renderSimuladors() {
 
     wrapper._ggbId  = cfg.id;
     wrapper._ggbCfg = cfg;
-
     cfg.div.replaceWith(wrapper);
-
-    // Observem o encuem directament
-    if (observer) {
-      observer.observe(wrapper);
-    } else {
-      _loadDeployGGB(function() { _enqueue(wrapper); });
-    }
   });
 
-  // Carreguem GV si algun widget té validator
+  // ── Carrega GV si cal ──
   if (entries.some(function(e) { return !!e.validator; })) {
-    _loadGV(function() {});
+    var gvScript = document.createElement('script');
+    gvScript.src = '../js/geovalidator.js';
+    document.head.appendChild(gvScript);
   }
+
+  // ══════════════════════════════════════════════════════════
+  // INJECCIÓ — Patró IDÈNTIC a experiment_geogebra.html
+  //
+  // experiment_geogebra.html fa exactament això i FUNCIONA:
+  //   new GGBApplet(params, true).inject("ggb1");
+  //
+  // deployggb.js ja està carregat al <head> (síncron).
+  // GGBApplet EXISTEIX aquí, garantit.
+  // ══════════════════════════════════════════════════════════
+
+  var W = 640;
+  var H;
+
+  entries.forEach(function(cfg) {
+    H = parseInt(cfg.height, 10) || 420;
+
+    var wrapper = document.getElementById(cfg.id).parentElement;
+
+    new GGBApplet({
+      appName:             cfg.app || 'classic',
+      width:               W,
+      height:              H,
+      showToolBar:         !cfg.readonly,
+      showAlgebraInput:    !cfg.readonly,
+      showMenuBar:         false,
+      enableRightClick:    !cfg.readonly,
+      enableLabelDrags:    !cfg.readonly,
+      enableShiftDragZoom: true,
+      language:            'ca',
+      id:                  cfg.id,
+      appletOnLoad: function(api) {
+        console.log('[GeoCat] ✓ Applet ' + cfg.id + ' carregat OK');
+        wrapper._ggbApi = api;
+
+        // Eixos i graella sempre visibles
+        api.evalCommand('ShowAxes(true)');
+        api.evalCommand('ShowGrid(true)');
+
+        // Comandes inicials
+        cfg.commands.forEach(function(cmd) {
+          if (cmd) try { api.evalCommand(cmd); } catch(e) {
+            console.warn('[GeoCat] evalCommand error:', cmd, e);
+          }
+        });
+
+        // Objectes fixos
+        cfg.fixed.forEach(function(lbl) {
+          if (lbl) try {
+            api.setFixed(lbl, true, false);
+            api.setColor(lbl, 60, 100, 220);
+          } catch(e) {}
+        });
+
+        // Badge
+        var badge = wrapper.querySelector('.ggb-badge');
+        if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
+      }
+    }, true).inject(cfg.id);
+  });
 }
+
 
 
 // ── Listener de resultats (MANTINGUT per compatibilitat amb
