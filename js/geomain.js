@@ -184,11 +184,18 @@
   function _notifyResult(success) {
     if (!S.goalId) return;
     try {
+      // Usem '*' com a target origin quan:
+      //  - Estem en un context file:// (origin = "null")
+      //  - Estem servits des del mateix origen que el pare
+      // Això és segur perquè el missatge no conté dades sensibles.
+      var target = (G.parentOrigin === 'null' || G.parentOrigin === window.location.origin)
+        ? '*'
+        : G.parentOrigin;
       window.parent.postMessage({
         type:    'geocat-result',
         goalId:  S.goalId,
         success: success
-      }, G.parentOrigin);
+      }, target);
     } catch(_) {}
   }
 

@@ -47,7 +47,7 @@
       <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
 
       <div class="geogebra"
-           data-check="(api) => { var polys = api.getAllObjectNames('polygon'); if (polys.length === 0) return false; var segs = api.getAllObjectNames('segment'); if (segs.length < 3) return false; var lens = segs.map(function(s) {  return api.getValue('Length(' + s + ')'); }).filter(function(l) { return l > 0.1; }).slice(0,3); if (lens.length < 3) return false; var eps = 0.15; var eq01 = Math.abs(lens[0]-lens[1]) < eps; var eq12 = Math.abs(lens[1]-lens[2]) < eps; var eq02 = Math.abs(lens[0]-lens[2]) < eps; var pairs = (eq01?1:0)+(eq12?1:0)+(eq02?1:0); return pairs === 1;}"
+           data-check="(api) => { var polys = api.getAllObjectNames('polygon'); if (polys.length === 0) return false; var segs = api.getAllObjectNames('segment'); if (segs.length < 3) return false; var lens = segs.map(function(s) { return api.getValue('Length('+s+')'); })             .filter(function(l) { return l > 0.1; }).sort(function(a,b){return a-b;}); if (lens.length < 3) return false; var eps = 0.15; /* Try all combinations of 3 segments, check isòsceles (exactly 1 equal pair) */ for (var i = 0; i < lens.length-2; i++) {   for (var j = i+1; j < lens.length-1; j++) {     for (var k = j+1; k < lens.length; k++) {       var a=lens[i], b=lens[j], c=lens[k];       var eq = (Math.abs(a-b)<eps?1:0)+(Math.abs(b-c)<eps?1:0)+(Math.abs(a-c)<eps?1:0);       /* eq===1 means exactly one pair equal (isòsceles but not equilateral) */       if (eq === 1) return true;     }   } } return false;}"
            data-goal-id="repte-10"
            data-height="440">
       </div>

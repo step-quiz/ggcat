@@ -29,10 +29,14 @@ const GEO = {};
 GEO.init = function(params) {
   params = params || {};
 
+  var container = document.getElementById('ggb-container');
+  var containerW = container ? (container.offsetWidth  || window.innerWidth)  : 800;
+  var containerH = container ? (container.offsetHeight || params.height || 420) : (params.height || 420);
+
   var appParams = {
     appName:            params.app || G.DEFAULT_APP,
-    width:              '100%',
-    height:             params.height || 420,
+    width:              containerW,
+    height:             containerH,
     showToolBar:        !params.readonly,
     showAlgebraInput:   !params.readonly,
     showMenuBar:        false,
@@ -63,6 +67,18 @@ GEO.init = function(params) {
 
   var applet = new GGBApplet(appParams, true);
   applet.inject('ggb-container');
+
+  // Redimensiona l'applet quan canvia la finestra
+  window.addEventListener('resize', function() {
+    if (!window.ggbApplet) return;
+    var c = document.getElementById('ggb-container');
+    if (c && c.offsetWidth > 0) {
+      try { ggbApplet.setWidth(c.offsetWidth); } catch(_) {}
+    }
+    if (c && c.offsetHeight > 0) {
+      try { ggbApplet.setHeight(c.offsetHeight); } catch(_) {}
+    }
+  });
 };
 
 /**

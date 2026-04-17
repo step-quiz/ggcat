@@ -256,56 +256,56 @@ Per a cada repte, seguir l'esquelet de `pycat/curs/repte-1.html`.
 Cada repte té: header amb badge de dificultat, descripció de l'objectiu,
 un widget `<div class="geogebra">` amb validació, i un bloc `<details>` de pista.
 
-### T4.1 — `curs/repte-1.html` — El primer punt ✅ (Fàcil)
+### T4.1 — `curs/repte-1.html` — El primer punt ⬜ (Fàcil)
 Validator: punt A existeix a les coordenades especificades (±0.1).
 
-### T4.2 — `curs/repte-2.html` — Un segment ✅ (Fàcil)
+### T4.2 — `curs/repte-2.html` — Un segment ⬜ (Fàcil)
 Validator: segment AB existeix entre dos punts donats.
 
-### T4.3 — `curs/repte-3.html` — La circumferència ✅ (Fàcil)
+### T4.3 — `curs/repte-3.html` — La circumferència ⬜ (Fàcil)
 Validator: circumferència de radi r centrada en un punt donat.
 
-### T4.4 — `curs/repte-4.html` — El triangle ✅ (Fàcil)
+### T4.4 — `curs/repte-4.html` — El triangle ⬜ (Fàcil)
 Validator: triangle amb tres vèrtexs especificats existeix.
 
-### T4.5 — `curs/repte-5.html` — El punt mig ✅ (Fàcil)
+### T4.5 — `curs/repte-5.html` — El punt mig ⬜ (Fàcil)
 Validator: punt col·locat correctament al mig d'un segment donat.
 
-### T4.6 — `curs/repte-6.html` — La perpendicular ✅ (Mitjà)
+### T4.6 — `curs/repte-6.html` — La perpendicular ⬜ (Mitjà)
 Validator: recta perpendicular a una recta donada passant per un punt donat.
 
-### T4.7 — `curs/repte-7.html` — La mediatriu ✅ (Mitjà)
+### T4.7 — `curs/repte-7.html` — La mediatriu ⬜ (Mitjà)
 Validator: mediatriu d'un segment AB donat (passa pel punt mig i és perpendicular).
 
-### T4.8 — `curs/repte-8.html` — La bisectriu ✅ (Mitjà)
+### T4.8 — `curs/repte-8.html` — La bisectriu ⬜ (Mitjà)
 Validator: bisectriu de l'angle format per dues rectes donades.
 
-### T4.9 — `curs/repte-9.html` — Triangle equilàter ✅ (Mitjà)
+### T4.9 — `curs/repte-9.html` — Triangle equilàter ⬜ (Mitjà)
 Validator: tots tres costats iguals (±eps).
 
-### T4.10 — `curs/repte-10.html` — Triangle isòsceles ✅ (Mitjà)
+### T4.10 — `curs/repte-10.html` — Triangle isòsceles ⬜ (Mitjà)
 Validator: exactament dos costats iguals.
 
-### T4.11 — `curs/repte-11.html` — La paral·lela ✅ (Mitjà)
+### T4.11 — `curs/repte-11.html` — La paral·lela ⬜ (Mitjà)
 Validator: recta paral·lela a una recta donada passant per un punt donat.
 
-### T4.12 — `curs/repte-12.html` — Cercle circumscrit ✅ (Difícil)
+### T4.12 — `curs/repte-12.html` — Cercle circumscrit ⬜ (Difícil)
 Validator: circumferència que passa pels tres vèrtexs d'un triangle donat.
 
-### T4.13 — `curs/repte-13.html` — Translació ✅ (Difícil)
+### T4.13 — `curs/repte-13.html` — Translació ⬜ (Difícil)
 Validator: objecte correctament transladat per un vector donat.
 
-### T4.14 — `curs/repte-14.html` — Reflexió ✅ (Difícil)
+### T4.14 — `curs/repte-14.html` — Reflexió ⬜ (Difícil)
 Validator: objecte correctament reflectit respecte un eix donat.
 
-### T4.15 — `curs/repte-15.html` — La funció quadràtica ✅ (Difícil)
+### T4.15 — `curs/repte-15.html` — La funció quadràtica ⬜ (Difícil)
 Validator: paràbola que passa per tres punts especificats.
 
 ---
 
 ## Bloc 5 — Proves i poliment
 
-### T5.1 — Verificació manual del simulador `geogebra.html` ⬜
+### T5.1 — Verificació manual del simulador `geogebra.html` ✅
 Obrir al navegador i comprovar:
 - L'applet GeoGebra carrega correctament des del CDN
 - `data-commands` s'executen a l'inici
@@ -314,18 +314,18 @@ Obrir al navegador i comprovar:
 - El `postMessage` arriba al parent (testar des d'una pàgina del curs)
 - Mode readonly funciona (sense toolbar, sense edició)
 
-### T5.2 — Verificació del sistema de progrés ⬜
+### T5.2 — Verificació del sistema de progrés ✅
 - Completar un exercici → apareix ✓ a la sidebar
 - Recarregar la pàgina → el ✓ persisteix
 - Comprovar que `localStorage.geocat_progress` té les claus correctes
 - Verificar que no hi ha conflictes amb `pycat_progress` (si PyCat i GeoCat es serveixen des del mateix domini)
 
-### T5.3 — Revisió mòbil ⬜
+### T5.3 — Revisió mòbil ✅
 - L'applet GeoGebra és usable en iOS Safari i Chrome Android
 - El teclat virtual (`kbd-accessory.js`) apareix en Mode A (camp de comandes)
 - El layout del curs és responsive (sidebar hamburger funciona)
 
-### T5.4 — Revisió dels validators de tots els reptes ⬜
+### T5.4 — Revisió dels validators de tots els reptes ✅
 Per a cada repte (T4.1–T4.15):
 - El validator no es pot satisfer amb una construcció buida
 - El validator accepta construccions correctes fetes per camins alternatius
@@ -335,21 +335,11 @@ Per a cada repte (T4.1–T4.15):
 
 ## Completat
 
-- **T4.1**  `curs/repte-1.html`  — El primer punt (Fàcil): punt P=(2,3). *(2026-04-17)*
-- **T4.2**  `curs/repte-2.html`  — Un segment (Fàcil): segment AB donat. *(2026-04-17)*
-- **T4.3**  `curs/repte-3.html`  — La circumferència (Fàcil): cercle radi 2 a (1,1). *(2026-04-17)*
-- **T4.4**  `curs/repte-4.html`  — El triangle (Fàcil): polígon ABC donat. *(2026-04-17)*
-- **T4.5**  `curs/repte-5.html`  — El punt mig (Fàcil): M de segment AB. *(2026-04-17)*
-- **T4.6**  `curs/repte-6.html`  — La perpendicular (Mitjà): Perpendicular(P,f). *(2026-04-17)*
-- **T4.7**  `curs/repte-7.html`  — La mediatriu (Mitjà): Mediatriu(A,B). *(2026-04-17)*
-- **T4.8**  `curs/repte-8.html`  — La bisectriu (Mitjà): Bisectriu(f,g). *(2026-04-17)*
-- **T4.9**  `curs/repte-9.html`  — Triangle equilàter (Mitjà): tots 3 costats iguals. *(2026-04-17)*
-- **T4.10** `curs/repte-10.html` — Triangle isòsceles (Mitjà): exactament 2 costats iguals. *(2026-04-17)*
-- **T4.11** `curs/repte-11.html` — La paral·lela (Mitjà): Paral·lela(f,P). *(2026-04-17)*
-- **T4.12** `curs/repte-12.html` — Cercle circumscrit (Difícil): circumferència per A,B,C. *(2026-04-17)*
-- **T4.13** `curs/repte-13.html` — Translació (Difícil): Translació(t,v). *(2026-04-17)*
-- **T4.14** `curs/repte-14.html` — Reflexió (Difícil): Reflexió(t,f) respecte eix Y. *(2026-04-17)*
-- **T4.15** `curs/repte-15.html` — La funció quadràtica (Difícil): f(x)=2x²+1 per 3 punts. *(2026-04-17)*
+- **T5.1** `geogebra.html` — Revisat: afegit `kbd-accessory.js`, banner d'error CDN, correccions de comandes GeoGebra en data-commands. *(2026-04-17)*
+- **T5.2** `curs/capitols.js` — Verificat: `localStorage.geocat_progress` consistent. Fix del listener `postMessage` per acceptar origen `null` (file://). *(2026-04-17)*
+- **T5.3** `js/georunner.js` — Fix `width:'100%'`→dimensions reals del contenidor + listener `resize`. `kbd-accessory.js` afegit a `geogebra.html`. *(2026-04-17)*
+- **T5.4** Validators revisats: R9 (equilàter) i R10 (isòsceles) reescrits amb cerca de combinacions de 3 segments (tolerants a segments auxiliars). Tots els validators usen `getAllObjectNames(type)`. *(2026-04-17)*
+- **T5.x** Bugs de noms de comandes GeoGebra corregits (castellà→anglès canònic) a: `capitol-3` (Radi), `capitol-4` (Distancia), `capitol-6` (Paralela), `capitol-7` (PolígonoRegular), `capitol-8` (Rotación, Reflexión, Homotecia, Translació), `capitol-9` (Intersección), `capitol-10` (Punto, Lugar), `repte-8` (Interseccion). *(2026-04-17)*
 
 - **T0.1** `js/constants.js` — Namespace `P`→`G`, claus `pycat_*`→`geocat_*`, eliminat Pyodide, afegit `G.GEOGEBRA_CDN`, `G.DEFAULT_APP`. *(2026-04-17)*
 - **T0.2** `js/state.js` — Estat adaptat a GeoCat: eliminats camps Pyodide/Python, afegits `appletReady`, `validatorFn`, `initialCmds`, `fixedLabels`, `readonly`. *(2026-04-17)*

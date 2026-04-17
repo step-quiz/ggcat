@@ -47,7 +47,7 @@
       <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
 
       <div class="geogebra"
-           data-check="(api) => { var polys = api.getAllObjectNames('polygon'); if (polys.length === 0) return false; var segs = api.getAllObjectNames('segment'); if (segs.length < 3) return false; var lens = segs.map(function(s) {  return api.getValue('Length(' + s + ')'); }).filter(function(l) { return l > 0.1; }); if (lens.length < 3) return false; var mn = Math.min.apply(null,lens), mx = Math.max.apply(null,lens); return (mx - mn) < 0.15;}"
+           data-check="(api) => { var polys = api.getAllObjectNames('polygon'); if (polys.length === 0) return false; var segs = api.getAllObjectNames('segment'); if (segs.length < 3) return false; var lens = segs.map(function(s) { return api.getValue('Length('+s+')'); })             .filter(function(l) { return l > 0.1; }).sort(function(a,b){return a-b;}); if (lens.length < 3) return false; var eps = 0.15; /* Check if any 3 consecutive (in sorted order) lengths are all equal */ for (var i = 0; i <= lens.length - 3; i++) {   if (Math.abs(lens[i] - lens[i+2]) < eps) return true; } return false;}"
            data-goal-id="repte-9"
            data-height="440">
       </div>

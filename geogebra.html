@@ -15,7 +15,8 @@
   <link rel="stylesheet" href="style.css">
 
   <!-- GeoGebra Apps API (CDN oficial) -->
-  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+  <script src="https://www.geogebra.org/apps/deployggb.js"
+          onerror="document.getElementById('ggb-error').hidden=false"></script>
 
   <style>
     /* ── Estils específics del simulador GeoGebra ──────── */
@@ -222,6 +223,16 @@
 
 
 <!-- ══════════════════════════════════════════════════════
+     BANNER D'ERROR CDN (amagat per defecte)
+     ══════════════════════════════════════════════════════ -->
+<div id="ggb-error" hidden
+     style="position:fixed;top:0;left:0;right:0;z-index:999;
+            background:#f38ba8;color:#1e1e2e;padding:.6rem 1rem;
+            font-family:monospace;font-size:.85rem;text-align:center;">
+  ❌ No s'ha pogut carregar GeoGebra. Comprova la connexió a internet i recarrega la pàgina.
+</div>
+
+<!-- ══════════════════════════════════════════════════════
      APPLET GEOGEBRA
      ══════════════════════════════════════════════════════ -->
 <div id="ggb-container" role="application" aria-label="Espai de construcció GeoGebra"></div>
@@ -246,6 +257,7 @@
 <script src="js/geovalidator.js"></script>
 <script src="js/georunner.js"></script>
 <script src="js/geomain.js"></script>
+<script src="js/kbd-accessory.js"></script>
 
 </body>
 </html>

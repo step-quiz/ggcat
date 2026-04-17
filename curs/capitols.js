@@ -223,7 +223,11 @@ function initSidebarToggle() {
 // ── Listener de resultats des dels iframes GeoGebra ──────
 
 window.addEventListener('message', function(e) {
-  if (e.origin !== window.location.origin) return;
+  // Acceptem missatges del mateix origen, o de file:// (origin = "null" o "")
+  var sameOrigin = e.origin === window.location.origin
+                || e.origin === 'null'
+                || e.origin === '';
+  if (!sameOrigin) return;
   if (!e.data) return;
 
   var type   = e.data.type;
