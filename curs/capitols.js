@@ -292,13 +292,15 @@ function renderSimuladors() {
   // GGBApplet EXISTEIX aquí, garantit.
   // ══════════════════════════════════════════════════════════
 
-  var W = 640;
   var H;
 
   entries.forEach(function(cfg) {
     H = parseInt(cfg.height, 10) || 420;
 
     var wrapper = document.getElementById(cfg.id).parentElement;
+    // Llegim l'amplada real del contenidor en el moment d'injectar,
+    // així el canvas ocupa tota l'amplada disponible (no 640px fix).
+    var W = document.getElementById(cfg.id).offsetWidth || 640;
 
     new GGBApplet({
       appName:             cfg.app || 'classic',
