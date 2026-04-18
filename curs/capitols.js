@@ -141,6 +141,65 @@ function renderReptesSidebar(currentNum) {
 // Útil quan l'HTML del servidor no s'actualitza correctament.
 
 var VALIDATOR_OVERRIDES = {
+  'repte-7': function(api) {
+    // Triangle equilàter + 3 angles de 60°
+    // Polígon: segs.length >= 3 amb longituds iguals
+    // Angles: getObjectType retorna 'angle', getValue en radians → π/3
+    var segs = api.getAllObjectNames('segment') || [];
+    if (segs.length < 3) return false;
+    // Tots els costats han de ser iguals (equilàter)
+    var lens = [];
+    for (var i = 0; i < segs.length; i++) {
+      try { var l = api.getValue('Length(' + segs[i] + ')'); if (isFinite(l) && l > 0) lens.push(l); } catch(e) {}
+    }
+    if (lens.length < 3) return false;
+    lens.sort(function(a,b){return a-b;});
+    var equalSides = Math.abs(lens[0] - lens[lens.length-1]) < 0.15;
+    if (!equalSides) return false;
+    // Angles: busquem objectes de tipus 'angle' amb valor ≈ π/3
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    var count60 = 0;
+    for (var j = 0; j < n; j++) {
+      var nm = api.getObjectName(j);
+      if (!nm) continue;
+      var t = '';
+      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (!t.includes('angle')) continue;
+      try {
+        var v = api.getValue(nm);
+        // GeoGebra pot retornar en radians o graus segons configuració
+        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
+        if (Math.abs(deg - 60) < 1.5) count60++;
+      } catch(e) {}
+    }
+    return count60 >= 3;
+  },
+  'repte-8': function(api) {
+    // Perpendicular a f per P=(3,4) + peu de la perpendicular
+    // f passa per (0,0) i (4,1). Peu ≈ (3.765, 0.941)
+    var footX = 64/17, footY = 16/17; // ≈ 3.765, 0.941
+    var tol = 0.2;
+    // 1) Ha d'existir almenys una línia més a part de f
+    var hasPerp = false;
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    for (var i = 0; i < n; i++) {
+      var nm = api.getObjectName(i);
+      if (!nm || nm === 'f') continue;
+      var t = '';
+      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (t.includes('line')) { hasPerp = true; break; }
+    }
+    // 2) Ha d'existir un punt al peu de la perpendicular (≈ 3.765, 0.941)
+    var pts = api.getAllObjectNames('point') || [];
+    var hasFoot = false;
+    for (var j = 0; j < pts.length; j++) {
+      var p = pts[j];
+      if (p === 'P') continue;
+      var x = api.getXcoord(p), y = api.getYcoord(p);
+      if (Math.abs(x - footX) < tol && Math.abs(y - footY) < tol) { hasFoot = true; break; }
+    }
+    return hasPerp && hasFoot;
+  },
   'repte-5': function(api) {
     var tol = 0.15;
     var pts  = api.getAllObjectNames('point')   || [];
