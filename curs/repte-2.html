@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;if(api.getObjectType(name).toLowerCase()==='segment'){var len=api.getValue('Length('+name+')');if(Math.abs(len-5)<0.15)return true;}} return false; }"
+           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var t=api.getObjectType(name);if(!t)continue;if(t.toLowerCase().includes('segment')){var len=api.getValue('Length('+name+')');var mx=api.getValue('x(Midpoint('+name+'))');if(Math.abs(len-5)<tol&&Math.abs(mx)<tol)return true;}} return false; }"
            data-goal-id="repte-2"
            data-height="440">
       </div>

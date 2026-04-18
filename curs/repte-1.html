@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var n=api.getObjectNumber?api.getObjectNumber():0; var hasA=false,hasB=false,hasC=false,hasPoly=false; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var type=api.getObjectType(name).toLowerCase();if(type==='point'){var x=api.getXcoord(name),y=api.getYcoord(name);if(Math.abs(x+2)<0.15&&Math.abs(y+1)<0.15)hasA=true;if(Math.abs(x-4)<0.15&&Math.abs(y+1)<0.15)hasB=true;if(Math.abs(x-1)<0.15&&Math.abs(y-4)<0.15)hasC=true;}if(type==='polygon')hasPoly=true;} return hasA&&hasB&&hasC&&hasPoly; }"
+           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var n=api.getObjectNumber?api.getObjectNumber():0; var hasA=false,hasB=false,hasC=false,hasPoly=false; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var t=api.getObjectType(name);if(!t)continue;var type=t.toLowerCase();if(type.includes('point')){var x=api.getXcoord(name),y=api.getYcoord(name);if(Math.abs(x+2)<tol&&Math.abs(y+1)<tol)hasA=true;if(Math.abs(x-4)<tol&&Math.abs(y+1)<tol)hasB=true;if(Math.abs(x-1)<tol&&Math.abs(y-4)<tol)hasC=true;}if(type.includes('polygon'))hasPoly=true;} return hasA&&hasB&&hasC&&hasPoly; }"
            data-goal-id="repte-1"
            data-height="440">
       </div>
