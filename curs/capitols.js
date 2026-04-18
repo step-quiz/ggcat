@@ -625,6 +625,7 @@ function renderSimuladors() {
             };
           })(wrapper, badge, cfg.goalId);
           api.registerUpdateListener(_listenerName);
+          try { api.registerRemoveListener(_listenerName); } catch(e) {}
         }
       }
     }, true).inject(cfg.id);
