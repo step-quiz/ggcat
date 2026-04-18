@@ -141,6 +141,54 @@ function renderReptesSidebar(currentNum) {
 // Útil quan l'HTML del servidor no s'actualitza correctament.
 
 var VALIDATOR_OVERRIDES = {
+  'repte-5': function(api) {
+    var tol = 0.15;
+    var pts  = api.getAllObjectNames('point')   || [];
+    var segs = api.getAllObjectNames('segment') || [];
+    // Necessitem: punt a (0,0), punt a (3,0), i 4 segments de longitud 3
+    var hasOrigin = false, has30 = false;
+    for (var i = 0; i < pts.length; i++) {
+      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
+      if (Math.abs(x) < tol && Math.abs(y) < tol) hasOrigin = true;
+      if (Math.abs(x - 3) < tol && Math.abs(y) < tol) has30 = true;
+    }
+    var sides3 = 0;
+    for (var j = 0; j < segs.length; j++) {
+      try {
+        var len = api.getValue('Length(' + segs[j] + ')');
+        if (isFinite(len) && Math.abs(len - 3) < tol) sides3++;
+      } catch(e) {}
+    }
+    return hasOrigin && has30 && sides3 >= 4;
+  },
+  'repte-6': function(api) {
+    var tol = 0.15;
+    // 1) Comprovar que existeix una mediatriu de AB:
+    //    recta que passa pel punt mig de AB i és perpendicular a AB
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    var hasMedb = false;
+    for (var i = 0; i < n; i++) {
+      var nm = api.getObjectName(i);
+      if (!nm) continue;
+      var t = '';
+      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (!t.includes('line')) continue;
+      try {
+        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + nm + ')');
+        var perp  = api.getValue('ArePerpendicular(s,' + nm + ')');
+        if (onMid === 1 && perp === 1) { hasMedb = true; break; }
+      } catch(e) {}
+    }
+    // 2) Comprovar que existeix un punt sobre l'eix Y (x ≈ 0) que no sigui A ni B
+    var pts = api.getAllObjectNames('point') || [];
+    var hasYint = false;
+    for (var j = 0; j < pts.length; j++) {
+      var p = pts[j];
+      if (p === 'A' || p === 'B') continue;
+      if (Math.abs(api.getXcoord(p)) < tol) { hasYint = true; break; }
+    }
+    return hasMedb && hasYint;
+  },
   'repte-1': function(api) {
     var tol = 0.15;
     var pts = api.getAllObjectNames('point') || [];
