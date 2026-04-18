@@ -93,7 +93,7 @@ body {
   display: grid;
   grid-template-columns: 192px 1fr;
   min-height: calc(100vh - 48px);
-  overflow-x: hidden;
+  overflow-x: clip;  /* clip no crea scroll container → no trenca position:sticky */
 }
 
 /* Sidebar — sticky */
