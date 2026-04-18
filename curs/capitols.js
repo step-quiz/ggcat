@@ -333,13 +333,13 @@ function renderSimuladors() {
       tb.className = 'ggb-toolbar';
       tb.innerHTML =
         '<span class="ggb-badge">carregant…</span>' +
-        (cfg.validator
+        (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]
           ? '<button class="ggb-btn ggb-btn-check" type="button">✓ Comprova</button>'
           : '') +
         '<button class="ggb-btn ggb-btn-reset" type="button">↺ Reinicia</button>';
       wrapper.appendChild(tb);
 
-      if (cfg.validator) {
+      if (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]) {
         (function(cfg, wrapper, tb) {
           tb.querySelector('.ggb-btn-check').addEventListener('click', function() {
             var api = wrapper._ggbApi;
@@ -499,8 +499,7 @@ function renderSimuladors() {
         // ── Reset de la validació quan l'usuari modifica la construcció ──
         // Si el badge és ggb-ok o ggb-ko i l'usuari canvia qualsevol objecte,
         // tornem a l'estat "llest" per evitar mostrar un "Correcte" obsolet.
-        if (cfg.validator) {
-          var _listenerName = cfg.id + '_onChange';
+        if (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]) {
           (function(_wrapper, _badge, _goalId) {
             window[_listenerName] = function() {
               var b = _wrapper.querySelector('.ggb-badge');
