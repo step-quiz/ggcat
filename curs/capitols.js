@@ -136,7 +136,84 @@ function renderReptesSidebar(currentNum) {
 }
 
 
-// ── Renderitzador de widgets GeoGebra ─────────────────────
+// ── Taula de validators hardcodejats per repte ───────────────
+// Aquests overrides s'apliquen en lloc del data-check de l'HTML.
+// Útil quan l'HTML del servidor no s'actualitza correctament.
+
+var VALIDATOR_OVERRIDES = {
+  'repte-1': function(api) {
+    var xr = api.getXmax() - api.getXmin();
+    var tol = Math.max(0.02, xr * 0.008);
+    var pts = api.getAllObjectNames('point') || [];
+    var segs = api.getAllObjectNames('segment') || [];
+    var hasA = false, hasB = false, hasC = false;
+    for (var i = 0; i < pts.length; i++) {
+      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
+      if (Math.abs(x + 2) < tol && Math.abs(y + 1) < tol) hasA = true;
+      if (Math.abs(x - 4) < tol && Math.abs(y + 1) < tol) hasB = true;
+      if (Math.abs(x - 1) < tol && Math.abs(y - 4) < tol) hasC = true;
+    }
+    return hasA && hasB && hasC && segs.length >= 3;
+  },
+  'repte-2': function(api) {
+    var xr = api.getXmax() - api.getXmin();
+    var tol = Math.max(0.02, xr * 0.008);
+    var segs = api.getAllObjectNames('segment') || [];
+    for (var i = 0; i < segs.length; i++) {
+      try {
+        var len = api.getValue('Length(' + segs[i] + ')');
+        var mx  = api.getValue('x(Midpoint(' + segs[i] + '))');
+        if (isFinite(len) && isFinite(mx) && Math.abs(len - 5) < tol && Math.abs(mx) < tol) return true;
+      } catch(e) {}
+    }
+    return false;
+  },
+  'repte-3': function(api) {
+    var xr = api.getXmax() - api.getXmin();
+    var tol = Math.max(0.02, xr * 0.008);
+    var found2 = false, found4 = false;
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    for (var i = 0; i < n; i++) {
+      var nm = api.getObjectName(i);
+      if (!nm) continue;
+      try {
+        var r  = api.getValue('Radius(' + nm + ')');
+        if (!isFinite(r) || r <= 0) continue;
+        var cx = api.getValue('x(Center(' + nm + '))');
+        var cy = api.getValue('y(Center(' + nm + '))');
+        if (Math.abs(cx) < tol && Math.abs(cy) < tol) {
+          if (Math.abs(r - 2) < tol) found2 = true;
+          if (Math.abs(r - 4) < tol) found4 = true;
+        }
+      } catch(e) {}
+    }
+    return found2 && found4;
+  },
+  'repte-4': function(api) {
+    var xr = api.getXmax() - api.getXmin();
+    var tol = Math.max(0.02, xr * 0.008);
+    var pts  = api.getAllObjectNames('point')   || [];
+    var segs = api.getAllObjectNames('segment') || [];
+    var hasA = false, hasB = false, hasC = false;
+    for (var i = 0; i < pts.length; i++) {
+      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
+      if (Math.abs(x)     < tol && Math.abs(y)     < tol) hasA = true;
+      if (Math.abs(x - 6) < tol && Math.abs(y)     < tol) hasB = true;
+      if (Math.abs(x - 3) < tol && Math.abs(y - 4) < tol) hasC = true;
+    }
+    var hasArea = false;
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    for (var j = 0; j < n; j++) {
+      var nm = api.getObjectName(j);
+      if (!nm) continue;
+      try { var v = api.getValue(nm); if (isFinite(v) && Math.abs(v - 12) < 0.3) hasArea = true; } catch(e) {}
+    }
+    return hasA && hasB && hasC && segs.length >= 3 && hasArea;
+  }
+};
+
+
+
 //
 // VERSIÓ SIMPLIFICADA — patró idèntic a experiment_geogebra.html
 //
@@ -251,7 +328,8 @@ function renderSimuladors() {
               // ── FI DEBUG ──
 
               var ok = false;
-              try { ok = !!cfg.validator(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
+              var validatorFn = VALIDATOR_OVERRIDES[cfg.goalId] || cfg.validator;
+              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
               window.ggbApplet = prev;
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
