@@ -91,7 +91,7 @@ body {
 
 .curs-layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 192px 1fr;
   min-height: calc(100vh - 48px);
 }
 
@@ -140,8 +140,14 @@ body {
 
 .curs-content {
   padding: 2rem 3rem;
-  max-width: 800px;
   overflow-y: auto;
+}
+
+/* Limita l'amplada de lectura del text, però NO dels widgets GeoGebra */
+.chapter-header,
+.chapter-nav,
+.chapter-section > *:not(.geogebra-wrap) {
+  max-width: 800px;
 }
 
 .chapter-header { margin-bottom: 2rem; }
@@ -214,7 +220,8 @@ pre.code-example {
   margin: 1rem 0;
 }
 .geogebra-wrap {
-  margin: 1rem 0;
+  margin: 1rem -3rem;
+  width: calc(100% + 6rem);
 }
 
 /* Toolbar inline (Comprova + Reinicia + badge) */
