@@ -329,7 +329,9 @@ function renderSimuladors() {
 
               var ok = false;
               var validatorFn = VALIDATOR_OVERRIDES[cfg.goalId] || cfg.validator;
-              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
+              console.log('[GeoCat] goalId:', cfg.goalId, '| using override:', !!VALIDATOR_OVERRIDES[cfg.goalId]);
+              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[GeoCat] validator error:', e); }
+              console.log('[GeoCat] validator result:', ok);
               window.ggbApplet = prev;
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
