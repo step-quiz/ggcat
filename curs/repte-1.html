@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var pts=api.getAllObjectNames('point')||[]; var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]); if(Math.abs(x+2)<0.15&&Math.abs(y+1)<0.15)hasA=true; if(Math.abs(x-4)<0.15&&Math.abs(y+1)<0.15)hasB=true; if(Math.abs(x-1)<0.15&&Math.abs(y-4)<0.15)hasC=true; } var hasPoly=false; var polys=api.getAllObjectNames('polygon')||[]; for(var j=0;j<polys.length;j++){hasPoly=true;} if(!hasPoly){var all=api.getAllObjectNames('')||[];for(var k=0;k<all.length;k++){try{if(api.getObjectType(all[k])==='polygon')hasPoly=true;}catch(e){}}} if(!hasPoly){var segs=api.getAllObjectNames('segment')||[];hasPoly=segs.length>=3;} return hasA&&hasB&&hasC&&hasPoly; }"
+           data-check="(api) => { var n=api.getObjectNumber?api.getObjectNumber():0; var hasA=false,hasB=false,hasC=false,hasPoly=false; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var type=api.getObjectType(name).toLowerCase();if(type==='point'){var x=api.getXcoord(name),y=api.getYcoord(name);if(Math.abs(x+2)<0.15&&Math.abs(y+1)<0.15)hasA=true;if(Math.abs(x-4)<0.15&&Math.abs(y+1)<0.15)hasB=true;if(Math.abs(x-1)<0.15&&Math.abs(y-4)<0.15)hasC=true;}if(type==='polygon')hasPoly=true;} return hasA&&hasB&&hasC&&hasPoly; }"
            data-goal-id="repte-1"
            data-height="440">
       </div>

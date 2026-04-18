@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var cs=api.getAllObjectNames('conic')||[]; if(cs.length<2){var all=api.getAllObjectNames('')||[];cs=[];for(var i=0;i<all.length;i++){try{if(api.getObjectType(all[i])==='conic')cs.push(all[i]);}catch(e){}}} if(cs.length<2)return false; var found2=false,found4=false; for(var i=0;i<cs.length;i++){var cx=api.getValue('x(Center('+cs[i]+'))'),cy=api.getValue('y(Center('+cs[i]+'))'),r=api.getValue('Radius('+cs[i]+')'); if(Math.abs(cx)<0.15&&Math.abs(cy)<0.15){if(Math.abs(r-2)<0.15)found2=true;if(Math.abs(r-4)<0.15)found4=true;}} return found2&&found4; }"
+           data-check="(api) => { var n=api.getObjectNumber?api.getObjectNumber():0; var found2=false,found4=false; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var type=api.getObjectType(name).toLowerCase();if(type==='conic'||type==='circle'){var cx=api.getValue('x(Center('+name+'))'),cy=api.getValue('y(Center('+name+'))'),r=api.getValue('Radius('+name+')');if(Math.abs(cx)<0.15&&Math.abs(cy)<0.15){if(Math.abs(r-2)<0.15)found2=true;if(Math.abs(r-4)<0.15)found4=true;}}} return found2&&found4; }"
            data-goal-id="repte-3"
            data-height="440">
       </div>
