@@ -93,6 +93,7 @@ body {
   display: grid;
   grid-template-columns: 192px 1fr;
   min-height: calc(100vh - 48px);
+  overflow-x: hidden;
 }
 
 /* Sidebar — sticky */
@@ -220,8 +221,9 @@ pre.code-example {
   margin: 1rem 0;
 }
 .geogebra-wrap {
-  margin: 1rem -3rem;
-  width: calc(100% + 6rem);
+  margin: 1rem calc(-3rem + 3px) 1rem -3rem;
+  width: calc(100% + 6rem - 3px);
+  overflow: hidden;
 }
 
 /* Toolbar inline (Comprova + Reinicia + badge) */
