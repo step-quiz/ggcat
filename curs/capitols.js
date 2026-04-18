@@ -197,11 +197,16 @@ var VALIDATOR_OVERRIDES = {
       if (Math.abs(x - 6) < tol && Math.abs(y)     < tol) hasB = true;
       if (Math.abs(x - 3) < tol && Math.abs(y - 4) < tol) hasC = true;
     }
+    // Requerim un objecte numèric EXPLÍCIT amb valor 12 (ex: d=Àrea(tri1))
+    // Excloem els polígons/triangles perquè el seu valor ja és l'àrea per defecte
     var hasArea = false;
     var n = api.getObjectNumber ? api.getObjectNumber() : 0;
     for (var j = 0; j < n; j++) {
       var nm = api.getObjectName(j);
       if (!nm) continue;
+      var t = '';
+      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (t.includes('polygon') || t.includes('triangle')) continue;
       try { var v = api.getValue(nm); if (isFinite(v) && Math.abs(v - 12) < 0.3) hasArea = true; } catch(e) {}
     }
     return hasA && hasB && hasC && segs.length >= 3 && hasArea;
