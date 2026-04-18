@@ -44,8 +44,8 @@ var CAPITOLS_DATA = [
 ];
 
 var REPTES_DATA = [
-  { num: 1,  titol: 'El primer punt',      arxiu: 'repte-1.html',  goalId: 'repte-1',  dificultat: 'facil'  },
-  { num: 2,  titol: 'Un segment',          arxiu: 'repte-2.html',  goalId: 'repte-2',  dificultat: 'facil'  },
+  { num: 1,  titol: 'Triangle des de zero',       arxiu: 'repte-1.html',  goalId: 'repte-1',  dificultat: 'facil'  },
+  { num: 2,  titol: 'Segment de longitud exacta', arxiu: 'repte-2.html',  goalId: 'repte-2',  dificultat: 'facil'  },
   { num: 3,  titol: 'La circumferència',   arxiu: 'repte-3.html',  goalId: 'repte-3',  dificultat: 'facil'  },
   { num: 4,  titol: 'El triangle',         arxiu: 'repte-4.html',  goalId: 'repte-4',  dificultat: 'facil'  },
   { num: 5,  titol: 'El punt mig',         arxiu: 'repte-5.html',  goalId: 'repte-5',  dificultat: 'facil'  },
