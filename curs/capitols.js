@@ -500,6 +500,7 @@ function renderSimuladors() {
         // Si el badge és ggb-ok o ggb-ko i l'usuari canvia qualsevol objecte,
         // tornem a l'estat "llest" per evitar mostrar un "Correcte" obsolet.
         if (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]) {
+          var _listenerName = cfg.id + '_onChange';
           (function(_wrapper, _badge, _goalId) {
             window[_listenerName] = function() {
               var b = _wrapper.querySelector('.ggb-badge');
