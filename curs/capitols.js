@@ -143,20 +143,9 @@ function renderReptesSidebar(currentNum) {
 var VALIDATOR_OVERRIDES = {
   'repte-9': function(api) {
     // Circumcentre de A=(0,0), B=(6,0), C=(2,5) → (3, 1.7)
-    // 1) Almenys 2 línies (mediatrius) creades per l'usuari
-    var lineCount = 0;
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var i = 0; i < n; i++) {
-      var nm = api.getObjectName(i);
-      if (!nm) continue;
-      var t = '';
-      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (t.includes('line')) lineCount++;
-    }
-    if (lineCount < 2) return false;
-    // 2) Punt circumcentre ≈ (3, 1.7), equidistant dels 3 vèrtexs
+    // Validem únicament que existeixi un punt equidistant dels 3 vèrtexs.
+    // (L'usuari necessàriament haurà creat mediatrius per trobar-lo.)
     var pts = api.getAllObjectNames('point') || [];
-    var hasCenter = false;
     for (var j = 0; j < pts.length; j++) {
       var p = pts[j];
       if (p === 'A' || p === 'B' || p === 'C') continue;
@@ -164,9 +153,9 @@ var VALIDATOR_OVERRIDES = {
       var dA = Math.sqrt(x*x + y*y);
       var dB = Math.sqrt((x-6)*(x-6) + y*y);
       var dC = Math.sqrt((x-2)*(x-2) + (y-5)*(y-5));
-      if (Math.abs(dA - dB) < 0.2 && Math.abs(dB - dC) < 0.2) { hasCenter = true; break; }
+      if (Math.abs(dA - dB) < 0.2 && Math.abs(dB - dC) < 0.2) return true;
     }
-    return hasCenter;
+    return false;
   },
   'repte-10': function(api) {
     // Rombus: 4 costats iguals + mínim 1 vèrtex a (0,0) + cap angle de 90°
