@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var n=api.getObjectNumber?api.getObjectNumber():0; var hasA=false,hasB=false,hasC=false,hasPoly=false; for(var i=0;i<n;i++){var nm=api.getObjectName(i);if(!nm)continue;var x=api.getXcoord(nm),y=api.getYcoord(nm);if(Math.abs(x+2)<tol&&Math.abs(y+1)<tol)hasA=true;if(Math.abs(x-4)<tol&&Math.abs(y+1)<tol)hasB=true;if(Math.abs(x-1)<tol&&Math.abs(y-4)<tol)hasC=true;if(!hasPoly){try{var a=api.getValue('Area('+nm+')');if(a>0&&isFinite(a))hasPoly=true;}catch(e){}}} return hasA&&hasB&&hasC&&hasPoly; }"
+           data-check="(api) => { var pts=api.getAllObjectNames('point'); var segs=api.getAllObjectNames('segment'); var polys=api.getAllObjectNames('polygon'); var n=api.getObjectNumber?api.getObjectNumber():-1; console.log('[R1] pts:',pts,'segs:',segs,'polys:',polys,'n:',n); if(n>0){for(var i=0;i<n;i++){var nm=api.getObjectName(i);var t=api.getObjectType?api.getObjectType(nm):'?';console.log('[R1] obj',i,nm,'type:',t,'x:',api.getXcoord(nm),'y:',api.getYcoord(nm));}} return false; }"
            data-goal-id="repte-1"
            data-height="440">
       </div>
