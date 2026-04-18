@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var pts = api.getAllObjectNames('point'); var hasA = pts.some(function(p) { return Math.abs(api.getXcoord(p) - (-2)) < 0.15 && Math.abs(api.getYcoord(p) - (-1)) < 0.15; }); var hasB = pts.some(function(p) { return Math.abs(api.getXcoord(p) - 4) < 0.15 && Math.abs(api.getYcoord(p) - (-1)) < 0.15; }); var hasC = pts.some(function(p) { return Math.abs(api.getXcoord(p) - 1) < 0.15 && Math.abs(api.getYcoord(p) - 4) < 0.15; }); var polys = api.getAllObjectNames('polygon'); return hasA && hasB && hasC && polys.length >= 1; }"
+           data-check="(api) => { var pts=api.getAllObjectNames('point'); var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]); if(Math.abs(x+2)<0.15&&Math.abs(y+1)<0.15)hasA=true; if(Math.abs(x-4)<0.15&&Math.abs(y+1)<0.15)hasB=true; if(Math.abs(x-1)<0.15&&Math.abs(y-4)<0.15)hasC=true; } var polys=api.getAllObjectNames('polygon'); return hasA&&hasB&&hasC&&polys.length>=1; }"
            data-goal-id="repte-1"
            data-height="440">
       </div>
