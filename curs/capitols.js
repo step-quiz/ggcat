@@ -341,6 +341,25 @@ function renderSimuladors() {
         // Badge
         var badge = wrapper.querySelector('.ggb-badge');
         if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
+
+        // ── Reset de la validació quan l'usuari modifica la construcció ──
+        // Si el badge és ggb-ok o ggb-ko i l'usuari canvia qualsevol objecte,
+        // tornem a l'estat "llest" per evitar mostrar un "Correcte" obsolet.
+        if (cfg.validator) {
+          var _listenerName = cfg.id + '_onChange';
+          (function(_wrapper, _badge, _goalId) {
+            window[_listenerName] = function() {
+              var b = _wrapper.querySelector('.ggb-badge');
+              if (b && (b.classList.contains('ggb-ok') || b.classList.contains('ggb-ko'))) {
+                b.textContent = 'llest';
+                b.className = 'ggb-badge ggb-ready';
+                var fb = _wrapper.querySelector('.simulador-feedback');
+                if (fb) { fb.className = 'simulador-feedback'; fb.textContent = ''; }
+              }
+            };
+          })(wrapper, badge, cfg.goalId);
+          api.registerUpdateListener(_listenerName);
+        }
       }
     }, true).inject(cfg.id);
   });
