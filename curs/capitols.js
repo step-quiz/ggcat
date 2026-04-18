@@ -141,6 +141,76 @@ function renderReptesSidebar(currentNum) {
 // Útil quan l'HTML del servidor no s'actualitza correctament.
 
 var VALIDATOR_OVERRIDES = {
+  'repte-9': function(api) {
+    // Circumcentre de A=(0,0), B=(6,0), C=(2,5) → (3, 1.7)
+    // 1) Almenys 2 línies (mediatrius) creades per l'usuari
+    var lineCount = 0;
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    for (var i = 0; i < n; i++) {
+      var nm = api.getObjectName(i);
+      if (!nm) continue;
+      var t = '';
+      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (t.includes('line')) lineCount++;
+    }
+    if (lineCount < 2) return false;
+    // 2) Punt circumcentre ≈ (3, 1.7), equidistant dels 3 vèrtexs
+    var pts = api.getAllObjectNames('point') || [];
+    var hasCenter = false;
+    for (var j = 0; j < pts.length; j++) {
+      var p = pts[j];
+      if (p === 'A' || p === 'B' || p === 'C') continue;
+      var x = api.getXcoord(p), y = api.getYcoord(p);
+      var dA = Math.sqrt(x*x + y*y);
+      var dB = Math.sqrt((x-6)*(x-6) + y*y);
+      var dC = Math.sqrt((x-2)*(x-2) + (y-5)*(y-5));
+      if (Math.abs(dA - dB) < 0.2 && Math.abs(dB - dC) < 0.2) { hasCenter = true; break; }
+    }
+    return hasCenter;
+  },
+  'repte-10': function(api) {
+    // Rombus: 4 costats iguals + mínim 1 vèrtex a (0,0) + cap angle de 90°
+    var tol = 0.15;
+    // 1) Almenys 1 punt a l'origen
+    var pts = api.getAllObjectNames('point') || [];
+    var hasOrigin = false;
+    for (var i = 0; i < pts.length; i++) {
+      if (Math.abs(api.getXcoord(pts[i])) < tol && Math.abs(api.getYcoord(pts[i])) < tol) {
+        hasOrigin = true; break;
+      }
+    }
+    if (!hasOrigin) return false;
+    // 2) Almenys 4 segments de la mateixa longitud
+    var segs = api.getAllObjectNames('segment') || [];
+    if (segs.length < 4) return false;
+    var lens = [];
+    for (var j = 0; j < segs.length; j++) {
+      try { var l = api.getValue('Length(' + segs[j] + ')'); if (isFinite(l) && l > 0.1) lens.push(l); } catch(e) {}
+    }
+    if (lens.length < 4) return false;
+    lens.sort(function(a,b) { return a-b; });
+    // Els 4 costats del rombus han de ser iguals (ignorem possibles diagonals)
+    var equalSides = false;
+    for (var k = 0; k <= lens.length - 4; k++) {
+      if (Math.abs(lens[k] - lens[k+3]) < tol) { equalSides = true; break; }
+    }
+    if (!equalSides) return false;
+    // 3) Cap angle de 90° (no és un quadrat)
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    for (var m = 0; m < n; m++) {
+      var nm = api.getObjectName(m);
+      if (!nm) continue;
+      var tp = '';
+      try { tp = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
+      if (!tp.includes('angle')) continue;
+      try {
+        var v = api.getValue(nm);
+        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
+        if (Math.abs(deg - 90) < 1.5) return false;
+      } catch(e) {}
+    }
+    return true;
+  },
   'repte-7': function(api) {
     // Triangle equilàter + 3 angles de 60°
     // Polígon: segs.length >= 3 amb longituds iguals
