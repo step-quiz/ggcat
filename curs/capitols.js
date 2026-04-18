@@ -142,8 +142,7 @@ function renderReptesSidebar(currentNum) {
 
 var VALIDATOR_OVERRIDES = {
   'repte-1': function(api) {
-    var xr = api.getXmax() - api.getXmin();
-    var tol = Math.max(0.02, xr * 0.008);
+    var tol = 0.15;
     var pts = api.getAllObjectNames('point') || [];
     var segs = api.getAllObjectNames('segment') || [];
     var hasA = false, hasB = false, hasC = false;
@@ -156,8 +155,7 @@ var VALIDATOR_OVERRIDES = {
     return hasA && hasB && hasC && segs.length >= 3;
   },
   'repte-2': function(api) {
-    var xr = api.getXmax() - api.getXmin();
-    var tol = Math.max(0.02, xr * 0.008);
+    var tol = 0.15;
     var segs = api.getAllObjectNames('segment') || [];
     for (var i = 0; i < segs.length; i++) {
       try {
@@ -169,8 +167,7 @@ var VALIDATOR_OVERRIDES = {
     return false;
   },
   'repte-3': function(api) {
-    var xr = api.getXmax() - api.getXmin();
-    var tol = Math.max(0.02, xr * 0.008);
+    var tol = 0.15;
     var found2 = false, found4 = false;
     var n = api.getObjectNumber ? api.getObjectNumber() : 0;
     for (var i = 0; i < n; i++) {
@@ -190,8 +187,7 @@ var VALIDATOR_OVERRIDES = {
     return found2 && found4;
   },
   'repte-4': function(api) {
-    var xr = api.getXmax() - api.getXmin();
-    var tol = Math.max(0.02, xr * 0.008);
+    var tol = 0.15;
     var pts  = api.getAllObjectNames('point')   || [];
     var segs = api.getAllObjectNames('segment') || [];
     var hasA = false, hasB = false, hasC = false;
@@ -316,13 +312,12 @@ function renderSimuladors() {
                 for (var _i = 0; _i < n; _i++) {
                   var _nm = api.getObjectName(_i);
                   var _type = (api.getObjectType && _nm) ? api.getObjectType(_nm) : '?';
-                  var _x = _nm ? api.getXcoord(_nm) : '?';
-                  var _y = _nm ? api.getYcoord(_nm) : '?';
+                  var _x = '?', _y = '?'; try { if(_nm){_x=api.getXcoord(_nm);_y=api.getYcoord(_nm);} } catch(_xe){}
                   var _val = '?';
                   try { _val = api.getValue(_nm); } catch(_e) { _val = 'ERR'; }
                   console.log('  obj[' + _i + '] name=' + _nm + ' type=' + _type + ' x=' + _x + ' y=' + _y + ' val=' + _val);
                 }
-                console.log('xmin/xmax:', api.getXmin(), '/', api.getXmax());
+                try { console.log('xmin/xmax:', api.getXmin(), '/', api.getXmax()); } catch(e) { console.log('xmin/xmax: N/A'); }
                 console.groupEnd();
               } catch(_dbgErr) { console.warn('[GeoCat DEBUG] error:', _dbgErr); }
               // ── FI DEBUG ──
