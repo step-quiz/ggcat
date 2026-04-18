@@ -29,7 +29,7 @@ body {
 ══════════════════════════════════════════════════════ */
 
 .curs-header {
-  height: 48px;
+  height: 38px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -49,15 +49,9 @@ body {
   gap: 7px;
 }
 
-/* Títol del capítol/repte: centrat dins de la capçalera */
+/* Títol del capítol/repte: amagat per guanyar amplada de lectura */
 .curs-header-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.8rem;
-  color: var(--muted);
-  white-space: nowrap;
-  pointer-events: none;
+  display: none;
 }
 
 /* Contenidor d'accions a la dreta (Glossari, etc.) */
@@ -92,7 +86,7 @@ body {
 .curs-layout {
   display: grid;
   grid-template-columns: 192px 1fr;
-  min-height: calc(100vh - 48px);
+  min-height: calc(100vh - 38px);
   overflow-x: clip;  /* clip no crea scroll container → no trenca position:sticky */
 }
 
@@ -102,8 +96,8 @@ body {
   border-right: 1px solid var(--border);
   padding: 16px 0;
   position: sticky;
-  top: 48px;
-  height: calc(100vh - 48px);
+  top: 38px;
+  height: calc(100vh - 38px);
   overflow-y: auto;
   align-self: start;
 }
@@ -393,7 +387,7 @@ pre.code-example {
   .curs-sidebar {
     position: fixed;
     left: -260px;
-    top: 48px;
+    top: 38px;
     bottom: 0;
     width: 260px;
     z-index: 200;

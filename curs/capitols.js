@@ -35,12 +35,12 @@ var CAPITOLS_DATA = [
   { num: 2,  titol: 'Rectes i segments',              arxiu: 'capitol-2.html',  goalId: 'cap-2-ex' },
   { num: 3,  titol: 'Circumferències',                arxiu: 'capitol-3.html',  goalId: 'cap-3-ex' },
   { num: 4,  titol: 'Mesures',                        arxiu: 'capitol-4.html',  goalId: 'cap-4-ex' },
-  { num: 5,  titol: 'Construccions I',     arxiu: 'capitol-5.html',  goalId: 'cap-5-ex' },
-  { num: 6,  titol: 'Construccions II',    arxiu: 'capitol-6.html',  goalId: 'cap-6-ex' },
+  { num: 5,  titol: 'Construccions clàssiques I',     arxiu: 'capitol-5.html',  goalId: 'cap-5-ex' },
+  { num: 6,  titol: 'Construccions clàssiques II',    arxiu: 'capitol-6.html',  goalId: 'cap-6-ex' },
   { num: 7,  titol: 'Polígons',                       arxiu: 'capitol-7.html',  goalId: 'cap-7-ex' },
   { num: 8,  titol: 'Transformacions',                arxiu: 'capitol-8.html',  goalId: 'cap-8-ex' },
   { num: 9,  titol: 'Funcions i gràfiques',           arxiu: 'capitol-9.html',  goalId: 'cap-9-ex' },
-  { num: 10, titol: 'Lliscadors',arxiu: 'capitol-10.html', goalId: null },
+  { num: 10, titol: 'Lliscadors i constr. dinàmiques',arxiu: 'capitol-10.html', goalId: null },
 ];
 
 var REPTES_DATA = [
@@ -295,7 +295,7 @@ function renderSimuladors() {
   var H;
 
   entries.forEach(function(cfg) {
-    H = parseInt(cfg.height, 10) || 420;
+    H = Math.round((parseInt(cfg.height, 10) || 420) * 1.1);
 
     var wrapper = document.getElementById(cfg.id).parentElement;
     // Llegim l'amplada real del contenidor en el moment d'injectar,
