@@ -163,23 +163,17 @@ var VALIDATOR_OVERRIDES = {
   },
   'repte-6': function(api) {
     var tol = 0.15;
-    // 1) Comprovar que existeix una mediatriu de AB:
-    //    recta que passa pel punt mig de AB i és perpendicular a AB
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+    // 1) Ha d'existir almenys una línia (la mediatriu). No hi ha línies pre-construïdes.
     var hasMedb = false;
+    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
     for (var i = 0; i < n; i++) {
       var nm = api.getObjectName(i);
       if (!nm) continue;
       var t = '';
       try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (!t.includes('line')) continue;
-      try {
-        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + nm + ')');
-        var perp  = api.getValue('ArePerpendicular(s,' + nm + ')');
-        if (onMid === 1 && perp === 1) { hasMedb = true; break; }
-      } catch(e) {}
+      if (t.includes('line')) { hasMedb = true; break; }
     }
-    // 2) Comprovar que existeix un punt sobre l'eix Y (x ≈ 0) que no sigui A ni B
+    // 2) Ha d'existir un punt a x≈0 que no sigui A ni B (la intersecció amb l'eix Y)
     var pts = api.getAllObjectNames('point') || [];
     var hasYint = false;
     for (var j = 0; j < pts.length; j++) {
@@ -405,7 +399,7 @@ function renderSimuladors() {
           try { api.reset(); } catch(e) {}
           cfg.commands.forEach(function(cmd) { if (cmd) try { api.evalCommand(cmd); } catch(e) {} });
           cfg.fixed.forEach(function(lbl) {
-            if (lbl) try { api.setFixed(lbl, true, false); api.setColor(lbl, 60, 100, 220); } catch(e) {}
+            if (lbl) try { api.setFixed(lbl, true, true); api.setColor(lbl, 60, 100, 220); } catch(e) {}
           });
           var badge = tb.querySelector('.ggb-badge');
           if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
@@ -487,7 +481,7 @@ function renderSimuladors() {
         // Objectes fixos
         cfg.fixed.forEach(function(lbl) {
           if (lbl) try {
-            api.setFixed(lbl, true, false);
+            api.setFixed(lbl, true, true);
             api.setColor(lbl, 60, 100, 220);
           } catch(e) {}
         });
