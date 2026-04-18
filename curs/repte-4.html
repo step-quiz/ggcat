@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var areaTol=Math.max(0.1,xr*xr*0.0002); var n=api.getObjectNumber?api.getObjectNumber():0; var hasPoly=false,hasArea=false; for(var i=0;i<n;i++){var name=api.getObjectName(i);if(!name)continue;var t=api.getObjectType(name);if(!t)continue;var type=t.toLowerCase();if(type.includes('polygon')){hasPoly=true;var a=api.getValue('Area('+name+')');if(Math.abs(a-12)<areaTol)hasArea=true;}if(type.includes('numeric')){var v=api.getValue(name);if(Math.abs(v-12)<areaTol)hasArea=true;}} return hasPoly&&hasArea; }"
+           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var areaTol=Math.max(0.1,xr*xr*0.0002); var n=api.getObjectNumber?api.getObjectNumber():0; var hasPoly=false,hasArea=false; for(var i=0;i<n;i++){var nm=api.getObjectName(i);if(!nm)continue;try{var a=api.getValue('Area('+nm+')');if(isFinite(a)&&a>0){hasPoly=true;if(Math.abs(a-12)<areaTol)hasArea=true;}}catch(e){} try{var v=api.getValue(nm);if(isFinite(v)&&Math.abs(v-12)<areaTol)hasArea=true;}catch(e){}} return hasPoly&&hasArea; }"
            data-goal-id="repte-4"
            data-height="440">
       </div>
