@@ -224,6 +224,32 @@ function renderSimuladors() {
             window.ggbApplet = api;
             var GVref = (typeof GV !== 'undefined') ? GV : {};
             setTimeout(function() {
+
+              // ── DEBUG MODE — obre F12 > Console per veure aquesta informació ──
+              try {
+                var goalLabel = cfg.goalId || 'sense-id';
+                console.group('[GeoCat DEBUG] ' + goalLabel);
+                console.log('getAllObjectNames point   :', api.getAllObjectNames('point'));
+                console.log('getAllObjectNames segment :', api.getAllObjectNames('segment'));
+                console.log('getAllObjectNames polygon :', api.getAllObjectNames('polygon'));
+                console.log('getAllObjectNames conic   :', api.getAllObjectNames('conic'));
+                console.log('getAllObjectNames numeric :', api.getAllObjectNames('numeric'));
+                console.log('getObjectNumber          :', api.getObjectNumber ? api.getObjectNumber() : 'N/A');
+                var n = api.getObjectNumber ? api.getObjectNumber() : 0;
+                for (var _i = 0; _i < n; _i++) {
+                  var _nm = api.getObjectName(_i);
+                  var _type = (api.getObjectType && _nm) ? api.getObjectType(_nm) : '?';
+                  var _x = _nm ? api.getXcoord(_nm) : '?';
+                  var _y = _nm ? api.getYcoord(_nm) : '?';
+                  var _val = '?';
+                  try { _val = api.getValue(_nm); } catch(_e) { _val = 'ERR'; }
+                  console.log('  obj[' + _i + '] name=' + _nm + ' type=' + _type + ' x=' + _x + ' y=' + _y + ' val=' + _val);
+                }
+                console.log('xmin/xmax:', api.getXmin(), '/', api.getXmax());
+                console.groupEnd();
+              } catch(_dbgErr) { console.warn('[GeoCat DEBUG] error:', _dbgErr); }
+              // ── FI DEBUG ──
+
               var ok = false;
               try { ok = !!cfg.validator(api, GVref); } catch(e) { console.warn('[GeoCat] validator:', e); }
               window.ggbApplet = prev;
