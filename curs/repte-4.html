@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repte 1 — Triangle des de zero | GeoCat</title>
+  <title>Repte 4 — Triangle amb mesures | GeoCat</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="curs.css">
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
@@ -21,7 +21,7 @@
     <a href="repte-1.html" class="active">Reptes</a>
     <a href="../geogebra.html">Simulador</a>
   </nav>
-  <span class="curs-header-title">Repte 1 — Triangle des de zero</span>
+  <span class="curs-header-title">Repte 4 — Triangle amb mesures</span>
   <div class="curs-header-actions"></div>
 </header>
 
@@ -34,13 +34,13 @@
   <main class="curs-content">
 
     <header class="chapter-header">
-      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 1 — Fàcil</span>
-      <h1>Triangle des de zero</h1>
+      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 4 — Fàcil</span>
+      <h1>Triangle amb mesures</h1>
     </header>
 
     <section class="chapter-section">
       <h2>Objectiu</h2>
-      <p>Crea els punts <strong>A = (−2, −1)</strong>, <strong>B = (4, −1)</strong> i <strong>C = (1, 4)</strong> al pla. Després, crea el <strong>triangle</strong> (polígon tancat) format per aquests tres punts.</p>
+      <p>Crea el triangle amb vèrtexs <strong>A = (0, 0)</strong>, <strong>B = (6, 0)</strong> i <strong>C = (3, 4)</strong>. Mesura l'àrea del triangle. L'àrea ha de ser <strong>visible com a objecte</strong> a la construcció.</p>
 
       <h2>Widget</h2>
       <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
@@ -48,8 +48,8 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var pts=api.getAllObjectNames('point')||[]; var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]); if(Math.abs(x+2)<0.15&&Math.abs(y+1)<0.15)hasA=true; if(Math.abs(x-4)<0.15&&Math.abs(y+1)<0.15)hasB=true; if(Math.abs(x-1)<0.15&&Math.abs(y-4)<0.15)hasC=true; } var hasPoly=false; var polys=api.getAllObjectNames('polygon')||[]; for(var j=0;j<polys.length;j++){hasPoly=true;} if(!hasPoly){var all=api.getAllObjectNames('')||[];for(var k=0;k<all.length;k++){try{if(api.getObjectType(all[k])==='polygon')hasPoly=true;}catch(e){}}} if(!hasPoly){var segs=api.getAllObjectNames('segment')||[];hasPoly=segs.length>=3;} return hasA&&hasB&&hasC&&hasPoly; }"
-           data-goal-id="repte-1"
+           data-check="(api) => { var polys=api.getAllObjectNames('polygon')||[]; if(polys.length===0){var all=api.getAllObjectNames('')||[];for(var k=0;k<all.length;k++){try{if(api.getObjectType(all[k])==='polygon')polys.push(all[k]);}catch(e){}}} if(polys.length===0)return false; var hasArea=false; var nums=api.getAllObjectNames('numeric')||[]; for(var i=0;i<nums.length;i++){var v=api.getValue(nums[i]);if(Math.abs(v-12)<0.3)hasArea=true;} if(!hasArea){for(var j=0;j<polys.length;j++){var a=api.getValue('Area('+polys[j]+')');if(Math.abs(a-12)<0.3)hasArea=true;}} return polys.length>=1&&hasArea; }"
+           data-goal-id="repte-4"
            data-height="440">
       </div>
     </section>
@@ -57,13 +57,13 @@
     <details style="margin-top: 1.5rem;">
       <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
       <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
-        <p>Escriu <code>A=(-2,-1)</code>, <code>B=(4,-1)</code> i <code>C=(1,4)</code> a la barra d'entrada (un per un). Després escriu <code>Polígon(A,B,C)</code> per crear el triangle.</p>
+        <p>Crea els punts <code>A=(0,0)</code>, <code>B=(6,0)</code> i <code>C=(3,4)</code> i escriu <code>Polígon(A,B,C)</code>. Després escriu <code>Àrea(t)</code> (on <code>t</code> és el nom del polígon) per mesurar l'àrea. El resultat ha de ser 12.</p>
       </div>
     </details>
 
     <nav class="chapter-nav">
-      <a href="capitol-1.html" class="btn-nav btn-nav--prev">← Capítols</a>
-      <a href="repte-2.html" class="btn-nav btn-nav--next">Repte següent →</a>
+      <a href="repte-3.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-5.html" class="btn-nav btn-nav--next">Repte següent →</a>
     </nav>
 
   </main>
@@ -73,7 +73,7 @@
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();
-  renderReptesSidebar(1);
+  renderReptesSidebar(4);
   renderSimuladors();
   initSidebarToggle();
 </script>

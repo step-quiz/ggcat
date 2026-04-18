@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var segs = api.getAllObjectNames('segment'); return segs.some(function(s) { var len = api.getValue('Length(' + s + ')'); return Math.abs(len - 5) < 0.15; }); }"
+           data-check="(api) => { var segs=api.getAllObjectNames('segment')||[]; return segs.some(function(s){var len=api.getValue('Length('+s+')');return Math.abs(len-5)<0.15;}); }"
            data-goal-id="repte-2"
            data-height="440">
       </div>
