@@ -221,8 +221,8 @@ pre.code-example {
   margin: 1rem 0;
 }
 .geogebra-wrap {
-  margin: 1rem calc(-3rem + 10px) 1rem -3rem;
-  width: calc(100% + 6rem - 10px);
+  margin: 1rem -3rem 1rem 0;  /* esquerra alineada amb el text, dreta fins al límit */
+  width: calc(100% + 3rem);
   overflow: hidden;
 }
 
