@@ -75,9 +75,11 @@ const GV = {
   },
 
   /**
-   * Retorna true si exactament 'count' parells de costats consecutius
-   * del polígon definit pels 'points' (en ordre) són iguals ± eps.
+   * Retorna true si exactament 'count' costats del polígon definit
+   * pels 'points' (en ordre) tenen almenys un altre costat d'igual
+   * longitud ± eps.
    * Exemple per isòsceles: GV.exactSidesEqual(['A','B','C'], 2)
+   *   → els dos costats iguals compten, el tercer no.
    */
   exactSidesEqual: function(points, count) {
     if (points.length < 2) return false;
@@ -87,13 +89,14 @@ const GV = {
       var b = points[(i + 1) % points.length];
       dists.push(ggbApplet.getValue('Distance(' + a + ',' + b + ')'));
     }
-    // Comptem quants costats coincideixen amb algun altre ± eps
+    // Per cada costat, mirem si algun altre costat té la mateixa longitud
     var equalCount = 0;
     for (var i = 0; i < dists.length; i++) {
-      for (var j = i + 1; j < dists.length; j++) {
+      for (var j = 0; j < dists.length; j++) {
+        if (j === i) continue;
         if (Math.abs(dists[i] - dists[j]) < GV.eps) {
           equalCount++;
-          break;   // cada costat es compta com a màxim un cop
+          break;   // aquest costat ja compta, passem al següent
         }
       }
     }

@@ -4,11 +4,18 @@
 
 This document is a **technical specification for an AI implementor**. The AI reading this will already have the full GeoCat project (the `ggcat-main.zip` archive) loaded in context.
 
-The project owner will select exactly **10 challenges** from the 30 candidates below. The implementor must then:
+The project implements all **30 challenges** listed below, distributed as **10 Fàcil + 10 Mitjà + 10 Difícil**. Challenges 1–10 are already implemented. The implementor must:
 
-1. Create the corresponding `repte-N.html` files (renumbered 1–10).
+1. Create the remaining `repte-N.html` files (11–30).
 2. Update the `REPTES_DATA` array in `curs/capitols.js`.
 3. Ensure all validators work correctly with the GeoGebra API.
+
+### Difficulty recalibration
+
+The original spec had 5 Fàcil + 11 Mitjà + 14 Difícil. To reach 10+10+10:
+- **Promoted to Fàcil** (from Mitjà): CH 11, 12, 13, 15, 16 — these require combining 2 chapters (Fàcil criterion) and don't chain 3+ steps.
+- **Demoted to Mitjà** (from Difícil): CH 19, 20, 21, 27 — these are multi-step but don't integrate 3+ chapter concepts.
+- The difficulty labels in each challenge description below reflect the **original** classification. Apply the recalibration above when setting `dificultat` in `REPTES_DATA`.
 
 ---
 
