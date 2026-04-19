@@ -169,7 +169,7 @@ function renderSimuladors() {
     var goalIdForLookup = div.getAttribute('data-goal-id') || '';
     if (goalIdForLookup && typeof VALIDATORS !== 'undefined' && VALIDATORS[goalIdForLookup]) {
       (function(fn) {
-        validatorFn = function(api) { return fn(api, GV); };
+        validatorFn = function(api, GV) { return fn(api, GV); };
       })(VALIDATORS[goalIdForLookup]);
     }
 
