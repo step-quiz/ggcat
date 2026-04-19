@@ -44,21 +44,16 @@ var CAPITOLS_DATA = [
 ];
 
 var REPTES_DATA = [
-  { num: 1,  titol: 'Triangle des de zero',       arxiu: 'repte-1.html',  goalId: 'repte-1',  dificultat: 'facil'  },
-  { num: 2,  titol: 'Segment de longitud exacta', arxiu: 'repte-2.html',  goalId: 'repte-2',  dificultat: 'facil'  },
-  { num: 3,  titol: 'La circumferència',   arxiu: 'repte-3.html',  goalId: 'repte-3',  dificultat: 'facil'  },
-  { num: 4,  titol: 'El triangle',         arxiu: 'repte-4.html',  goalId: 'repte-4',  dificultat: 'facil'  },
-  { num: 5,  titol: 'El punt mig',         arxiu: 'repte-5.html',  goalId: 'repte-5',  dificultat: 'facil'  },
-  { num: 6,  titol: 'La perpendicular',    arxiu: 'repte-6.html',  goalId: 'repte-6',  dificultat: 'mitja'  },
-  { num: 7,  titol: 'La mediatriu',        arxiu: 'repte-7.html',  goalId: 'repte-7',  dificultat: 'mitja'  },
-  { num: 8,  titol: 'La bisectriu',        arxiu: 'repte-8.html',  goalId: 'repte-8',  dificultat: 'mitja'  },
-  { num: 9,  titol: 'Triangle equilàter',  arxiu: 'repte-9.html',  goalId: 'repte-9',  dificultat: 'mitja'  },
-  { num: 10, titol: 'Triangle isòsceles',  arxiu: 'repte-10.html', goalId: 'repte-10', dificultat: 'mitja'  },
-  { num: 11, titol: 'La paral·lela',       arxiu: 'repte-11.html', goalId: 'repte-11', dificultat: 'mitja'  },
-  { num: 12, titol: 'Cercle circumscrit',  arxiu: 'repte-12.html', goalId: 'repte-12', dificultat: 'dificil' },
-  { num: 13, titol: 'Translació',          arxiu: 'repte-13.html', goalId: 'repte-13', dificultat: 'dificil' },
-  { num: 14, titol: 'Reflexió',            arxiu: 'repte-14.html', goalId: 'repte-14', dificultat: 'dificil' },
-  { num: 15, titol: 'La funció quadràtica',arxiu: 'repte-15.html', goalId: 'repte-15', dificultat: 'dificil' },
+  { num: 1,  titol: 'Triangle des de zero',          arxiu: 'repte-1.html',  goalId: 'repte-1',  dificultat: 'facil' },
+  { num: 2,  titol: 'Segment de longitud exacta',    arxiu: 'repte-2.html',  goalId: 'repte-2',  dificultat: 'facil' },
+  { num: 3,  titol: 'Circumferències concèntriques', arxiu: 'repte-3.html',  goalId: 'repte-3',  dificultat: 'facil' },
+  { num: 4,  titol: 'Triangle amb mesures',          arxiu: 'repte-4.html',  goalId: 'repte-4',  dificultat: 'facil' },
+  { num: 5,  titol: 'Quadrat a l\'origen',           arxiu: 'repte-5.html',  goalId: 'repte-5',  dificultat: 'facil' },
+  { num: 6,  titol: 'Mediatriu i intersecció',       arxiu: 'repte-6.html',  goalId: 'repte-6',  dificultat: 'mitja' },
+  { num: 7,  titol: 'Equilàter comprovat',           arxiu: 'repte-7.html',  goalId: 'repte-7',  dificultat: 'mitja' },
+  { num: 8,  titol: 'Perpendicular i peu',           arxiu: 'repte-8.html',  goalId: 'repte-8',  dificultat: 'mitja' },
+  { num: 9,  titol: 'El circumcentre',               arxiu: 'repte-9.html',  goalId: 'repte-9',  dificultat: 'mitja' },
+  { num: 10, titol: 'El rombus',                     arxiu: 'repte-10.html', goalId: 'repte-10', dificultat: 'mitja' },
 ];
 
 
@@ -540,13 +535,6 @@ function renderSimuladors() {
     wrapper._ggbCfg = cfg;
     cfg.div.replaceWith(wrapper);
   });
-
-  // ── Carrega GV si cal ──
-  if (entries.some(function(e) { return !!e.validator; })) {
-    var gvScript = document.createElement('script');
-    gvScript.src = '../js/geovalidator.js';
-    document.head.appendChild(gvScript);
-  }
 
   // ══════════════════════════════════════════════════════════
   // INJECCIÓ — Patró IDÈNTIC a experiment_geogebra.html

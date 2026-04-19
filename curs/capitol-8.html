@@ -176,20 +176,7 @@ C=(2,4)
 t=Polygon(A,B,C)
 f=Line((0,-5),(0,5))"
              data-fixed="A,B,C,t,f"
-             data-check="(api) => {
-               var polys = api.getAllObjectNames('polygon');
-               if (polys.length < 2) return false;
-               /* Hi ha almenys dos polígons (original + reflexió) */
-               return polys.some(function(p) {
-                 if (p === 't') return false;
-                 /* Comprovem que algun vèrtex del nou pol. té x negatiu */
-                 var pts = api.getAllObjectNames('point');
-                 return pts.some(function(pt) {
-                   return api.getValue('IsOnPath(' + pt + ',' + p + ')') === 1 &&
-                          api.getXcoord(pt) < -0.5;
-                 });
-               });
-             }"
+             data-check="(api) => { var polys=api.getAllObjectNames('polygon'); if(polys.length<2) return false; var pts=api.getAllObjectNames('point'); var targets=[[-1,1],[-4,1],[-2,4]]; return targets.every(function(tg){ return pts.some(function(p){ return Math.abs(api.getXcoord(p)-tg[0])<0.2 && Math.abs(api.getYcoord(p)-tg[1])<0.2; }); }); }"
              data-goal-id="cap-8-ex"
              data-height="420">
         </div>

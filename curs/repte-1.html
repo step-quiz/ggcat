@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); console.log('[V1] xr='+xr+' tol='+tol); var pts=api.getAllObjectNames('point')||[]; var segs=api.getAllObjectNames('segment')||[]; console.log('[V1] pts='+JSON.stringify(pts)+' segs.length='+segs.length); var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]);console.log('[V1] '+pts[i]+' x='+x+' y='+y+' |x+2|='+Math.abs(x+2)+' |y+1|='+Math.abs(y+1));if(Math.abs(x+2)<tol&&Math.abs(y+1)<tol)hasA=true;if(Math.abs(x-4)<tol&&Math.abs(y+1)<tol)hasB=true;if(Math.abs(x-1)<tol&&Math.abs(y-4)<tol)hasC=true;} var r=hasA&&hasB&&hasC&&segs.length>=3; console.log('[V1] hasA='+hasA+' hasB='+hasB+' hasC='+hasC+' segs>=3='+(segs.length>=3)+' => '+r); return r; }"
+           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var pts=api.getAllObjectNames('point')||[]; var segs=api.getAllObjectNames('segment')||[]; var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]);if(Math.abs(x+2)<tol&&Math.abs(y+1)<tol)hasA=true;if(Math.abs(x-4)<tol&&Math.abs(y+1)<tol)hasB=true;if(Math.abs(x-1)<tol&&Math.abs(y-4)<tol)hasC=true;} return hasA&&hasB&&hasC&&segs.length>=3; }"
            data-goal-id="repte-1"
            data-height="440">
       </div>
