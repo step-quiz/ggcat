@@ -33,13 +33,14 @@ Every challenge lives in `curs/repte-N.html`. Use the exact HTML skeleton from a
 | Objectiu `<p>` | First `<p>` inside `.chapter-section` | The Catalan task description |
 | `data-commands` | `.geogebra` div attribute | Newline-separated GeoGebra commands for initial objects |
 | `data-fixed` | `.geogebra` div attribute | Comma-separated labels to lock |
-| `data-check` | `.geogebra` div attribute | Single-line JS validator function |
 | `data-goal-id` | `.geogebra` div attribute | `repte-N` |
 | `data-app` | `.geogebra` div attribute | Omit for `classic`; use `graphing` for function challenges |
 | `data-height` | `.geogebra` div attribute | Always `440` |
 | Hint `<details>` | After the geogebra section | Catalan hint with `<code>` for GeoGebra commands |
 | Nav links | `.chapter-nav` | Previous/next repte links |
 | `renderReptesSidebar(N)` | Bottom `<script>` | The 1-based challenge number |
+
+> **Note — validators are NOT inline in the HTML.** The `.geogebra` div does **not** use a `data-check` attribute. All validator logic lives in `curs/validators.js` inside the `VALIDATORS` map (keyed by `goalId`). When adding a new challenge, add its entry to that map; do not touch the HTML for the validator.
 
 ### Difficulty badge styles
 
@@ -62,12 +63,31 @@ Every challenge lives in `curs/repte-N.html`. Use the exact HTML skeleton from a
 
 ### Validator constraints
 
-- The validator is a **single-line** JS string inside a `data-check` HTML attribute (double-quoted). Internal strings must use single quotes.
-- It receives `(api)` — the GeoGebra applet API object.
-- It must return `true` (pass) or `false` (fail).
+Validators live in `curs/validators.js` as entries of the `VALIDATORS` object. Each entry is a named `function(api, GV)` keyed by the challenge's `goalId`:
+
+```js
+// curs/validators.js
+const VALIDATORS = {
+  // …existing entries…
+
+  'repte-N': function(api, GV) {
+    // return true (pass) or false (fail)
+  },
+};
+```
+
+Rules:
+
+- The function signature is **`function(api, GV)`**. Both arguments are always available:
+  - `api` — the live GeoGebra applet object (`window.ggbApplet`).
+  - `GV` — the helper library from `geovalidator.js` (object `GV`, always present as a global).
+- **Use `GV` helpers whenever possible.** They centralise tolerance logic and reduce boilerplate. Key helpers: `GV.coordsEqual(label, x, y)`, `GV.anyOfType(type, fn)`, `GV.eps` (= `0.001`, for exact float equality).
+- The function must return `true` (pass) or `false` (fail).
 - Never check specific user-created labels. Iterate with `api.getAllObjectNames(type)` and test properties.
-- Use tolerance `0.15` for coordinate/length comparisons, `0.5` for angles in degrees.
-- The `GV` helper library (from `geovalidator.js`) is available but accessed via the second argument: `(api, GV) => { ... }`. However, the current codebase injects `GV` as the global — do NOT rely on it; write self-contained validators using `api` directly.
+- **Tolerances:**
+  - For coordinate / length comparisons where `GV.coordsEqual` is not used, apply an explicit `var tol = 0.15` and compare with `Math.abs(…) < tol`.
+  - For angle comparisons in degrees, use `Math.abs(deg - expected) < 1.0`.
+  - `GV.eps` (0.001) is reserved for cases requiring near-exact equality (e.g. checking that a midpoint x-coordinate is exactly 0). Do **not** use `GV.eps` as the default tolerance for student constructions.
 - For `api.getValue(expr)`, the expression must be a valid GeoGebra expression string.
 
 ### Key GeoGebra API methods used in validators
@@ -100,6 +120,18 @@ y(Center(c))                     — y-coord of center of conic c
 ---
 
 ## The 30 Candidate Challenges
+
+> **Note on `data-check` blocks below.** Each challenge description includes a `data-check` block showing the validator logic. This is the logic that must be placed in `curs/validators.js` as a named entry of the `VALIDATORS` object — it does **not** go into the HTML file. When implementing, translate each block from the arrow-function shorthand shown here to the `function(api, GV)` form required by `validators.js`:
+>
+> ```js
+> // data-check block in spec (reference format):
+> (api) => { … }
+>
+> // Actual entry in curs/validators.js:
+> 'repte-N': function(api, GV) { … },
+> ```
+>
+> The `GV` argument is always available; use its helpers (`GV.coordsEqual`, `GV.anyOfType`, `GV.eps`) to replace inline tolerance comparisons wherever practical.
 
 ### Difficulty scale rationale
 
