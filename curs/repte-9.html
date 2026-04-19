@@ -51,7 +51,6 @@ B=(6,0)
 C=(2,5)
 t=Polygon(A,B,C)"
              data-fixed="A,B,C,t"
-           data-check="(api) => { var pts=api.getAllObjectNames('point')||[]; for(var j=0;j<pts.length;j++){var p=pts[j]; if(p==='A'||p==='B'||p==='C')continue; var x=api.getXcoord(p),y=api.getYcoord(p); var dA=Math.sqrt(x*x+y*y); var dB=Math.sqrt((x-6)*(x-6)+y*y); var dC=Math.sqrt((x-2)*(x-2)+(y-5)*(y-5)); if(Math.abs(dA-dB)<0.2&&Math.abs(dB-dC)<0.2) return true;} return false; }"
            data-goal-id="repte-9"
            data-height="440">
       </div>
@@ -73,6 +72,7 @@ t=Polygon(A,B,C)"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

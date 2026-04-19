@@ -157,8 +157,6 @@ function renderSimuladors() {
     var id = 'ggb-w' + (_ggbWidgetCount++);
     var commandsRaw = div.getAttribute('data-commands') || '';
     var fixedRaw    = div.getAttribute('data-fixed')    || '';
-    var checkRaw    = div.getAttribute('data-check')    || '';
-
     var commands = commandsRaw
       ? commandsRaw.split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
       : [];
@@ -166,10 +164,13 @@ function renderSimuladors() {
       ? fixedRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean)
       : [];
 
+    // data-check is no longer used. Validators are looked up by goalId.
     var validatorFn = null;
-    if (checkRaw) {
-      try { validatorFn = new Function('api', 'GV', 'return (' + checkRaw + ')(api)'); }
-      catch(_) { try { validatorFn = new Function('api', 'GV', checkRaw); } catch(e) {} }
+    var goalIdForLookup = div.getAttribute('data-goal-id') || '';
+    if (goalIdForLookup && typeof VALIDATORS !== 'undefined' && VALIDATORS[goalIdForLookup]) {
+      (function(fn) {
+        validatorFn = function(api) { return fn(api, GV); };
+      })(VALIDATORS[goalIdForLookup]);
     }
 
     entries.push({

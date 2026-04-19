@@ -48,7 +48,6 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var n=api.getObjectNumber?api.getObjectNumber():0; var found2=false,found4=false; for(var i=0;i<n;i++){var nm=api.getObjectName(i);if(!nm)continue;try{var cx=api.getValue('x(Center('+nm+'))'),cy=api.getValue('y(Center('+nm+'))'),r=api.getValue('Radius('+nm+')');if(isFinite(cx)&&isFinite(cy)&&isFinite(r)&&r>0&&Math.abs(cx)<tol&&Math.abs(cy)<tol){if(Math.abs(r-2)<tol)found2=true;if(Math.abs(r-4)<tol)found4=true;}}catch(e){}} return found2&&found4; }"
            data-goal-id="repte-3"
            data-height="440">
       </div>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

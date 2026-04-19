@@ -48,7 +48,6 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var polys=api.getAllObjectNames('polygon')||[]; if(polys.length<1) return false; var segs=api.getAllObjectNames('segment')||[]; var lens=segs.map(function(s){return api.getValue('Length('+s+')');}).filter(function(l){return l>0.1;}); if(lens.length<3) return false; var maxL=Math.max.apply(null,lens),minL=Math.min.apply(null,lens); if(Math.abs(maxL-minL)>0.15) return false; var angs=api.getAllObjectNames('angle')||[]; var has60=angs.some(function(a){var deg=api.getValue(a)*180/Math.PI; return Math.abs(deg-60)<1.5;}); return has60; }"
            data-goal-id="repte-7"
            data-height="440">
       </div>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

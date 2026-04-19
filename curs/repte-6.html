@@ -50,7 +50,6 @@
 B=(4,3)
 s=Segment(A,B)"
              data-fixed="A,B,s"
-           data-check="(api) => { var tol=0.15; var hasMedb=false; var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var nm=api.getObjectName(i); if(!nm)continue; var t=''; try{t=(api.getObjectType(nm)||'').toLowerCase();}catch(e){} if(t.includes('line')){hasMedb=true;break;}} var pts=api.getAllObjectNames('point')||[]; var hasYint=false; for(var j=0;j<pts.length;j++){var p=pts[j]; if(p==='A'||p==='B')continue; if(Math.abs(api.getXcoord(p))<tol){hasYint=true;break;}} return hasMedb&&hasYint; }"
            data-goal-id="repte-6"
            data-height="440">
       </div>
@@ -72,6 +71,7 @@ s=Segment(A,B)"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

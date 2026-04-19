@@ -48,7 +48,6 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var tol=0.15; var pts=api.getAllObjectNames('point')||[]; var hasOrigin=false; for(var i=0;i<pts.length;i++){if(Math.abs(api.getXcoord(pts[i]))<tol&&Math.abs(api.getYcoord(pts[i]))<tol){hasOrigin=true;break;}} if(!hasOrigin) return false; var segs=api.getAllObjectNames('segment')||[]; if(segs.length<4) return false; var lens=[]; for(var j=0;j<segs.length;j++){try{var l=api.getValue('Length('+segs[j]+')'); if(isFinite(l)&&l>0.1)lens.push(l);}catch(e){}} if(lens.length<4) return false; lens.sort(function(a,b){return a-b;}); var equalSides=false; for(var k=0;k<=lens.length-4;k++){if(Math.abs(lens[k]-lens[k+3])<tol){equalSides=true;break;}} if(!equalSides) return false; var n=api.getObjectNumber?api.getObjectNumber():0; for(var m=0;m<n;m++){var nm=api.getObjectName(m); if(!nm)continue; var tp=''; try{tp=(api.getObjectType(nm)||'').toLowerCase();}catch(e){} if(!tp.includes('angle')) continue; try{var v=api.getValue(nm); var deg=(v>Math.PI)?v:v*180/Math.PI; if(Math.abs(deg-90)<1.5) return false;}catch(e){}} return true; }"
            data-goal-id="repte-10"
            data-height="440">
       </div>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

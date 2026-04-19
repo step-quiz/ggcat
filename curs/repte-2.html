@@ -48,7 +48,6 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var nm=api.getObjectName(i);if(!nm)continue;try{var len=api.getValue('Length('+nm+')');var mx=api.getValue('x(Midpoint('+nm+'))');if(isFinite(len)&&isFinite(mx)&&Math.abs(len-5)<tol&&Math.abs(mx)<tol)return true;}catch(e){}} return false; }"
            data-goal-id="repte-2"
            data-height="440">
       </div>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

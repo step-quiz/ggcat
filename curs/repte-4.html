@@ -48,7 +48,6 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check="(api) => { var xr=api.getXmax()-api.getXmin(); var tol=Math.max(0.02,xr*0.008); var pts=api.getAllObjectNames('point')||[]; var segs=api.getAllObjectNames('segment')||[]; var hasA=false,hasB=false,hasC=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]);if(Math.abs(x)<tol&&Math.abs(y)<tol)hasA=true;if(Math.abs(x-6)<tol&&Math.abs(y)<tol)hasB=true;if(Math.abs(x-3)<tol&&Math.abs(y-4)<tol)hasC=true;} var hasArea=false; var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var nm=api.getObjectName(i);if(!nm)continue;try{var v=api.getValue(nm);if(isFinite(v)&&Math.abs(v-12)<0.3)hasArea=true;}catch(e){}} var hasAngle=false; var angs=api.getAllObjectNames('angle')||[]; for(var i=0;i<angs.length;i++){var deg=api.getValue(angs[i])*180/Math.PI; if(Math.abs(deg-53.13)<1.0){hasAngle=true;break;}} return hasA&&hasB&&hasC&&segs.length>=3&&hasArea&&hasAngle; }"
            data-goal-id="repte-4"
            data-height="440">
       </div>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();
