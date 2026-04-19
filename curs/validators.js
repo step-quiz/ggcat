@@ -129,15 +129,25 @@ const VALIDATORS = {
   },
 
   // ── Repte 6 — Mediatriu i intersecció ────────────────
-  // Student must construct a perpendicular bisector (any line)
-  // and mark its Y-axis intersection (a point at x ≈ 0,
-  // other than the given points A and B).
+  // Student must construct the perpendicular bisector of AB
+  // (a line through the midpoint of AB that is perpendicular to AB)
+  // and mark the point where it crosses the Y-axis (x ≈ 0).
   'repte-6': function(api, GV) {
     var tol = 0.15;
-    var hasMedb = GV.anyOfType('line', function() { return true; }); // at least one line
+    // Check that at least one line is the perpendicular bisector of AB:
+    // it must pass through Midpoint(A,B) AND be perpendicular to segment AB.
+    var lines = api.getAllObjectNames('line') || [];
+    var hasMedb = lines.some(function(l) {
+      try {
+        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
+        var perp  = api.getValue('ArePerpendicular(s,' + l + ')') === 1;
+        return onMid && perp;
+      } catch(e) { return false; }
+    });
     if (!hasMedb) return false;
-    var pts      = api.getAllObjectNames('point') || [];
-    var hasYint  = pts.some(function(p) {
+    // Check that there is a point (other than A or B) at x ≈ 0 (on the Y-axis).
+    var pts = api.getAllObjectNames('point') || [];
+    var hasYint = pts.some(function(p) {
       if (p === 'A' || p === 'B') return false;
       return Math.abs(api.getXcoord(p)) < tol;
     });
