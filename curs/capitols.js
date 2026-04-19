@@ -131,242 +131,6 @@ function renderReptesSidebar(currentNum) {
 }
 
 
-// ── Taula de validators hardcodejats per repte ───────────────
-// Aquests overrides s'apliquen en lloc del data-check de l'HTML.
-// Útil quan l'HTML del servidor no s'actualitza correctament.
-
-var VALIDATOR_OVERRIDES = {
-  'repte-9': function(api) {
-    // Circumcentre de A=(0,0), B=(6,0), C=(2,5) → (3, 1.7)
-    // Validem únicament que existeixi un punt equidistant dels 3 vèrtexs.
-    // (L'usuari necessàriament haurà creat mediatrius per trobar-lo.)
-    var pts = api.getAllObjectNames('point') || [];
-    for (var j = 0; j < pts.length; j++) {
-      var p = pts[j];
-      if (p === 'A' || p === 'B' || p === 'C') continue;
-      var x = api.getXcoord(p), y = api.getYcoord(p);
-      var dA = Math.sqrt(x*x + y*y);
-      var dB = Math.sqrt((x-6)*(x-6) + y*y);
-      var dC = Math.sqrt((x-2)*(x-2) + (y-5)*(y-5));
-      if (Math.abs(dA - dB) < 0.2 && Math.abs(dB - dC) < 0.2) return true;
-    }
-    return false;
-  },
-  'repte-10': function(api) {
-    // Rombus: 4 costats iguals + mínim 1 vèrtex a (0,0) + cap angle de 90°
-    var tol = 0.15;
-    // 1) Almenys 1 punt a l'origen
-    var pts = api.getAllObjectNames('point') || [];
-    var hasOrigin = false;
-    for (var i = 0; i < pts.length; i++) {
-      if (Math.abs(api.getXcoord(pts[i])) < tol && Math.abs(api.getYcoord(pts[i])) < tol) {
-        hasOrigin = true; break;
-      }
-    }
-    if (!hasOrigin) return false;
-    // 2) Almenys 4 segments de la mateixa longitud
-    var segs = api.getAllObjectNames('segment') || [];
-    if (segs.length < 4) return false;
-    var lens = [];
-    for (var j = 0; j < segs.length; j++) {
-      try { var l = api.getValue('Length(' + segs[j] + ')'); if (isFinite(l) && l > 0.1) lens.push(l); } catch(e) {}
-    }
-    if (lens.length < 4) return false;
-    lens.sort(function(a,b) { return a-b; });
-    // Els 4 costats del rombus han de ser iguals (ignorem possibles diagonals)
-    var equalSides = false;
-    for (var k = 0; k <= lens.length - 4; k++) {
-      if (Math.abs(lens[k] - lens[k+3]) < tol) { equalSides = true; break; }
-    }
-    if (!equalSides) return false;
-    // 3) Cap angle de 90° (no és un quadrat)
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var m = 0; m < n; m++) {
-      var nm = api.getObjectName(m);
-      if (!nm) continue;
-      var tp = '';
-      try { tp = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (!tp.includes('angle')) continue;
-      try {
-        var v = api.getValue(nm);
-        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
-        if (Math.abs(deg - 90) < 1.5) return false;
-      } catch(e) {}
-    }
-    return true;
-  },
-  'repte-7': function(api) {
-    // Triangle equilàter + 3 angles de 60°
-    // Polígon: segs.length >= 3 amb longituds iguals
-    // Angles: getObjectType retorna 'angle', getValue en radians → π/3
-    var segs = api.getAllObjectNames('segment') || [];
-    if (segs.length < 3) return false;
-    // Tots els costats han de ser iguals (equilàter)
-    var lens = [];
-    for (var i = 0; i < segs.length; i++) {
-      try { var l = api.getValue('Length(' + segs[i] + ')'); if (isFinite(l) && l > 0) lens.push(l); } catch(e) {}
-    }
-    if (lens.length < 3) return false;
-    lens.sort(function(a,b){return a-b;});
-    var equalSides = Math.abs(lens[0] - lens[lens.length-1]) < 0.15;
-    if (!equalSides) return false;
-    // Angles: busquem objectes de tipus 'angle' amb valor ≈ π/3
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    var count60 = 0;
-    for (var j = 0; j < n; j++) {
-      var nm = api.getObjectName(j);
-      if (!nm) continue;
-      var t = '';
-      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (!t.includes('angle')) continue;
-      try {
-        var v = api.getValue(nm);
-        // GeoGebra pot retornar en radians o graus segons configuració
-        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
-        if (Math.abs(deg - 60) < 1.5) count60++;
-      } catch(e) {}
-    }
-    return count60 >= 3;
-  },
-  'repte-8': function(api) {
-    // Perpendicular a f per P=(3,4) + peu de la perpendicular
-    // f passa per (0,0) i (4,1). Peu ≈ (3.765, 0.941)
-    var footX = 64/17, footY = 16/17; // ≈ 3.765, 0.941
-    var tol = 0.2;
-    // 1) Ha d'existir almenys una línia més a part de f
-    var hasPerp = false;
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var i = 0; i < n; i++) {
-      var nm = api.getObjectName(i);
-      if (!nm || nm === 'f') continue;
-      var t = '';
-      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (t.includes('line')) { hasPerp = true; break; }
-    }
-    // 2) Ha d'existir un punt al peu de la perpendicular (≈ 3.765, 0.941)
-    var pts = api.getAllObjectNames('point') || [];
-    var hasFoot = false;
-    for (var j = 0; j < pts.length; j++) {
-      var p = pts[j];
-      if (p === 'P') continue;
-      var x = api.getXcoord(p), y = api.getYcoord(p);
-      if (Math.abs(x - footX) < tol && Math.abs(y - footY) < tol) { hasFoot = true; break; }
-    }
-    return hasPerp && hasFoot;
-  },
-  'repte-5': function(api) {
-    var tol = 0.15;
-    var pts  = api.getAllObjectNames('point')   || [];
-    var segs = api.getAllObjectNames('segment') || [];
-    // Necessitem: punt a (0,0), punt a (3,0), i 4 segments de longitud 3
-    var hasOrigin = false, has30 = false;
-    for (var i = 0; i < pts.length; i++) {
-      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
-      if (Math.abs(x) < tol && Math.abs(y) < tol) hasOrigin = true;
-      if (Math.abs(x - 3) < tol && Math.abs(y) < tol) has30 = true;
-    }
-    var sides3 = 0;
-    for (var j = 0; j < segs.length; j++) {
-      try {
-        var len = api.getValue('Length(' + segs[j] + ')');
-        if (isFinite(len) && Math.abs(len - 3) < tol) sides3++;
-      } catch(e) {}
-    }
-    return hasOrigin && has30 && sides3 >= 4;
-  },
-  'repte-6': function(api) {
-    var tol = 0.15;
-    // 1) Ha d'existir almenys una línia (la mediatriu). No hi ha línies pre-construïdes.
-    var hasMedb = false;
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var i = 0; i < n; i++) {
-      var nm = api.getObjectName(i);
-      if (!nm) continue;
-      var t = '';
-      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (t.includes('line')) { hasMedb = true; break; }
-    }
-    // 2) Ha d'existir un punt a x≈0 que no sigui A ni B (la intersecció amb l'eix Y)
-    var pts = api.getAllObjectNames('point') || [];
-    var hasYint = false;
-    for (var j = 0; j < pts.length; j++) {
-      var p = pts[j];
-      if (p === 'A' || p === 'B') continue;
-      if (Math.abs(api.getXcoord(p)) < tol) { hasYint = true; break; }
-    }
-    return hasMedb && hasYint;
-  },
-  'repte-1': function(api) {
-    var tol = 0.15;
-    var pts = api.getAllObjectNames('point') || [];
-    var segs = api.getAllObjectNames('segment') || [];
-    var hasA = false, hasB = false, hasC = false;
-    for (var i = 0; i < pts.length; i++) {
-      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
-      if (Math.abs(x + 2) < tol && Math.abs(y + 1) < tol) hasA = true;
-      if (Math.abs(x - 4) < tol && Math.abs(y + 1) < tol) hasB = true;
-      if (Math.abs(x - 1) < tol && Math.abs(y - 4) < tol) hasC = true;
-    }
-    return hasA && hasB && hasC && segs.length >= 3;
-  },
-  'repte-2': function(api) {
-    var tol = 0.15;
-    var segs = api.getAllObjectNames('segment') || [];
-    for (var i = 0; i < segs.length; i++) {
-      try {
-        var len = api.getValue('Length(' + segs[i] + ')');
-        var mx  = api.getValue('x(Midpoint(' + segs[i] + '))');
-        if (isFinite(len) && isFinite(mx) && Math.abs(len - 5) < tol && Math.abs(mx) < tol) return true;
-      } catch(e) {}
-    }
-    return false;
-  },
-  'repte-3': function(api) {
-    var tol = 0.15;
-    var found2 = false, found4 = false;
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var i = 0; i < n; i++) {
-      var nm = api.getObjectName(i);
-      if (!nm) continue;
-      try {
-        var r  = api.getValue('Radius(' + nm + ')');
-        if (!isFinite(r) || r <= 0) continue;
-        var cx = api.getValue('x(Center(' + nm + '))');
-        var cy = api.getValue('y(Center(' + nm + '))');
-        if (Math.abs(cx) < tol && Math.abs(cy) < tol) {
-          if (Math.abs(r - 2) < tol) found2 = true;
-          if (Math.abs(r - 4) < tol) found4 = true;
-        }
-      } catch(e) {}
-    }
-    return found2 && found4;
-  },
-  'repte-4': function(api) {
-    var tol = 0.15;
-    var pts  = api.getAllObjectNames('point')   || [];
-    var segs = api.getAllObjectNames('segment') || [];
-    var hasA = false, hasB = false, hasC = false;
-    for (var i = 0; i < pts.length; i++) {
-      var x = api.getXcoord(pts[i]), y = api.getYcoord(pts[i]);
-      if (Math.abs(x)     < tol && Math.abs(y)     < tol) hasA = true;
-      if (Math.abs(x - 6) < tol && Math.abs(y)     < tol) hasB = true;
-      if (Math.abs(x - 3) < tol && Math.abs(y - 4) < tol) hasC = true;
-    }
-    // Requerim un objecte numèric EXPLÍCIT amb valor 12 (ex: d=Àrea(tri1))
-    // Excloem els polígons/triangles perquè el seu valor ja és l'àrea per defecte
-    var hasArea = false;
-    var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-    for (var j = 0; j < n; j++) {
-      var nm = api.getObjectName(j);
-      if (!nm) continue;
-      var t = '';
-      try { t = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
-      if (t.includes('polygon') || t.includes('triangle')) continue;
-      try { var v = api.getValue(nm); if (isFinite(v) && Math.abs(v - 12) < 0.3) hasArea = true; } catch(e) {}
-    }
-    return hasA && hasB && hasC && segs.length >= 3 && hasArea;
-  }
-};
 
 
 
@@ -440,13 +204,13 @@ function renderSimuladors() {
       tb.className = 'ggb-toolbar';
       tb.innerHTML =
         '<span class="ggb-badge">carregant…</span>' +
-        (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]
+        (cfg.validator
           ? '<button class="ggb-btn ggb-btn-check" type="button">✓ Comprova</button>'
           : '') +
         '<button class="ggb-btn ggb-btn-reset" type="button">↺ Reinicia</button>';
       wrapper.appendChild(tb);
 
-      if (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]) {
+      if (cfg.validator) {
         (function(cfg, wrapper, tb) {
           tb.querySelector('.ggb-btn-check').addEventListener('click', function() {
             var api = wrapper._ggbApi;
@@ -457,36 +221,9 @@ function renderSimuladors() {
             window.ggbApplet = api;
             var GVref = (typeof GV !== 'undefined') ? GV : {};
             setTimeout(function() {
-
-              // ── DEBUG MODE — obre F12 > Console per veure aquesta informació ──
-              try {
-                var goalLabel = cfg.goalId || 'sense-id';
-                console.group('[GeoCat DEBUG] ' + goalLabel);
-                console.log('getAllObjectNames point   :', api.getAllObjectNames('point'));
-                console.log('getAllObjectNames segment :', api.getAllObjectNames('segment'));
-                console.log('getAllObjectNames polygon :', api.getAllObjectNames('polygon'));
-                console.log('getAllObjectNames conic   :', api.getAllObjectNames('conic'));
-                console.log('getAllObjectNames numeric :', api.getAllObjectNames('numeric'));
-                console.log('getObjectNumber          :', api.getObjectNumber ? api.getObjectNumber() : 'N/A');
-                var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-                for (var _i = 0; _i < n; _i++) {
-                  var _nm = api.getObjectName(_i);
-                  var _type = (api.getObjectType && _nm) ? api.getObjectType(_nm) : '?';
-                  var _x = '?', _y = '?'; try { if(_nm){_x=api.getXcoord(_nm);_y=api.getYcoord(_nm);} } catch(_xe){}
-                  var _val = '?';
-                  try { _val = api.getValue(_nm); } catch(_e) { _val = 'ERR'; }
-                  console.log('  obj[' + _i + '] name=' + _nm + ' type=' + _type + ' x=' + _x + ' y=' + _y + ' val=' + _val);
-                }
-                try { console.log('xmin/xmax:', api.getXmin(), '/', api.getXmax()); } catch(e) { console.log('xmin/xmax: N/A'); }
-                console.groupEnd();
-              } catch(_dbgErr) { console.warn('[GeoCat DEBUG] error:', _dbgErr); }
-              // ── FI DEBUG ──
-
               var ok = false;
-              var validatorFn = VALIDATOR_OVERRIDES[cfg.goalId] || cfg.validator;
-              console.log('[GeoCat] goalId:', cfg.goalId, '| using override:', !!VALIDATOR_OVERRIDES[cfg.goalId]);
+              var validatorFn = cfg.validator;
               try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[GeoCat] validator error:', e); }
-              console.log('[GeoCat] validator result:', ok);
               window.ggbApplet = prev;
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
@@ -599,7 +336,7 @@ function renderSimuladors() {
         // ── Reset de la validació quan l'usuari modifica la construcció ──
         // Si el badge és ggb-ok o ggb-ko i l'usuari canvia qualsevol objecte,
         // tornem a l'estat "llest" per evitar mostrar un "Correcte" obsolet.
-        if (cfg.validator || VALIDATOR_OVERRIDES[cfg.goalId]) {
+        if (cfg.validator) {
           var _listenerName = cfg.id.replace(/-/g, '_') + '_onChange';
           (function(_wrapper, _badge, _goalId) {
             window[_listenerName] = function() {

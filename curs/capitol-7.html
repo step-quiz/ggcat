@@ -155,12 +155,23 @@ pent=Polygon(C,D,5)"
 
         <div class="geogebra"
              data-check="(api) => {
+               /* Exigeix 6 costats iguals (±0.15). */
                var polys = api.getAllObjectNames('polygon');
+               var segs = api.getAllObjectNames('segment') || [];
                if (polys.length === 0) return false;
-               /* Un hexàgon regular té 6 vèrtexs. Busquem un polígon
-                  amb 6 costats verificant que hi ha almenys 8 punts (A,B + 4 nous). */
-               var pts = api.getAllObjectNames('point');
-               return polys.length > 0 && pts.length >= 6;
+               var lens = [];
+               for (var i = 0; i < segs.length; i++) {
+                 try {
+                   var l = api.getValue('Length(' + segs[i] + ')');
+                   if (isFinite(l) && l > 0.1) lens.push(l);
+                 } catch(e) {}
+               }
+               if (lens.length < 6) return false;
+               lens.sort(function(a, b) { return a - b; });
+               for (var k = 0; k <= lens.length - 6; k++) {
+                 if (Math.abs(lens[k] - lens[k + 5]) < 0.15) return true;
+               }
+               return false;
              }"
              data-goal-id="cap-7-ex"
              data-height="420">

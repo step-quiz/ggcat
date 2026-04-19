@@ -49,7 +49,7 @@
              data-commands="f=Line((0,0),(4,1))
 P=(3,4)"
              data-fixed="f,P"
-           data-check=""
+           data-check="(api) => { var footX=64/17, footY=16/17; var tol=0.2; var hasPerp=false; var n=api.getObjectNumber?api.getObjectNumber():0; for(var i=0;i<n;i++){var nm=api.getObjectName(i); if(!nm||nm==='f')continue; var t=''; try{t=(api.getObjectType(nm)||'').toLowerCase();}catch(e){} if(t.includes('line')){hasPerp=true;break;}} var pts=api.getAllObjectNames('point')||[]; var hasFoot=false; for(var j=0;j<pts.length;j++){var p=pts[j]; if(p==='P')continue; var x=api.getXcoord(p),y=api.getYcoord(p); if(Math.abs(x-footX)<tol&&Math.abs(y-footY)<tol){hasFoot=true;break;}} return hasPerp&&hasFoot; }"
            data-goal-id="repte-8"
            data-height="440">
       </div>

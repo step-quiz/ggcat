@@ -48,7 +48,7 @@
       <div class="geogebra"
              data-commands=""
              data-fixed=""
-           data-check=""
+           data-check="(api) => { var tol=0.15; var pts=api.getAllObjectNames('point')||[]; var segs=api.getAllObjectNames('segment')||[]; var hasOrigin=false,has30=false; for(var i=0;i<pts.length;i++){var x=api.getXcoord(pts[i]),y=api.getYcoord(pts[i]); if(Math.abs(x)<tol&&Math.abs(y)<tol)hasOrigin=true; if(Math.abs(x-3)<tol&&Math.abs(y)<tol)has30=true;} var sides3=0; for(var j=0;j<segs.length;j++){try{var len=api.getValue('Length('+segs[j]+')'); if(isFinite(len)&&Math.abs(len-3)<tol)sides3++;}catch(e){}} return hasOrigin&&has30&&sides3>=4; }"
            data-goal-id="repte-5"
            data-height="440">
       </div>

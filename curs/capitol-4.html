@@ -170,8 +170,16 @@ C=(2,3)
 p=Polygon(A,B,C)"
              data-fixed="A,B,C,p"
              data-check="(api) => {
+               /* Angle en B. Amb A=(0,0), B=(4,0), C=(2,3):
+                  vectors BA=(-4,0) i BC=(-2,3) → angle ≈ 56.31°. */
                var angles = api.getAllObjectNames('angle');
-               return angles.length > 0;
+               return angles.some(function(a) {
+                 try {
+                   var v = api.getValue(a);
+                   var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
+                   return Math.abs(deg - 56.31) < 1.5;
+                 } catch(e) { return false; }
+               });
              }"
              data-goal-id="cap-4-ex"
              data-height="420">
