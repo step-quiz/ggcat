@@ -287,7 +287,7 @@ function renderSimuladors() {
     // així el canvas ocupa tota l'amplada disponible (no 640px fix).
     var W = document.getElementById(cfg.id).offsetWidth || 640;
 
-    new GGBApplet({
+    var ggbParams = {
       appName:             cfg.app || 'classic',
       width:               W,
       height:              H,
@@ -347,7 +347,16 @@ function renderSimuladors() {
           try { api.registerRemoveListener(_listenerName); } catch(e) {}
         }
       }
-    }, true).inject(cfg.id);
+    };
+
+    // Toolbar personalitzada: només si l'autor ha posat data-tools="...".
+    // Format: IDs numèrics separats per espais, amb ',' '|' '||' per agrupar.
+    // Veure https://geogebra.github.io/docs/reference/en/Toolbar/ per la llista.
+    if (cfg.tools && cfg.tools.trim()) {
+      ggbParams.customToolBar = cfg.tools.trim();
+    }
+
+    new GGBApplet(ggbParams, true).inject(cfg.id);
   });
 }
 
