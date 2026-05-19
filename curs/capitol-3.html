@@ -19,7 +19,6 @@
   <nav class="curs-nav">
     <a href="capitol-1.html" class="active">Capítols</a>
     <a href="repte-1.html">Reptes</a>
-    <a href="../geogebra.html">Simulador</a>
   </nav>
   <span class="curs-header-title">Capítol 3 — Circumferències</span>
   <div class="curs-header-actions"></div>
@@ -150,15 +149,6 @@ r=Radius(c)"
         </div>
 
         <div class="geogebra"
-             data-check="(api) => {
-               var conics = api.getAllObjectNames('conic');
-               return conics.some(function(c) {
-                 var cx = api.getXcoord(c);
-                 var cy = api.getYcoord(c);
-                 var r  = api.getValue('Radius(' + c + ')');
-                 return Math.abs(cx) < 0.15 && Math.abs(cy) < 0.15 && Math.abs(r - 3) < 0.15;
-               });
-             }"
              data-goal-id="cap-3-ex"
              data-height="420">
         </div>
@@ -185,6 +175,8 @@ r=Radius(c)"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

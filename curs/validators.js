@@ -259,5 +259,142 @@ const VALIDATORS = {
     return true;
   },
 
+  // ════════════════════════════════════════════════════
+  // Validators dels exercicis dels capítols (cap-N-ex).
+  // Migrats des dels atributs data-check inline dels HTML.
+  // ════════════════════════════════════════════════════
+
+  // ── Capítol 1 — Crear el punt (3, 2) ──────────────────
+  'cap-1-ex': function(api, GV) {
+    var pts = api.getAllObjectNames('point');
+    return pts.some(function(l) {
+      return Math.abs(api.getXcoord(l) - 3) < 0.15 &&
+             Math.abs(api.getYcoord(l) - 2) < 0.15;
+    });
+  },
+
+  // ── Capítol 2 — Punt mig de A(-3,0)–B(3,0) → ha d'estar a (0,0) ──
+  'cap-2-ex': function(api, GV) {
+    var pts = api.getAllObjectNames('point');
+    return pts.some(function(l) {
+      return Math.abs(api.getXcoord(l))     < 0.15 &&
+             Math.abs(api.getYcoord(l))     < 0.15 &&
+             l !== 'A' && l !== 'B';
+    });
+  },
+
+  // ── Capítol 3 — Circumferència centre origen, radi 3 ──
+  'cap-3-ex': function(api, GV) {
+    var conics = api.getAllObjectNames('conic');
+    return conics.some(function(c) {
+      var cx = api.getValue('x(Center(' + c + '))');
+      var cy = api.getValue('y(Center(' + c + '))');
+      var r  = api.getValue('Radius(' + c + ')');
+      return isFinite(cx) && isFinite(cy) && isFinite(r) &&
+             Math.abs(cx) < 0.15 && Math.abs(cy) < 0.15 &&
+             Math.abs(r - 3) < 0.15;
+    });
+  },
+
+  // ── Capítol 4 — Angle ≈ 56.31° (vèrtex B amb A=(0,0),B=(4,0),C=(2,3)) ──
+  'cap-4-ex': function(api, GV) {
+    var angles = api.getAllObjectNames('angle');
+    return angles.some(function(a) {
+      try {
+        var v   = api.getValue(a);
+        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
+        return Math.abs(deg - 56.31) < 1.5;
+      } catch (e) { return false; }
+    });
+  },
+
+  // ── Capítol 5 — Mediatriu del segment AB ──────────────
+  'cap-5-ex': function(api, GV) {
+    var lines = api.getAllObjectNames('line');
+    return lines.some(function(l) {
+      try {
+        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
+        var perp  = api.getValue('ArePerpendicular(Segment(A,B),' + l + ')') === 1;
+        return onMid && perp;
+      } catch (e) { return false; }
+    });
+  },
+
+  // ── Capítol 6 — Paral·lela a f que passa per P ────────
+  'cap-6-ex': function(api, GV) {
+    var lines = api.getAllObjectNames('line');
+    return lines.some(function(l) {
+      if (l === 'f') return false;
+      try {
+        var onP = api.getValue('IsOnPath(P,' + l + ')') === 1;
+        var par = api.getValue('AreParallel(f,' + l + ')') === 1;
+        return onP && par;
+      } catch (e) { return false; }
+    });
+  },
+
+  // ── Capítol 7 — Polígon regular de 6 costats iguals ───
+  'cap-7-ex': function(api, GV) {
+    var polys = api.getAllObjectNames('polygon');
+    if (polys.length === 0) return false;
+    var segs = api.getAllObjectNames('segment') || [];
+    var lens = [];
+    for (var i = 0; i < segs.length; i++) {
+      try {
+        var l = api.getValue('Length(' + segs[i] + ')');
+        if (isFinite(l) && l > 0.1) lens.push(l);
+      } catch (e) {}
+    }
+    if (lens.length < 6) return false;
+    lens.sort(function(a, b) { return a - b; });
+    for (var k = 0; k <= lens.length - 6; k++) {
+      if (Math.abs(lens[k] - lens[k + 5]) < 0.15) return true;
+    }
+    return false;
+  },
+
+  // ── Capítol 8 — Reflexió: triangle imatge amb vèrtexs propers a (-1,1),(-4,1),(-2,4) ──
+  'cap-8-ex': function(api, GV) {
+    var polys = api.getAllObjectNames('polygon');
+    if (polys.length < 2) return false;
+    var pts = api.getAllObjectNames('point');
+    var targets = [[-1, 1], [-4, 1], [-2, 4]];
+    return targets.every(function(tg) {
+      return pts.some(function(p) {
+        return Math.abs(api.getXcoord(p) - tg[0]) < 0.2 &&
+               Math.abs(api.getYcoord(p) - tg[1]) < 0.2;
+      });
+    });
+  },
+
+  // ── Capítol 9 — Funció f(x)=2x+1 + intersecció amb eix X a (-0.5, 0) ──
+  'cap-9-ex': function(api, GV) {
+    var fns = api.getAllObjectNames('function');
+    var hasF = fns.some(function(fn) {
+      try {
+        var slope     = api.getValue(fn + "'(0)");
+        var intercept = api.getValue(fn + '(0)');
+        return Math.abs(slope - 2) < 0.15 && Math.abs(intercept - 1) < 0.15;
+      } catch (e) { return false; }
+    });
+    if (!hasF) return false;
+    var pts = api.getAllObjectNames('point');
+    return pts.some(function(p) {
+      return Math.abs(api.getXcoord(p) + 0.5) < 0.15 &&
+             Math.abs(api.getYcoord(p))       < 0.15;
+    });
+  },
+
+  // ── Capítol 10 — Almenys un lliscador + un polígon o cònica ──
+  'cap-10-ex': function(api, GV) {
+    var nums = api.getAllObjectNames('numeric');
+    var hasSlider = nums.some(function(n) {
+      try { return api.isMoveable(n); } catch (e) { return false; }
+    });
+    var polys  = api.getAllObjectNames('polygon');
+    var conics = api.getAllObjectNames('conic');
+    return hasSlider && (polys.length > 0 || conics.length > 0);
+  },
+
 };
 // ── End of VALIDATORS map ─────────────────────────────

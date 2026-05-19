@@ -2,13 +2,13 @@
 // curs/capitols.js — Dades dels capítols i helpers de UI (GeoCat)
 //
 // Adaptat de PyCat: canviat _LS_KEY, dades capítols/reptes,
-// logo, renderSimuladors estès amb .geogebra → geogebra.html
+// logo, renderSimuladors injecta applets GeoGebra inline.
 //
 // Funcions exportades al window global:
 //   injectCursLogo()           — pobla .logo-icon
 //   renderSidebar(currentNum)  — omple #sidebar-nav (amb ✓ de progrés)
 //   renderReptesSidebar(num)   — sidebar pels reptes (amb ✓ de progrés)
-//   renderSimuladors()         — converteix .geogebra → iframes
+//   renderSimuladors()         — converteix .geogebra → applets inline
 //   initSidebarToggle()        — hamburger mòbil
 //   initGlossariCurs()         — glossari modal
 //
@@ -135,13 +135,9 @@ function renderReptesSidebar(currentNum) {
 
 
 //
-// VERSIÓ SIMPLIFICADA — patró idèntic a experiment_geogebra.html
-//
-// Requisit: <script src="https://www.geogebra.org/apps/deployggb.js">
-//           carregat síncronament al <head> de cada pàgina HTML.
-//
-// Això garanteix que GGBApplet existeix quan renderSimuladors() s'executa.
-// Sense càrrega dinàmica, sense cues, sense IntersectionObserver.
+// PATRÓ: deployggb.js es carrega síncronament al <head> de cada
+// pàgina HTML, així GGBApplet existeix quan renderSimuladors()
+// s'executa. Sense càrrega dinàmica, sense cues, sense IntersectionObserver.
 
 var _ggbWidgetCount = 0;
 
@@ -275,10 +271,7 @@ function renderSimuladors() {
   });
 
   // ══════════════════════════════════════════════════════════
-  // INJECCIÓ — Patró IDÈNTIC a experiment_geogebra.html
-  //
-  // experiment_geogebra.html fa exactament això i FUNCIONA:
-  //   new GGBApplet(params, true).inject("ggb1");
+  // INJECCIÓ
   //
   // deployggb.js ja està carregat al <head> (síncron).
   // GGBApplet EXISTEIX aquí, garantit.

@@ -19,7 +19,6 @@
   <nav class="curs-nav">
     <a href="capitol-1.html" class="active">Capítols</a>
     <a href="repte-1.html">Reptes</a>
-    <a href="../geogebra.html">Simulador</a>
   </nav>
   <span class="curs-header-title">Capítol 5 — Construccions clàssiques I</span>
   <div class="curs-header-actions"></div>
@@ -159,14 +158,6 @@ m3=PerpendicularBisector(A,C)"
 B=(3,0)
 s=Segment(A,B)"
              data-fixed="A,B,s"
-             data-check="(api) => {
-               var lines = api.getAllObjectNames('line');
-               return lines.some(function(l) {
-                 var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
-                 var perp  = api.getValue('ArePerpendicular(Segment(A,B),' + l + ')') === 1;
-                 return onMid && perp;
-               });
-             }"
              data-goal-id="cap-5-ex"
              data-height="420">
         </div>
@@ -193,6 +184,8 @@ s=Segment(A,B)"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

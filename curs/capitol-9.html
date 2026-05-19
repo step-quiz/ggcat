@@ -19,7 +19,6 @@
   <nav class="curs-nav">
     <a href="capitol-1.html" class="active">Capítols</a>
     <a href="repte-1.html">Reptes</a>
-    <a href="../geogebra.html">Simulador</a>
   </nav>
   <span class="curs-header-title">Capítol 9 — Funcions i gràfiques</span>
   <div class="curs-header-actions"></div>
@@ -150,23 +149,6 @@ g(x)=If(x >= 0 && x <= 2*pi, cos(x))"
 
         <div class="geogebra"
              data-app="graphing"
-             data-check="(api) => {
-               /* Comprovem que existeix una funció f(x)=2x+1 (pendent 2, ordenada 1) */
-               var fns = api.getAllObjectNames('function');
-               var hasF = fns.some(function(fn) {
-                 /* La derivada de f ha de ser ~2 i f(0)~1 */
-                 var slope = api.getValue(fn + '\'(0)');
-                 var intercept = api.getValue(fn + '(0)');
-                 return Math.abs(slope - 2) < 0.15 && Math.abs(intercept - 1) < 0.15;
-               });
-               /* Comprovem que existeix un punt a (-0.5, 0) aprox */
-               var pts = api.getAllObjectNames('point');
-               var hasZero = pts.some(function(p) {
-                 return Math.abs(api.getXcoord(p) + 0.5) < 0.15 &&
-                        Math.abs(api.getYcoord(p)) < 0.15;
-               });
-               return hasF && hasZero;
-             }"
              data-goal-id="cap-9-ex"
              data-height="420">
         </div>
@@ -193,6 +175,8 @@ g(x)=If(x >= 0 && x <= 2*pi, cos(x))"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();

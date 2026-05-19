@@ -19,7 +19,6 @@
   <nav class="curs-nav">
     <a href="capitol-1.html" class="active">Capítols</a>
     <a href="repte-1.html">Reptes</a>
-    <a href="../geogebra.html">Simulador</a>
   </nav>
   <span class="curs-header-title">Capítol 2 — Rectes i segments</span>
   <div class="curs-header-actions"></div>
@@ -154,14 +153,6 @@ M=Midpoint(A,B)"
 B=(3,0)
 s=Segment(A,B)"
              data-fixed="A,B,s"
-             data-check="(api) => {
-               const pts = api.getAllObjectNames('point');
-               return pts.some(function(l) {
-                 return Math.abs(api.getXcoord(l) - 0) < 0.15 &&
-                        Math.abs(api.getYcoord(l) - 0) < 0.15 &&
-                        l !== 'A' && l !== 'B';
-               });
-             }"
              data-goal-id="cap-2-ex"
              data-height="400">
         </div>
@@ -188,6 +179,8 @@ s=Segment(A,B)"
 </div>
 
 <script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();
