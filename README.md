@@ -42,3 +42,12 @@ test-validators.js      Test harness Node per als validators (opcional)
 ## Progrés de l'alumne
 
 Es guarda localment al navegador (`localStorage`, clau `geocat_progress`). Cap dada s'envia a cap servidor.
+
+<!-- atribucio-centre:inici -->
+
+---
+
+Material desenvolupat per **David Arso Civil** per al Departament de Matemàtiques de l'INS Miquel Tarradell.
+Contingut sota CC BY-NC-SA 4.0, codi sota llicència MIT. Vegeu [`LLICENCIA.md`](LLICENCIA.md).
+
+<!-- atribucio-centre:final -->
