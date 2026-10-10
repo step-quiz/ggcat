@@ -292,7 +292,7 @@ function renderSimuladors() {
       width:               W,
       height:              H,
       showToolBar:         !cfg.readonly,
-      showAlgebraInput:    !cfg.readonly,
+      showAlgebraInput:    false,
       showMenuBar:         false,
       enableRightClick:    !cfg.readonly,
       enableLabelDrags:    !cfg.readonly,
@@ -303,6 +303,9 @@ function renderSimuladors() {
       appletOnLoad: function(api) {
         console.log('[GeoCat] ✓ Applet ' + cfg.id + ' carregat OK');
         wrapper._ggbApi = api;
+
+        // Només Vista Gràfica (amaga la columna d'àlgebra de l'esquerra)
+        api.setPerspective('G');
 
         // Eixos i graella sempre visibles
         api.evalCommand('ShowAxes(true)');
