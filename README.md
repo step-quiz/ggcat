@@ -28,10 +28,33 @@ curs/
   geovalidator.js       Llibreria d'assertions geomètriques (objecte GV)
   validators.js         Mapa goalId → funció validadora per a cada exercici
   glossari-data.js      Contingut HTML del glossari de comandes
+  debug-tester.js       Test end-to-end del botó «Comprova» (curs/index.html?debug=1)
+  edit.html             Editor de revisió del text dels capítols (vegeu més avall)
 REPTES_SPECIFICATION.md Especificació dels 30 reptes candidats
 TODO.md                 Tasques pendents
-test-validators.js      Test harness Node per als validators (opcional)
+GeoCat-30Reptes.docx    Versió en Word de la llista de reptes
+test-validators.js      Test Node dels validators amb una API de GeoGebra simulada
+test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 ```
+
+## Proves
+
+- `node test-validators.js` — comprova els 20 validadors (capítols i reptes) amb una API de
+  GeoGebra simulada: per a cada un, escena buida, solució correcta i solució incorrecta. Ara
+  en falla 1 de 30 comprovacions: la solució correcta del `repte-6`, per una limitació del
+  simulacre, no del validador.
+- `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
+- **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
+  `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
+  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗.
+
+## Editor de text (`curs/edit.html`)
+
+Eina interna per revisar la redacció dels capítols: carrega un capítol, en separa els blocs
+editables (títols, paràgrafs…) i permet corregir-los un per un i marcar-los com a revisats.
+Els canvis es desen al `localStorage` del navegador (un registre per capítol) i
+**⬇ Descarrega** baixa l'HTML del capítol amb les correccions, per substituir el fitxer del
+repositori.
 
 ## Estat del projecte
 

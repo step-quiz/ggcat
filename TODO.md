@@ -114,4 +114,4 @@ Opció senzilla: al final de `renderSimuladors()`, comprovar `if (typeof GGBAppl
 - Mai comprovar labels específics de l'alumne: iterar amb `api.getAllObjectNames(type)`.
 - GeoGebra no funciona offline. No cal Service Worker.
 - Verificar sintaxi JS amb `node --check fitxer.js` després de cada edició.
-- Verificar els validators dels reptes amb `node test-validators.js` (29/30 passen actualment; el repte-6 falla pel mock, no per cap bug real).
+- Verificar els validators amb `node test-validators.js` (cobreix capítols i reptes: 29 de 30 comprovacions passen; la solució correcta del repte-6 falla pel mock, no per cap bug real).
