@@ -40,6 +40,29 @@ function createMockAPI(objects) {
   const byName = {};
   objects.forEach(function(o) { byName[o.name] = o; });
 
+  // Coordenades d'un punt: nom («A») o Midpoint(X,Y)
+  function puntDe(expr) {
+    var mm = expr.match(/^Midpoint\((\w+),(\w+)\)$/);
+    if (mm) {
+      var X = puntDe(mm[1]), Y = puntDe(mm[2]);
+      return X && Y ? [(X[0] + Y[0]) / 2, (X[1] + Y[1]) / 2] : null;
+    }
+    var o = byName[expr];
+    return o && o.x != null ? [o.x, o.y] : null;
+  }
+
+  // Recta o segment com a { p: punt, d: direcció }
+  function rectaDe(nom) {
+    var o = byName[nom];
+    if (!o) return null;
+    if (o.p && o.d) return { p: o.p, d: o.d };
+    if (o.a && o.b) {
+      var A = puntDe(o.a), B = puntDe(o.b);
+      return A && B ? { p: A, d: [B[0] - A[0], B[1] - A[1]] } : null;
+    }
+    return null;
+  }
+
   const api = {
     getAllObjectNames: function(type) {
       return objects.filter(function(o) { return o.type === type; })
@@ -127,10 +150,27 @@ function createMockAPI(objects) {
         return NaN;
       }
 
-      // ArePerpendicular / AreParallel / IsOnPath → retornem des de propietat
-      // (no usat pels validators actuals, però preparat)
-      m = expr.match(/^(ArePerpendicular|AreParallel|IsOnPath)\((\w+),(\w+)\)$/);
-      if (m) return NaN;
+      // IsOnPath(punt, recta) i ArePerpendicular / AreParallel(r1, r2): com
+      // GeoGebra, tornen 1 (cert) o 0 (fals). Les rectes i els segments del
+      // mock porten els extrems: { a: 'A', b: 'B' } (noms de punts) o
+      // { p: [x, y], d: [dx, dy] } (un punt i la direcció). El punt pot ser
+      // un nom o Midpoint(X,Y).
+      m = expr.match(/^IsOnPath\((\w+|Midpoint\(\w+,\w+\)),(\w+)\)$/);
+      if (m) {
+        var P = puntDe(m[1]), r = rectaDe(m[2]);
+        if (!P || !r) return NaN;
+        var creu = (P[0] - r.p[0]) * r.d[1] - (P[1] - r.p[1]) * r.d[0];
+        return Math.abs(creu) / Math.hypot(r.d[0], r.d[1]) < 1e-6 ? 1 : 0;
+      }
+      m = expr.match(/^(ArePerpendicular|AreParallel)\((\w+),(\w+)\)$/);
+      if (m) {
+        var r1 = rectaDe(m[2]), r2 = rectaDe(m[3]);
+        if (!r1 || !r2) return NaN;
+        var n1 = Math.hypot(r1.d[0], r1.d[1]), n2 = Math.hypot(r2.d[0], r2.d[1]);
+        var cos = (r1.d[0] * r2.d[0] + r1.d[1] * r2.d[1]) / (n1 * n2);
+        if (m[1] === 'ArePerpendicular') return Math.abs(cos) < 1e-6 ? 1 : 0;
+        return Math.abs(Math.abs(cos) - 1) < 1e-6 ? 1 : 0;
+      }
 
       // Angle(a,b,c)
       m = expr.match(/^Angle\((\w+),(\w+),(\w+)\)$/);
@@ -200,11 +240,15 @@ const CORRECT_SOLUTIONS = {
   ],
 
   // ── Repte 6: Mediatriu (recta) + punt d'intersecció amb eix Y
+  // Escena de curs/repte-6.html: A=(-4,-1), B=(4,3), s=Segment(A,B).
+  // Mediatriu: passa pel punt mitjà (0,1) amb direcció (-4,8) ⟂ (8,4);
+  // talla l'eix Y a (0,1).
   'repte-6': [
-    { name: 'A',  type: 'point', x: -3, y:  2 },
-    { name: 'B',  type: 'point', x:  5, y: -1 },
-    { name: 'l',  type: 'line' },
-    { name: 'M',  type: 'point', x: 0,  y: 1.5 },   // intersecció eix Y
+    { name: 'A',  type: 'point', x: -4, y: -1 },
+    { name: 'B',  type: 'point', x:  4, y:  3 },
+    { name: 's',  type: 'segment', a: 'A', b: 'B', length: Math.sqrt(80) },
+    { name: 'f',  type: 'line', p: [0, 1], d: [-4, 8] },
+    { name: 'C',  type: 'point', x: 0,  y: 1 },     // intersecció amb l'eix Y
   ],
 
   // ── Repte 7: Triangle equilàter (polígon) + costats iguals + angle 60°
@@ -298,11 +342,12 @@ const WRONG_SOLUTIONS = {
     { name: 'i', type: 'segment', length: 2 },
   ],
 
-  // Repte 6: Recta però cap punt sobre l'eix Y (excepte A i B)
+  // Repte 6: Mediatriu correcta, però sense el punt de l'eix Y
   'repte-6': [
-    { name: 'A', type: 'point', x: -3, y: 2 },
-    { name: 'B', type: 'point', x:  5, y: -1 },
-    { name: 'l', type: 'line' },
+    { name: 'A', type: 'point', x: -4, y: -1 },
+    { name: 'B', type: 'point', x:  4, y:  3 },
+    { name: 's', type: 'segment', a: 'A', b: 'B', length: Math.sqrt(80) },
+    { name: 'f', type: 'line', p: [0, 1], d: [-4, 8] },
   ],
 
   // Repte 7: Polígon amb costats desiguals (no equilàter)
@@ -344,6 +389,20 @@ const WRONG_SOLUTIONS = {
     { name: 'h', type: 'segment', length: 3 },
     { name: 'i', type: 'segment', length: 3 },
     { name: 'alfa', type: 'angle', value: 90 * Math.PI / 180 },
+  ],
+};
+
+// ── 4b. Més solucions incorrectes (errors típics) ───────
+
+const EXTRA_WRONG = {
+  // Repte 6: una recta pel punt mitjà que no és perpendicular a AB
+  // (p. ex. la recta x = 0), amb el punt de l'eix Y
+  'repte-6': [
+    { name: 'A', type: 'point', x: -4, y: -1 },
+    { name: 'B', type: 'point', x:  4, y:  3 },
+    { name: 's', type: 'segment', a: 'A', b: 'B', length: Math.sqrt(80) },
+    { name: 'f', type: 'line', p: [0, 1], d: [0, 1] },
+    { name: 'C', type: 'point', x: 0, y: 1 },
   ],
 };
 
@@ -410,6 +469,7 @@ for (var n = 1; n <= 10; n++) {
   // Test 3: Solució parcial/incorrecta → false
   var wrong = WRONG_SOLUTIONS[id];
   test('Solució incorrecta → false', runValidator(id, wrong),  false);
+  if (EXTRA_WRONG[id]) test('Error típic → false', runValidator(id, EXTRA_WRONG[id]), false);
 
   console.log('');
 }

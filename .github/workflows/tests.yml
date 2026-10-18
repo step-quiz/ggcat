@@ -1,5 +1,6 @@
-# Comprovacions de cada canvi: sintaxi dels fitxers JS i que les pàgines
-# descrites a tools/pages/*.json siguin les que hi ha a curs/.
+# Comprovacions de cada canvi: sintaxi dels fitxers JS, que les pàgines
+# descrites a tools/pages/*.json siguin les que hi ha a curs/, i els
+# validadors dels reptes amb una API de GeoGebra simulada.
 name: Tests
 
 on:
@@ -28,3 +29,9 @@ jobs:
 
       - name: Generador de pàgines ↔ curs/
         run: node tools/generate-pages.js --comprova
+
+      - name: Validadors dels reptes
+        run: node test-validators.js
+
+      - name: Lògica del provador end-to-end
+        run: node test-debug-tester-logic.js

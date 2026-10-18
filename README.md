@@ -43,11 +43,14 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 
 - `node tools/generate-pages.js --comprova` — comprova que les pàgines descrites a
   `tools/pages/*.json` són les que hi ha a `curs/`. GitHub ho fa a cada canvi
-  (`.github/workflows/tests.yml`, juntament amb la sintaxi de tots els fitxers JS).
-- `node test-validators.js` — comprova els 20 validadors (capítols i reptes) amb una API de
-  GeoGebra simulada: per a cada un, escena buida, solució correcta i solució incorrecta. Ara
-  en falla 1 de 30 comprovacions: la solució correcta del `repte-6`, per una limitació del
-  simulacre, no del validador.
+  (`.github/workflows/tests.yml`, juntament amb la sintaxi de tots els fitxers JS i els dos
+  tests de sota).
+- `node test-validators.js` — comprova els validadors dels 10 reptes amb una API de GeoGebra
+  simulada: per a cada repte, escena buida, solució correcta i solució incorrecta (i, al repte 6,
+  també una recta pel punt mitjà que no és perpendicular): 31 comprovacions. El simulacre calcula
+  de debò `IsOnPath`, `ArePerpendicular` i `AreParallel` a partir dels punts. Els validadors dels
+  capítols (`cap-N-ex`) no hi són: es proven al navegador (vegeu més avall). GitHub també ho
+  executa a cada canvi.
 - `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
 - **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
