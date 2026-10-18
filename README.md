@@ -24,12 +24,14 @@ curs/
   capitol-N.html        10 capítols del curs
   repte-N.html          10 reptes (de 30 previstos)
   curs.css              Estils del curs
-  capitols.js           Dades, sidebar, injecció de widgets, progrés, glossari
+  capitols.js           Dades, sidebar, injecció de widgets, glossari
+  progress.js           Progrés de l'alumne (fitxer comú; clau geocat_progress)
   geovalidator.js       Llibreria d'assertions geomètriques (objecte GV)
   validators.js         Mapa goalId → funció validadora per a cada exercici
   glossari-data.js      Contingut HTML del glossari de comandes
   debug-tester.js       Test end-to-end del botó «Comprova» (curs/index.html?debug=1)
   edit.html             Editor de revisió del text dels capítols (vegeu més avall)
+tools/                  Generador de pàgines JSON → HTML i el seu invers (vegeu tools/README.md)
 REPTES_SPECIFICATION.md Especificació dels 30 reptes candidats
 TODO.md                 Tasques pendents
 GeoCat-30Reptes.docx    Versió en Word de la llista de reptes
@@ -39,6 +41,9 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 
 ## Proves
 
+- `node tools/generate-pages.js --comprova` — comprova que les pàgines descrites a
+  `tools/pages/*.json` són les que hi ha a `curs/`. GitHub ho fa a cada canvi
+  (`.github/workflows/tests.yml`, juntament amb la sintaxi de tots els fitxers JS).
 - `node test-validators.js` — comprova els 20 validadors (capítols i reptes) amb una API de
   GeoGebra simulada: per a cada un, escena buida, solució correcta i solució incorrecta. Ara
   en falla 1 de 30 comprovacions: la solució correcta del `repte-6`, per una limitació del
@@ -61,6 +66,14 @@ repositori.
 - 10 capítols: ✅ complets (amb exercici validat al final)
 - 10 reptes (fàcils + mitjans): ✅ complets
 - 20 reptes (mitjans + difícils): ⬜ pendents (especificats a `REPTES_SPECIFICATION.md`)
+
+## Fitxers comuns
+
+`LICENSE`, `LLICENCIA.md` i `curs/progress.js` són **fitxers comuns** dels cursos de la família: l'original és al repositori
+[step-quiz-commons](https://github.com/step-quiz/step-quiz-commons), on també hi ha què té de
+diferent aquest web (`comuns.json`). El workflow `.github/workflows/comuns.yml` els posa al dia
+cada dia (o a mà: Actions → «Fitxers comuns» → Run workflow). **No els editis aquí**: el canvi es
+perdria l'endemà. Canvia'ls a step-quiz-commons.
 
 ## Progrés de l'alumne
 
