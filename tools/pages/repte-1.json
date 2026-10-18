@@ -1,0 +1,35 @@
+{
+  "type": "repte",
+  "num": 1,
+  "titol": "Triangle des de zero",
+  "difficulty": "facil",
+  "prev": {
+    "url": "capitol-1.html",
+    "label": "← Capítols"
+  },
+  "next": {
+    "url": "repte-2.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Escriu <code>A=(-2,-1)</code>, <code>B=(4,-1)</code> i <code>C=(1,4)</code> a la barra d'entrada (un per un). Després escriu <code>Polígon(A,B,C)</code> per crear el triangle.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Crea els punts <strong>A = (−2, −1)</strong>, <strong>B = (4, −1)</strong> i <strong>C = (1, 4)</strong> al pla. Després, crea el <strong>triangle</strong> (polígon tancat) format per aquests tres punts.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "goalId": "repte-1",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

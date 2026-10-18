@@ -1,0 +1,35 @@
+{
+  "type": "repte",
+  "num": 6,
+  "titol": "Mediatriu i intersecció",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-5.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-7.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Escriu <code>Mediatriu(A,B)</code> per crear la mediatriu. Després escriu <code>Intersecció(mediatriu, EixY)</code> per trobar el punt on talla l'eix Y. El punt hauria de tenir coordenada x = 0.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El segment AB amb <strong>A = (−4, −1)</strong> i <strong>B = (4, 3)</strong> ja està construït. Construeix la <strong>mediatriu</strong> del segment AB i marca el <strong>punt on la mediatriu talla l'eix Y</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(-4,-1)\nB=(4,3)\ns=Segment(A,B)",
+            "fixed": "A,B,s",
+            "goalId": "repte-6",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

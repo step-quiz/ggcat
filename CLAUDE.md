@@ -35,9 +35,11 @@ repositori, si n'hi ha més avall, manen sobre aquestes quan diuen una altra cos
 - [`README.md`](README.md)
 - [`TODO.md`](TODO.md)
 - [`REPTES_SPECIFICATION.md`](REPTES_SPECIFICATION.md)
+- [`tools/README.md`](tools/README.md)
 
 Proves (des de l'arrel del repositori):
 
 ```
+node tools/generate-pages.js --comprova
 node test-validators.js
 ```
