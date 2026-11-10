@@ -70,8 +70,8 @@
     'cap-6-ex': {
       // Inicial: f=Line((0,0),(3,1)), P=(0,3) [fixats]
       label: 'Cap 6 — Paral·lela a f per P',
-      correct: ['g=Parallel(f,P)'],
-      wrong:   ['g=Perpendicular(P,f)']        // perpendicular, no paral·lela
+      correct: ['g=Line(P,f)'],                // Line(punt, recta) = paral·lela per P
+      wrong:   ['g=PerpendicularLine(P,f)']    // perpendicular, no paral·lela
     },
     'cap-7-ex': {
       label: 'Cap 7 — Hexàgon regular (6 costats)',
@@ -124,7 +124,7 @@
         'A=(0,0)', 'B=(6,0)', 'C=(3,4)',
         't=Polygon(A,B,C)',
         'ar=Area(t)',                          // ≈ 12
-        'al=Angle(A,B,C)'                      // angle a B ≈ 53.13°
+        'al=Angle(C,B,A)'                      // angle a B ≈ 53.13° (antihorari)
       ],
       wrong: [
         'A=(0,0)', 'B=(6,0)', 'C=(3,4)',
@@ -145,13 +145,14 @@
     },
     'repte-7': {
       label: 'Repte 7 — Triangle equilàter',
-      correct: ['A=(0,0)', 'B=(4,0)', 'eq=Polygon(A,B,3)'],
+      // Polygon(A,B,3) crea el tercer vèrtex, C. El validador demana un angle de 60°.
+      correct: ['A=(0,0)', 'B=(4,0)', 'eq=Polygon(A,B,3)', 'al=Angle(B,A,C)'],
       wrong:   ['A=(0,0)', 'B=(3,0)', 'C=(1,2)', 't=Polygon(A,B,C)']   // escalè
     },
     'repte-8': {
       // Inicial: f=Line((0,0),(4,1)), P=(3,4) [fixats]
       label: 'Repte 8 — Perpendicular i peu',
-      correct: ['g=Perpendicular(P,f)', 'F=Intersect(g,f)'],
+      correct: ['g=PerpendicularLine(P,f)', 'F=Intersect(g,f)'],
       wrong:   ['F=(0,0)']                     // cap perpendicular, peu equivocat
     },
     'repte-9': {

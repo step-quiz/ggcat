@@ -3,10 +3,20 @@
 // test-validators.js — Simulador d'humà per verificar validators
 //
 // Crea un mock de l'API GeoGebra amb la solució correcta de
-// cada repte, executa el validador, i comprova que:
+// cada exercici (reptes i capítols), executa el validador, i comprova que:
 //   ✓  La solució correcta retorna true
-//   ✗  Una escena buida retorna false
+//   ✗  L'escena inicial (buida, o amb els objectes que ja porta la pàgina)
+//      retorna false
 //   ✗  Una solució parcialment correcta retorna false
+//
+// El mock imita tres coses de l'applet real que, si no s'imiten, amaguen
+// errors (comprovades amb el GeoGebra real el 10/11/2026):
+//   · Els tipus són els ESPECÍFICS: 'circle' (no 'conic'), 'triangle',
+//     'quadrilateral', 'pentagon', 'hexagon' i 'polygon' (la resta i els
+//     regulars). Una escena amb un tipus que GeoGebra no fa servir és un error.
+//   · «IsOnPath» no és cap comanda: getValue d'una expressió desconeguda
+//     torna 0 (no NaN).
+//   · Els angles són orientats: fets a l'inrevés, mesuren 360° − α.
 // ════════════════════════════════════════════════════════════
 
 const vm  = require('vm');
@@ -35,13 +45,26 @@ const VALIDATORS = sandbox.VALIDATORS;
 
 // ── 2. Fàbrica de mock GeoGebra API ──────────────────────
 
-function createMockAPI(objects) {
-  // objects: array de { name, type, x?, y?, value?, length?, midpoint?, center?, radius? }
-  const byName = {};
-  objects.forEach(function(o) { byName[o.name] = o; });
+// Tipus d'objecte que torna de debò getObjectType (els que fan servir les escenes)
+const TIPUS_REALS = ['point', 'segment', 'line', 'ray', 'circle', 'ellipse',
+  'triangle', 'quadrilateral', 'pentagon', 'hexagon', 'polygon',
+  'angle', 'numeric', 'function', 'locus'];
 
-  // Coordenades d'un punt: nom («A») o Midpoint(X,Y)
+function createMockAPI(objects) {
+  // objects: array de { name, type, x?, y?, value?, length?, midpoint?, center?,
+  //                     radius?, moveable?, fn? }
+  const byName = {};
+  objects.forEach(function(o) {
+    if (TIPUS_REALS.indexOf(o.type) === -1) {
+      throw new Error('Escena amb un tipus que GeoGebra no fa servir: ' + o.type);
+    }
+    byName[o.name] = o;
+  });
+
+  // Coordenades d'un punt: nom («A»), Midpoint(X,Y) o literal «(1,2)»
   function puntDe(expr) {
+    var lit = expr.match(/^\((-?[\d.]+),(-?[\d.]+)\)$/);
+    if (lit) return [parseFloat(lit[1]), parseFloat(lit[2])];
     var mm = expr.match(/^Midpoint\((\w+),(\w+)\)$/);
     if (mm) {
       var X = puntDe(mm[1]), Y = puntDe(mm[2]);
@@ -53,6 +76,11 @@ function createMockAPI(objects) {
 
   // Recta o segment com a { p: punt, d: direcció }
   function rectaDe(nom) {
+    var sg = nom.match(/^Segment\((\w+),(\w+)\)$/);
+    if (sg) {
+      var S1 = puntDe(sg[1]), S2 = puntDe(sg[2]);
+      return S1 && S2 ? { p: S1, d: [S2[0] - S1[0], S2[1] - S1[1]] } : null;
+    }
     var o = byName[nom];
     if (!o) return null;
     if (o.p && o.d) return { p: o.p, d: o.d };
@@ -91,6 +119,11 @@ function createMockAPI(objects) {
     },
 
     isDefined: function(label) { return !!byName[label]; },
+
+    isMoveable: function(label) {
+      var o = byName[label];
+      return !!(o && o.moveable);
+    },
 
     getXmax: function() { return 10; },
     getXmin: function() { return -10; },
@@ -140,29 +173,24 @@ function createMockAPI(objects) {
         return o && o.radius != null ? o.radius : NaN;
       }
 
-      // Distance(a,b)
-      m = expr.match(/^Distance\((\w+),(\w+)\)$/);
+      // Distance(punt, punt) i Distance(punt, recta). El punt pot ser un nom,
+      // Midpoint(X,Y) o un literal (x,y). Les rectes i els segments del mock
+      // porten els extrems: { a: 'A', b: 'B' } (noms de punts) o
+      // { p: [x, y], d: [dx, dy] } (un punt i la direcció).
+      m = expr.match(/^Distance\((\w+|Midpoint\(\w+,\w+\)|\(-?[\d.]+,-?[\d.]+\)),(\w+)\)$/);
       if (m) {
-        var a = byName[m[1]], b = byName[m[2]];
-        if (a && b && a.x != null && b.x != null) {
-          return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+        var P = puntDe(m[1]), Q = puntDe(m[2]), r = rectaDe(m[2]);
+        if (P && Q) return Math.hypot(P[0] - Q[0], P[1] - Q[1]);
+        if (P && r) {
+          var creu = (P[0] - r.p[0]) * r.d[1] - (P[1] - r.p[1]) * r.d[0];
+          return Math.abs(creu) / Math.hypot(r.d[0], r.d[1]);
         }
         return NaN;
       }
 
-      // IsOnPath(punt, recta) i ArePerpendicular / AreParallel(r1, r2): com
-      // GeoGebra, tornen 1 (cert) o 0 (fals). Les rectes i els segments del
-      // mock porten els extrems: { a: 'A', b: 'B' } (noms de punts) o
-      // { p: [x, y], d: [dx, dy] } (un punt i la direcció). El punt pot ser
-      // un nom o Midpoint(X,Y).
-      m = expr.match(/^IsOnPath\((\w+|Midpoint\(\w+,\w+\)),(\w+)\)$/);
-      if (m) {
-        var P = puntDe(m[1]), r = rectaDe(m[2]);
-        if (!P || !r) return NaN;
-        var creu = (P[0] - r.p[0]) * r.d[1] - (P[1] - r.p[1]) * r.d[0];
-        return Math.abs(creu) / Math.hypot(r.d[0], r.d[1]) < 1e-6 ? 1 : 0;
-      }
-      m = expr.match(/^(ArePerpendicular|AreParallel)\((\w+),(\w+)\)$/);
+      // ArePerpendicular / AreParallel(r1, r2): com GeoGebra, tornen 1 o 0.
+      // Cada recta és un nom o Segment(X,Y).
+      m = expr.match(/^(ArePerpendicular|AreParallel)\((\w+|Segment\(\w+,\w+\)),(\w+)\)$/);
       if (m) {
         var r1 = rectaDe(m[2]), r2 = rectaDe(m[3]);
         if (!r1 || !r2) return NaN;
@@ -172,15 +200,24 @@ function createMockAPI(objects) {
         return Math.abs(Math.abs(cos) - 1) < 1e-6 ? 1 : 0;
       }
 
+      // f(k) i f'(k) d'una funció: { type: 'function', fn: function(x) {…} }
+      m = expr.match(/^(\w+)('?)\((-?[\d.]+)\)$/);
+      if (m && byName[m[1]] && byName[m[1]].fn) {
+        var fn = byName[m[1]].fn, k = parseFloat(m[3]);
+        return m[2] ? (fn(k + 1e-6) - fn(k - 1e-6)) / 2e-6 : fn(k);
+      }
+
       // Angle(a,b,c)
       m = expr.match(/^Angle\((\w+),(\w+),(\w+)\)$/);
       if (m) return NaN;
 
-      // Literal name → value del objecte
+      // Nom d'un objecte → el seu valor (NaN si no en té, com un punt)
       var o = byName[expr];
-      if (o && o.value != null) return o.value;
+      if (o) return o.value != null ? o.value : NaN;
 
-      return NaN;
+      // Qualsevol altra cosa (p. ex. «IsOnPath(...)», que no existeix): 0,
+      // com fa l'applet real amb una expressió que no entén.
+      return 0;
     }
   };
 
@@ -355,7 +392,7 @@ const WRONG_SOLUTIONS = {
     { name: 'A',  type: 'point',   x: 0, y: 0 },
     { name: 'B',  type: 'point',   x: 5, y: 0 },
     { name: 'C',  type: 'point',   x: 2, y: 3 },
-    { name: 'p1', type: 'polygon' },
+    { name: 'p1', type: 'triangle' },
     { name: 'f',  type: 'segment', length: 5 },
     { name: 'g',  type: 'segment', length: 3.6 },
     { name: 'h',  type: 'segment', length: 3.6 },
@@ -404,7 +441,186 @@ const EXTRA_WRONG = {
     { name: 'f', type: 'line', p: [0, 1], d: [0, 1] },
     { name: 'C', type: 'point', x: 0, y: 1 },
   ],
+
+  // Repte 10: quadrat amb l'angle recte mesurat a l'inrevés (270°)
+  'repte-10': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 3, y: 0 },
+    { name: 'C', type: 'point', x: 3, y: 3 },
+    { name: 'D', type: 'point', x: 0, y: 3 },
+    { name: 'f', type: 'segment', length: 3 },
+    { name: 'g', type: 'segment', length: 3 },
+    { name: 'h', type: 'segment', length: 3 },
+    { name: 'i', type: 'segment', length: 3 },
+    { name: 'alfa', type: 'angle', value: 270 * Math.PI / 180 },
+  ],
+
+  // Capítol 5: perpendicular a AB que no passa pel punt mitjà
+  'cap-5-ex': [
+    { name: 'm', type: 'line', p: [1, 0], d: [0, 1] },
+  ],
+
+  // Capítol 6: paral·lela a f que no passa per P
+  'cap-6-ex': [
+    { name: 'g', type: 'line', p: [0, 1], d: [3, 1] },
+  ],
+
+  // Capítol 10: un lliscador sol, sense cap figura
+  'cap-10-ex': [
+    { name: 'a', type: 'numeric', value: 1, moveable: true },
+  ],
 };
+
+// ── 4c. Més solucions correctes (altres maneres de fer-ho bé) ───────
+
+const EXTRA_CORRECT = {
+  // Repte 4: l'angle mesurat a l'inrevés (360° − 53.13°)
+  'repte-4': [
+    { name: 'A',    type: 'point',   x: 0, y: 0 },
+    { name: 'B',    type: 'point',   x: 6, y: 0 },
+    { name: 'C',    type: 'point',   x: 3, y: 4 },
+    { name: 't',    type: 'triangle', value: 12 },
+    { name: 'f',    type: 'segment', length: 6 },
+    { name: 'g',    type: 'segment', length: 5 },
+    { name: 'h',    type: 'segment', length: 5 },
+    { name: 'alfa', type: 'angle',   value: (360 - 53.13) * Math.PI / 180 },
+  ],
+
+  // Repte 7: equilàter fet amb tres punts (tipus 'triangle', no 'polygon')
+  'repte-7': [
+    { name: 'A',    type: 'point',   x: 0,    y: 0 },
+    { name: 'B',    type: 'point',   x: 4,    y: 0 },
+    { name: 'C',    type: 'point',   x: 2,    y: 3.464 },
+    { name: 't1',   type: 'triangle', value: 6.93 },
+    { name: 'f',    type: 'segment', length: 4 },
+    { name: 'g',    type: 'segment', length: 4 },
+    { name: 'h',    type: 'segment', length: 4 },
+    { name: 'alfa', type: 'angle',   value: 300 * Math.PI / 180 },
+  ],
+
+  // Capítol 4: l'angle mesurat a l'inrevés
+  'cap-4-ex': [
+    { name: 'alfa', type: 'angle', value: (360 - 56.31) * Math.PI / 180 },
+  ],
+
+  // Capítol 7: hexàgon fet amb sis punts (tipus 'hexagon')
+  'cap-7-ex': [
+    { name: 'h', type: 'hexagon', value: 2.6 },
+    { name: 'a', type: 'segment', length: 1 }, { name: 'b', type: 'segment', length: 1 },
+    { name: 'c', type: 'segment', length: 1 }, { name: 'd', type: 'segment', length: 1 },
+    { name: 'e', type: 'segment', length: 1 }, { name: 'f', type: 'segment', length: 1 },
+  ],
+
+  // Capítol 10: lliscador i polígon (en lloc de circumferència)
+  'cap-10-ex': [
+    { name: 'n', type: 'numeric', value: 5, moveable: true },
+    { name: 'p', type: 'polygon', value: 1.72 },
+  ],
+};
+
+// ── 4d. Exercicis dels capítols ─────────────────────────
+// INITIAL: els objectes que la pàgina ja porta (data-commands). Les
+// solucions de CAP_CORRECT, CAP_WRONG, EXTRA_WRONG i EXTRA_CORRECT d'un
+// capítol s'hi afegeixen.
+
+const INITIAL = {
+  'cap-2-ex': [
+    { name: 'A', type: 'point', x: -3, y: 0 },
+    { name: 'B', type: 'point', x:  3, y: 0 },
+    { name: 's', type: 'segment', a: 'A', b: 'B', length: 6 },
+  ],
+  'cap-4-ex': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 4, y: 0 },
+    { name: 'C', type: 'point', x: 2, y: 3 },
+    { name: 'p', type: 'triangle', value: 6 },
+  ],
+  'cap-5-ex': [
+    { name: 'A', type: 'point', x: -3, y: 0 },
+    { name: 'B', type: 'point', x:  3, y: 0 },
+    { name: 's', type: 'segment', a: 'A', b: 'B', length: 6 },
+  ],
+  'cap-6-ex': [
+    { name: 'f', type: 'line', p: [0, 0], d: [3, 1] },
+    { name: 'P', type: 'point', x: 0, y: 3 },
+  ],
+  'cap-8-ex': [
+    { name: 'A', type: 'point', x: 1, y: 1 },
+    { name: 'B', type: 'point', x: 4, y: 1 },
+    { name: 'C', type: 'point', x: 2, y: 4 },
+    { name: 't', type: 'triangle', value: 4.5 },
+    { name: 'f', type: 'line', p: [0, -5], d: [0, 10] },
+  ],
+};
+
+const CAP_CORRECT = {
+  'cap-1-ex': [ { name: 'P', type: 'point', x: 3, y: 2 } ],
+  'cap-2-ex': [ { name: 'M', type: 'point', x: 0, y: 0 } ],
+  'cap-3-ex': [
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+  ],
+  'cap-4-ex': [ { name: 'alfa', type: 'angle', value: 56.31 * Math.PI / 180 } ],
+  'cap-5-ex': [ { name: 'm', type: 'line', p: [0, 0], d: [0, 1] } ],
+  'cap-6-ex': [ { name: 'g', type: 'line', p: [0, 3], d: [3, 1] } ],
+  'cap-7-ex': [
+    { name: 'h', type: 'polygon', value: 2.6 },      // Polygon(A,B,6): regular
+    { name: 'a', type: 'segment', length: 1 }, { name: 'b', type: 'segment', length: 1 },
+    { name: 'c', type: 'segment', length: 1 }, { name: 'd', type: 'segment', length: 1 },
+    { name: 'e', type: 'segment', length: 1 }, { name: 'f', type: 'segment', length: 1 },
+  ],
+  'cap-8-ex': [
+    { name: "A'", type: 'point', x: -1, y: 1 },
+    { name: "B'", type: 'point', x: -4, y: 1 },
+    { name: "C'", type: 'point', x: -2, y: 4 },
+    { name: 't2', type: 'triangle', value: 4.5 },
+  ],
+  'cap-9-ex': [
+    { name: 'f', type: 'function', fn: function(x) { return 2 * x + 1; } },
+    { name: 'P', type: 'point', x: -0.5, y: 0 },
+  ],
+  'cap-10-ex': [
+    { name: 'a', type: 'numeric', value: 1, moveable: true },
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 1 },
+  ],
+};
+
+const CAP_WRONG = {
+  'cap-1-ex': [ { name: 'P', type: 'point', x: 0, y: 0 } ],
+  'cap-2-ex': [ { name: 'N', type: 'point', x: 1, y: 1 } ],
+  'cap-3-ex': [                                     // radi 2
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 2 },
+  ],
+  'cap-4-ex': [ { name: 'alfa', type: 'angle', value: 67.38 * Math.PI / 180 } ],
+  'cap-5-ex': [ { name: 'm', type: 'line', p: [-3, 0], d: [1, 0] } ],   // la recta AB
+  'cap-6-ex': [ { name: 'g', type: 'line', p: [0, 3], d: [-1, 3] } ],   // perpendicular per P
+  'cap-7-ex': [                                     // triangle regular
+    { name: 't', type: 'polygon', value: 3.9 },
+    { name: 'a', type: 'segment', length: 3 }, { name: 'b', type: 'segment', length: 3 },
+    { name: 'c', type: 'segment', length: 3 },
+  ],
+  'cap-8-ex': [                                     // reflectit sobre l'eix X
+    { name: 'A2', type: 'point', x: 1, y: -1 },
+    { name: 'B2', type: 'point', x: 4, y: -1 },
+    { name: 'C2', type: 'point', x: 2, y: -4 },
+    { name: 't2', type: 'triangle', value: 4.5 },
+  ],
+  'cap-9-ex': [                                     // punt al tall amb l'eix Y
+    { name: 'f', type: 'function', fn: function(x) { return 2 * x + 1; } },
+    { name: 'P', type: 'point', x: 0, y: 1 },
+  ],
+  'cap-10-ex': [                                    // sense lliscador
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+  ],
+};
+
+Object.keys(CAP_CORRECT).forEach(function(id) {
+  CORRECT_SOLUTIONS[id] = CAP_CORRECT[id];
+  WRONG_SOLUTIONS[id]   = CAP_WRONG[id];
+});
 
 // ── 5. Execució dels tests ──────────────────────────────
 
@@ -455,24 +671,26 @@ console.log(COL.bold + '  Test de validators — Simulador d\'humà          ' +
 console.log(COL.bold + '═══════════════════════════════════════════════════' + COL.reset);
 console.log('');
 
-for (var n = 1; n <= 10; n++) {
-  var id = 'repte-' + n;
+Object.keys(CORRECT_SOLUTIONS).forEach(function(id) {
   console.log(COL.cyan + COL.bold + '  ▸ ' + id + COL.reset);
+  var inicial = INITIAL[id] || [];
+  var amb = function(objs) { return inicial.concat(objs); };
 
   // Test 1: Solució correcta → true
-  var correct = CORRECT_SOLUTIONS[id];
-  test('Solució correcta → true',  runValidator(id, correct), true);
+  test('Solució correcta → true',  runValidator(id, amb(CORRECT_SOLUTIONS[id])), true);
+  if (EXTRA_CORRECT[id]) {
+    test('Una altra solució correcta → true', runValidator(id, amb(EXTRA_CORRECT[id])), true);
+  }
 
-  // Test 2: Escena buida → false
-  test('Escena buida → false',     runValidator(id, []),       false);
+  // Test 2: Escena inicial (buida, o el que ja porta la pàgina) → false
+  test('Escena inicial → false',   runValidator(id, inicial), false);
 
   // Test 3: Solució parcial/incorrecta → false
-  var wrong = WRONG_SOLUTIONS[id];
-  test('Solució incorrecta → false', runValidator(id, wrong),  false);
-  if (EXTRA_WRONG[id]) test('Error típic → false', runValidator(id, EXTRA_WRONG[id]), false);
+  test('Solució incorrecta → false', runValidator(id, amb(WRONG_SOLUTIONS[id])), false);
+  if (EXTRA_WRONG[id]) test('Error típic → false', runValidator(id, amb(EXTRA_WRONG[id])), false);
 
   console.log('');
-}
+});
 
 // ── Resum ───────────────────────────────────────────────
 
