@@ -273,7 +273,10 @@ function renderSimuladors() {
       width:               W,
       height:              H,
       showToolBar:         !cfg.readonly,
-      showAlgebraInput:    false,
+      // Barra d'entrada: només als applets on l'alumne construeix. Al classic cal
+      // dir-li on va ('bottom'); al graphing és dins la vista d'àlgebra (vegeu més avall).
+      showAlgebraInput:    !cfg.readonly,
+      algebraInputPosition: 'bottom',
       showMenuBar:         false,
       enableRightClick:    !cfg.readonly,
       enableLabelDrags:    !cfg.readonly,
@@ -285,8 +288,11 @@ function renderSimuladors() {
         console.log('[GeoCat] ✓ Applet ' + cfg.id + ' carregat OK');
         wrapper._ggbApi = api;
 
-        // Només Vista Gràfica (amaga la columna d'àlgebra de l'esquerra)
-        api.setPerspective('G');
+        // Només Vista Gràfica (amaga la columna d'àlgebra de l'esquerra).
+        // Excepció: als exercicis (goalId) amb l'app graphing. Allà la barra d'entrada
+        // i les eines són dins el panell de l'esquerra, i amagar-lo deixaria l'alumne
+        // sense manera de construir res.
+        if (!(cfg.app === 'graphing' && cfg.goalId && !cfg.readonly)) api.setPerspective('G');
 
         // Eixos i graella sempre visibles
         api.evalCommand('ShowAxes(true)');
