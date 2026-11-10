@@ -45,18 +45,20 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of the last commit (2026-10-19). **None of the grid work has started**; the site still runs the legacy numbering.
+As of 2026-11-10. **None of the grid work has started**; the site still runs the legacy numbering. Block 0 is done (results below).
 
 | Area | State |
 |---|---|
-| Infrastructure (`curs/capitols.js`, `geovalidator.js`, `validators.js`, `glossari-data.js`, `curs.css`, `style.css`) | ✅ complete for the legacy numbering |
+| Infrastructure (`curs/capitols.js`, `geovalidator.js`, `glossari-data.js`, `curs.css`, `style.css`) | ✅ complete for the legacy numbering |
+| `curs/validators.js` | ⚠️ 8 of the 20 published validators are wrong against the real applet (block 0.4) |
 | Landing page (`index.html`) | ✅; the stat reads `10/30` |
-| Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`) |
+| Chapters `curs/capitol-1.html` … `capitol-10.html` | 10/10 pages, each with an exercise (`cap-N-ex`); 5 of those exercises can never be passed (block 0.4) |
 | Challenges | 10 legacy pages `curs/repte-1.html` … `repte-10.html` are live. Grid cells under their final id: **0/30**. |
 | Generator (`tools/generate-pages.js`) | Works with numeric ids only. Only `repte-1` and `repte-6` have a JSON source in `tools/pages/`. Chapter pages are hand-written HTML. |
-| Tool palettes | `capitols.js` reads `data-tools` → `customToolBar`; no page uses it and the generator does not emit it. |
+| Tool palettes | `capitols.js` reads `data-tools` → `customToolBar` (verified in `classic` and `graphing`, check 0.2); no page uses it and the generator does not emit it. |
+| Input bar | Shown in every non-read-only applet since 2026-11-10 (check 0.1). |
 
-Test results on 2026-11-10, on the unmodified code:
+Test results on 2026-11-10:
 
 | Command | Result |
 |---|---|
@@ -64,7 +66,7 @@ Test results on 2026-11-10, on the unmodified code:
 | `node test-validators.js` | 31/31 |
 | `node test-debug-tester-logic.js` | 100/100 |
 | `node --check` on every `.js` | all pass |
-| End-to-end (`curs/index.html?debug=1`, real GeoGebra in a browser) | **not run** — status unknown |
+| End-to-end (`curs/index.html?debug=1`, real GeoGebra in a browser) | **10/20 green, 10 red** — same result before and after the input-bar fix; see check 0.3 |
 
 ### Grid status
 
@@ -89,19 +91,39 @@ Totals: 4 🔁, 26 ⬜, 0 ✅. Keep this table up to date as cells land.
 
 ## 4. Work blocks
 
-Order: **0 → A + B together → C → D**. Blocks E and F can be done at any time.
+Order: **0 (0.4 is what remains) → A + B together → C → D**. Blocks E and F can be done at any time.
 
 The ordering guarantees that the live site never offers fewer challenges than today (10): the legacy pages stay until the first grid release (block B) replaces them with 11 cells.
 
 ### Block 0 — Browser checks that gate the design
 
-These need a browser with internet access and the real GeoGebra applet. If you cannot run a browser, ask the owner to do them, with numbered steps in Catalan, and record the answers here.
+Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) against the real applet loaded from `www.geogebra.org`, serving the repository with `python3 -m http.server`. An assistant whose sandbox allows that host can repeat them; otherwise ask the owner, with numbered steps in Catalan.
 
-- [ ] **0.1 Is the input bar available to the student?** `curs/capitols.js` creates every applet with `showAlgebraInput: false` and then calls `api.setPerspective('G')`. Yet chapter 1 tells the student to type in «la barra d'entrada (la caixa de text a la part inferior de l'applet)», and the exercises of chapters 1 and 9 can only be solved by typing. Open `curs/capitol-1.html` and `curs/capitol-9.html` (the latter uses the `graphing` app) and look.
-  - If the bar **is** there: nothing to do; note it here.
-  - If it is **not**: this is a live bug in the published course, independent of the grid. Fix it first (most likely `showAlgebraInput: true`), because cells 9A, 9B and 9C also require typing.
-- [ ] **0.2 Does `customToolBar` work?** Temporarily add `data-tools="0 | 1 | 51"` to one challenge page and check that the toolbar is reduced to those tools: once in a classic applet, once in a `graphing` applet (theme 9). If `graphing` ignores it, drop `data-tools` from 9A–9C in the spec.
-- [ ] **0.3 Baseline of the end-to-end tester.** Open `curs/index.html?debug=1` and run all 20 current exercises. Record which are green. The spec (section 7.4) classifies API usages as "used by published validators"; this run is what turns that into evidence.
+- [x] **0.1 Is the input bar available to the student?** **No, it was not** — a live bug, fixed in `curs/capitols.js`:
+  - `classic`: `showAlgebraInput: true` alone shows nothing; it also needs `algebraInputPosition: 'bottom'`. Both are now set for every non-read-only applet.
+  - `graphing`: the input row and the tools live inside the left panel, which `api.setPerspective('G')` hides (the `cap-9-ex` applet had neither input nor toolbar, so the exercise was impossible). `setPerspective('G')` is now skipped for applets that have a `goalId` **and** `data-app="graphing"`; those show the standard Graphing Calculator panel (tabs «Àlgebra», «Eines», «Taula»).
+  - Verified by typing: `A=(3,2)` in chapter 1 and `f(x)=2x+1`, `A=Root(f)` in chapter 9, then «Comprova» → ✓ in both.
+  - Consequence for the grid: cells 9A–9C can rely on typing.
+- [x] **0.2 Does `customToolBar` work?** **Yes, in both apps.** With `data-tools="0 | 1 | 51"`: the `classic` toolbar shows exactly Move, Point, Regular polygon; in `graphing` the «Eines» tab lists exactly those three. Keep `data-tools` on 9A–9C.
+- [x] **0.3 Baseline of the end-to-end tester.** **10/20 green.**
+  - Green: `cap-1-ex`, `cap-2-ex`, `cap-4-ex`, `cap-7-ex`, `cap-9-ex`, `repte-1`, `repte-2`, `repte-3`, `repte-5`, `repte-9`.
+  - Red (correct solution rejected): `cap-3-ex`, `cap-5-ex`, `cap-6-ex`, `cap-8-ex`, `cap-10-ex`, `repte-4`, `repte-6`, `repte-7`, `repte-8`.
+  - Red (wrong solution accepted): `repte-10`.
+- [ ] **0.4 Fix what 0.3 uncovered.** Root causes, each confirmed by probing the live applet:
+
+  | Cause | Evidence from the applet | Affected |
+  |---|---|---|
+  | **`IsOnPath` is not a GeoGebra command.** `getValue` of an unknown expression returns `0`, so the test is always false. | `IsOnPath(Midpoint(A,B),m)` = 0 with `m=PerpendicularBisector(A,B)`; `IsOnPath(P,g)` = 0 with `g=Line(P,f)` | `cap-5-ex`, `cap-6-ex`, `repte-6` (validator bug: **no student can pass**); spec cells 5a, 5c, 6a, 7c |
+  | **`getAllObjectNames('conic')` does not return circles.** A circle has object type `circle`. | `c=Circle(O,3)` → `getObjectType` = `circle`; the `conic` list is empty | `cap-3-ex`, `cap-10-ex` (validator bug: **no student can pass**); every spec validator that lists `conic` |
+  | **`getAllObjectNames('polygon')` misses triangles and quadrilaterals.** `Polygon(A,B,C)` has type `triangle`, a 4-gon `quadrilateral`; only other polygons (and regular ones built with `Polygon(A,B,n)`) are `polygon`. | `t` → `triangle`, `sq` → `quadrilateral`, `Polygon(A,B,3)` → `polygon` | `cap-8-ex` (validator bug: needs 2 polygons, sees 0); every spec validator that lists `polygon` |
+  | **Angles are oriented; a clockwise click order gives the reflex angle.** | `Angle(A,B,C)` = 5.356 rad (306.87°) where 53.13° was meant; `Angle(D,A,B)` = 270° on a square | `repte-4` (tester solution; the validator should also accept 360° − target), `repte-10` (the square with a 270° angle is accepted as a rhombus) |
+  | The heuristic `deg = (v > Math.PI) ? v : v * 180 / Math.PI` is wrong: `getValue(angle)` is always in radians, and a reflex angle is > π. | same probes | `cap-4-ex`, `repte-10` |
+  | Tester uses commands that do not exist: `Parallel(f,P)`, `Perpendicular(P,f)`. The real ones are `Line(P,f)` and `PerpendicularLine(P,f)`. | `evalCommand` rejects them; the replacements return `true` | `cap-6-ex`, `repte-8` (tester bug; the `repte-8` validator itself is fine) |
+  | Tester solution lacks the 60° angle the validator requires. | — | `repte-7` (tester bug) |
+
+  To do: (1) fix the five chapter validators (`cap-3`, `-5`, `-6`, `-8`, `-10`) — this is a live bug for students and does not depend on the grid; replace `IsOnPath(P,l)` with `Distance(P,l) < tol`, list `circle` as well as `conic`, and `triangle` / `quadrilateral` as well as `polygon`; (2) fix the tester solutions; (3) add `GV` helpers for these three pitfalls and use them in the spec's reference validators (spec 7.3, 7.4, section 9); (4) make `test-validators.js` reproduce the real object types, so the mock stops hiding these bugs; (5) the legacy challenges `repte-4`, `-6`, `-7`, `-10` are retired in block B — fix them only if block B is not next.
+
+  Facts confirmed by the same probes (block E): `getValue(polygonLabel)` is the area (`t` = 12); `Distance((0,3),f)` with a literal point works; the vertices of a transformed polygon are points (`A'`, `B'`, `C'`); `isMoveable(slider)` is true.
 
 ### Block A — Infrastructure for grid ids
 
@@ -161,7 +183,7 @@ Spec sections 4 and 5 define the target. File by file:
 
 `1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`. Per-cell checklist: spec section 10. Each added cell changes the previous/next links of its neighbours.
 
-Cells with an unverified API dependency: `7b` (`Distance` with a literal point), `10b` (object type of a locus).
+Cells with an unverified API dependency: `10b` (object type of a locus). `7b` (`Distance` with a literal point) was confirmed on 2026-11-10.
 
 ### Block D — The ten C cells (→ 30/30)
 
@@ -172,7 +194,7 @@ Unverified API dependency: `10c` (object type of a locus). When the last cell la
 ### Block E — Verification debts
 
 - [ ] Confirm or refute each **unverified** row of spec 7.4 with the end-to-end tester, and update the spec. If `setValue` is unreliable, downgrade `10a` to the static test and say so in the spec.
-- [ ] `getValue(polygonLabel)` as area is documented API behaviour but no current test isolates it (the correct solution of legacy `repte-4` also creates `Area(t)` explicitly). Nine cells depend on it; confirm it with the first one implemented (`8a`).
+- [x] `getValue(polygonLabel)` is the area: confirmed on 2026-11-10 against the live applet (`t=Polygon((0,0),(6,0),(3,4))` → 12).
 - [ ] **Catalan names in hints.** Hints name tools between «» following the Word draft, and commands as in the previous spec (`PolígonRegular`, `Mediatriu`, `Bisectriu`, `PuntMig`, `Translació`, `Intersecció`, `Lliscador`, `Circumferència`). Check them against the Catalan GeoGebra interface when each page is first opened; fix the hint text in the spec and the JSON together.
 - [ ] Known limits of the validators, accepted as they are: "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.
 

@@ -193,7 +193,7 @@ Tool ids used in this file (checked on 2026-11-10 against the GeoGebra toolbar r
 | 9 | Angle bisector | 30 | Reflect about line | 501 | Point on object |
 | 10 | Circle: centre and point | 31 | Translate by vector |  |  |
 
-The palette guides the student; it is not a security boundary. Whether the student can also type commands depends on the input bar being available, which is an **open question** (see `TODO.md`, block 0): the applets are created with `showAlgebraInput: false` and `setPerspective('G')`, while the published chapters and hints tell the student to type in the input bar. Therefore:
+The palette guides the student; it is not a security boundary. The student can also type commands: since 2026-11-10 every non-read-only applet shows the input bar (`classic`: at the bottom; `graphing` exercises: in the left panel, next to the «Eines» tab that holds the palette — see `TODO.md`, check 0.1). Therefore:
 
 - Every hint describes the **tool route first** and gives the command as an alternative.
 - Cells **9A, 9B and 9C need the input bar** (a function can only be defined by typing). All other cells can be solved with the palette alone.
@@ -364,7 +364,9 @@ Add these members to the `GV` object in `curs/geovalidator.js` (after `circlePas
 
 ### 7.4 What has been verified, and what has not
 
-Nothing in this file has been run against a live GeoGebra applet. Two kinds of checks were done on 2026-11-10:
+The reference validators of this file have not been run against a live GeoGebra applet. On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0), and **three API assumptions that this file shares with them turned out to be false** — see the ❌ rows below and `TODO.md` block 0.4. Until block 0.4 is done, do not copy a reference validator that uses `IsOnPath`, `getAllObjectNames('conic')` or `getAllObjectNames('polygon')` without applying the correction.
+
+Two kinds of checks were done earlier on 2026-11-10:
 
 1. **Geometry.** Every numeric target in section 9 (coordinates, areas, radii, angles) was recomputed numerically.
 2. **Validator logic.** The 26 new reference validators, together with the `GV` extension, and the 4 published validators were executed against a throw-away emulator of the applet API. For each cell: the *correct* test solution passes, the initial state fails and the *wrong* test solution fails (30/30). The emulator is not part of the repository and proves nothing about GeoGebra itself.
@@ -373,17 +375,19 @@ API usage by evidence level:
 
 | API usage | Evidence | Cells that depend on it |
 |---|---|---|
-| `getAllObjectNames('point' \| 'segment' \| 'line' \| 'polygon' \| 'conic' \| 'angle' \| 'function' \| 'numeric')`, `getXcoord`, `getYcoord` | used by published validators | all |
+| `getAllObjectNames('point' \| 'segment' \| 'line' \| 'angle' \| 'function' \| 'numeric')`, `getXcoord`, `getYcoord` | ✅ e2e green | all |
+| `getAllObjectNames('conic')` returns circles | ❌ **false**: a circle has type `circle` and is not in the `conic` list. Ask for both. | every cell with a circle |
+| `getAllObjectNames('polygon')` returns every polygon | ❌ **false**: `Polygon(A,B,C)` is a `triangle`, a 4-gon a `quadrilateral`; only the rest (and `Polygon(A,B,n)`) are `polygon`. Ask for the three. | every cell with a polygon |
 | `getValue('Length(s)')`, `getValue('x(Center(c))')`, `getValue('Radius(c)')` | used by published validators | many |
-| `getValue('IsOnPath(P,l)')`, also with `Midpoint(A,B)` as the point | used by published validators (`cap-5-ex`, `repte-6`) | 5a, 5c, 6a, 7c |
+| `getValue('IsOnPath(P,l)')`, also with `Midpoint(A,B)` as the point | ❌ **false**: `IsOnPath` is not a GeoGebra command and always evaluates to 0. Use `Distance(P,l) < tol`. | 5a, 5c, 6a, 7c |
 | `getValue('ArePerpendicular(Segment(A,B),l)')`, `getValue('AreParallel(f,l)')` | used by published validators (`cap-5-ex`, `cap-6-ex`) | 5a, 5c, 7b, 7c |
 | `getValue(fn + '(k)')` on a function | used by a published validator (`cap-9-ex`) | 9a, 9b, 9c |
-| `getValue(angle)` in radians | used by a published validator (`repte-7`) | 9c |
+| `getValue(angle)` in radians | ✅ confirmed; angles are oriented, so a clockwise click order returns the reflex angle (2π − α): accept both | 9c |
 | `isMoveable(numeric)` to detect a slider | used by a published validator (`cap-10-ex`) | 10a, 10c |
 | `getObjectNumber`, `getObjectName`, `getObjectType` | used by a published validator (`repte-10`) | 10b, 10c |
-| A transformed polygon exposes its image vertices as points | relied on by a published validator (`cap-8-ex`) | 8a, 8b, 8c |
-| `getValue(polygonLabel)` returns the area | documented API behaviour; no existing test isolates it | 1c, 2b, 2c, 4a, 4b, 4c, 8a, 8b, 8c, 10a |
-| `getValue('Distance((x,y),l)')` with a literal point | **unverified** | 7b |
+| A transformed polygon exposes its image vertices as points | ✅ confirmed on the live applet (`A'`, `B'`, `C'`) | 8a, 8b, 8c |
+| `getValue(polygonLabel)` returns the area | ✅ confirmed on the live applet | 1c, 2b, 2c, 4a, 4b, 4c, 8a, 8b, 8c, 10a |
+| `getValue('Distance((x,y),l)')` with a literal point | ✅ confirmed on the live applet | 7b |
 | `getObjectType` of a locus contains `locus` | **unverified** | 10b, 10c |
 | `setValue(slider, v)` updates dependent objects synchronously | **unverified** | 10a |
 | `Polygon(A, B, n)` is accepted as regular polygon by `evalCommand` | used by the e2e tester (`cap-7-ex`) | test solutions |
@@ -2138,4 +2142,4 @@ Not carried over from the draft: the informal proofs attached to some cells. The
 
 ## Appendix C — Open items
 
-Tracked in `TODO.md` (block 0 and block E). In short: availability of the input bar; behaviour of `customToolBar` in the `graphing` app; the unverified API rows of section 7.4; the Catalan command names used in hints for commands that no published page uses yet (`Translació`, `Bisectriu`, `PuntMig`, `Mediatriu` come from the previous specification; tool names between «» follow the Word draft and should be checked against the Catalan GeoGebra interface).
+Tracked in `TODO.md` (block 0 and block E). Settled on 2026-11-10: the input bar (now shown) and `customToolBar` in the `graphing` app (works). Still open: the three false API assumptions of section 7.4 (`TODO.md` block 0.4); the unverified API rows of section 7.4; the Catalan command names used in hints for commands that no published page uses yet (`Translació`, `Bisectriu`, `PuntMig`, `Mediatriu` come from the previous specification; tool names between «» follow the Word draft and should be checked against the Catalan GeoGebra interface).
