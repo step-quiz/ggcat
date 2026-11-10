@@ -45,14 +45,15 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of 2026-11-10. **None of the grid work has started**; the site still runs the legacy numbering. Block 0 is done (results below).
+As of 2026-11-10. **None of the grid work has started**; the site still runs the legacy numbering. Block 0 is done (results below); the next block is A + B.
 
 | Area | State |
 |---|---|
 | Infrastructure (`curs/capitols.js`, `geovalidator.js`, `glossari-data.js`, `curs.css`, `style.css`) | ✅ complete for the legacy numbering |
-| `curs/validators.js` | ⚠️ 8 of the 20 published validators are wrong against the real applet (block 0.4) |
+| `curs/validators.js` | ✅ the 20 published validators pass the end-to-end tester (fixed on 2026-11-10, check 0.4) |
+| `curs/geovalidator.js` | ✅ includes the `GV` extension of spec 7.3 |
 | Landing page (`index.html`) | ✅; the stat reads `10/30` |
-| Chapters `curs/capitol-1.html` … `capitol-10.html` | 10/10 pages, each with an exercise (`cap-N-ex`); 5 of those exercises can never be passed (block 0.4) |
+| Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`) |
 | Challenges | 10 legacy pages `curs/repte-1.html` … `repte-10.html` are live. Grid cells under their final id: **0/30**. |
 | Generator (`tools/generate-pages.js`) | Works with numeric ids only. Only `repte-1` and `repte-6` have a JSON source in `tools/pages/`. Chapter pages are hand-written HTML. |
 | Tool palettes | `capitols.js` reads `data-tools` → `customToolBar` (verified in `classic` and `graphing`, check 0.2); no page uses it and the generator does not emit it. |
@@ -63,10 +64,10 @@ Test results on 2026-11-10:
 | Command | Result |
 |---|---|
 | `node tools/generate-pages.js --comprova` | 2 pages checked, both match |
-| `node test-validators.js` | 31/31 |
+| `node test-validators.js` | 70/70 (challenges and chapter exercises) |
 | `node test-debug-tester-logic.js` | 100/100 |
 | `node --check` on every `.js` | all pass |
-| End-to-end (`curs/index.html?debug=1`, real GeoGebra in a browser) | **10/20 green, 10 red** — same result before and after the input-bar fix; see check 0.3 |
+| End-to-end (`curs/index.html?debug=1`, real GeoGebra in a browser) | **20/20 green** after the fixes of check 0.4 (it was 10/20 before them) |
 
 ### Grid status
 
@@ -91,7 +92,7 @@ Totals: 4 🔁, 26 ⬜, 0 ✅. Keep this table up to date as cells land.
 
 ## 4. Work blocks
 
-Order: **0 (0.4 is what remains) → A + B together → C → D**. Blocks E and F can be done at any time.
+Order: **0 (done) → A + B together → C → D**. Blocks E and F can be done at any time.
 
 The ordering guarantees that the live site never offers fewer challenges than today (10): the legacy pages stay until the first grid release (block B) replaces them with 11 cells.
 
@@ -109,7 +110,7 @@ Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) agai
   - Green: `cap-1-ex`, `cap-2-ex`, `cap-4-ex`, `cap-7-ex`, `cap-9-ex`, `repte-1`, `repte-2`, `repte-3`, `repte-5`, `repte-9`.
   - Red (correct solution rejected): `cap-3-ex`, `cap-5-ex`, `cap-6-ex`, `cap-8-ex`, `cap-10-ex`, `repte-4`, `repte-6`, `repte-7`, `repte-8`.
   - Red (wrong solution accepted): `repte-10`.
-- [ ] **0.4 Fix what 0.3 uncovered.** Root causes, each confirmed by probing the live applet:
+- [x] **0.4 Fix what 0.3 uncovered.** Done on 2026-11-10; the end-to-end tester is now 20/20. Root causes, each confirmed by probing the live applet:
 
   | Cause | Evidence from the applet | Affected |
   |---|---|---|
@@ -121,9 +122,16 @@ Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) agai
   | Tester uses commands that do not exist: `Parallel(f,P)`, `Perpendicular(P,f)`. The real ones are `Line(P,f)` and `PerpendicularLine(P,f)`. | `evalCommand` rejects them; the replacements return `true` | `cap-6-ex`, `repte-8` (tester bug; the `repte-8` validator itself is fine) |
   | Tester solution lacks the 60° angle the validator requires. | — | `repte-7` (tester bug) |
 
-  To do: (1) fix the five chapter validators (`cap-3`, `-5`, `-6`, `-8`, `-10`) — this is a live bug for students and does not depend on the grid; replace `IsOnPath(P,l)` with `Distance(P,l) < tol`, list `circle` as well as `conic`, and `triangle` / `quadrilateral` as well as `polygon`; (2) fix the tester solutions; (3) add `GV` helpers for these three pitfalls and use them in the spec's reference validators (spec 7.3, 7.4, section 9); (4) make `test-validators.js` reproduce the real object types, so the mock stops hiding these bugs; (5) the legacy challenges `repte-4`, `-6`, `-7`, `-10` are retired in block B — fix them only if block B is not next.
+  What was done:
+  1. `curs/geovalidator.js`: the `GV` extension of spec 7.3, with `GV.names` (families `polygon` and `conic`), `GV.pointOnLine`, `GV.angleIs`, `GV.circles`, `GV.isPerpBisector`, `GV.sliders`…; `GV.isOnPath` now measures a distance.
+  2. `curs/validators.js`: `cap-3`, `-4`, `-5`, `-6`, `-7`, `-8`, `-10` and `repte-4`, `-6`, `-7`, `-10` use those helpers. Pass conditions are unchanged, except that an angle measured clockwise (360° − α) is now accepted where α is, and rejected where α is (`repte-10`: 270° counts as a right angle).
+  3. `curs/debug-tester.js`: solutions of `cap-6-ex`, `repte-4`, `repte-7`, `repte-8` corrected.
+  4. `test-validators.js`: the mock uses the real object types (an unknown type throws), returns 0 for an unknown expression, computes `Distance(point, line)`, and now also covers the ten chapter exercises. With the validators as they were before the fix it reports 11 failures, so it would have caught these bugs.
+  5. Spec 7.2, 7.3, 7.4 and the reference validators of 6A and 7C updated.
 
-  Facts confirmed by the same probes (block E): `getValue(polygonLabel)` is the area (`t` = 12); `Distance((0,3),f)` with a literal point works; the vertices of a transformed polygon are points (`A'`, `B'`, `C'`); `isMoveable(slider)` is true.
+  **Rule for every new validator:** `GV.names('polygon' | 'conic')`, `GV.pointOnLine`, `GV.angleIs` — never `getAllObjectNames('polygon' | 'conic')`, `IsOnPath`, or a one-sided angle comparison. Remember that `getValue` of an expression the applet cannot parse is 0, not NaN.
+
+  Facts confirmed by the same probes (block E): `getValue(polygonLabel)` is the area (`t` = 12); `Distance((0,3),f)` with a literal point works; the vertices of a transformed polygon are points (`A'`, `B'`, `C'`); `isMoveable(slider)` is true; a locus has object type `locus`; `setValue(slider, v)` updates dependent objects synchronously.
 
 ### Block A — Infrastructure for grid ids
 
@@ -135,7 +143,7 @@ Spec sections 4 and 5 define the target. File by file:
   - Add `TEMES_DATA`; replace `REPTES_DATA` with the new shape (`id`, `tema`, `nivell`, `titol`, `arxiu`, `goalId`, `dificultat`; no `num`). Export `window.TEMES_DATA`.
   - `renderReptesSidebar(currentId)`: takes the cell id (string) and groups entries by theme (spec 4.3).
   - One-time progress migration of the four legacy keys (spec 4.4). It goes here, not in `progress.js`.
-- [ ] **`curs/geovalidator.js`** — add the `GV` extension of spec 7.3.
+- [x] **`curs/geovalidator.js`** — the `GV` extension of spec 7.3 is in (2026-11-10).
 - [ ] **`tools/generate-pages.js`**
   - Accept `"id": "3b"` for `type: "repte"` (chapters keep `num`). Affected: `validatePage` (line ~378 requires a numeric `num`), `outputFilename` (~370), the badge and labels that print `page.num` (~185–188, ~251, ~277), the header title (~62), the sidebar call (~42: it must print `renderReptesSidebar('3b')`, quoted) and `--only` (~419).
   - The label shown is the id with the level in upper case: `Repte 3B`.
@@ -145,7 +153,7 @@ Spec sections 4 and 5 define the target. File by file:
 - [ ] **`tools/extreu-pagina.js`** — the badge regex `⚡ Repte (\d+)` and `pagina.num = Number(…)` (~66) must read `3B` and produce `id: "3b"`; add `tools` to the known applet attributes.
 - [ ] **`curs/index.html`** — the challenge list uses `r.num` (~85). Replace the flat list of challenges with the theme × level table of spec 4.3. Header link `repte-1.html` (~19) → `repte-1a.html`.
 - [ ] **`curs/debug-tester.js`** — labels built from `r.num` (~609, ~668–670) → `r.id`. `TEST_SOLUTIONS` keys follow the goalIds.
-- [ ] **`test-validators.js`** — the main loop is `for (n = 1..10) id = 'repte-' + n` (~459): iterate over the keys of `CORRECT_SOLUTIONS` instead. Extend the mock API for what the new validators use: the numeric value of a polygon (its area), `Distance((x,y),line)`, `setValue` on a slider with dependent objects, `getObjectType` for loci, `isMoveable`.
+- [ ] **`test-validators.js`** — the main loop already iterates over the keys of `CORRECT_SOLUTIONS`, and the mock has the value of a polygon (its area), `Distance(point, line)` with a literal point, `getObjectType` and `isMoveable` (2026-11-10). Still to add for `10a`: `setValue` on a slider with dependent objects. Scenes must use the real object types (the mock throws otherwise).
 - [ ] **`test-debug-tester-logic.js`** — only the header comment mentions "10 reptes"; the checks iterate `REPTES_DATA` and need no change.
 - [ ] **Hard-coded links to `repte-1.html`** → `repte-1a.html`: the header of each `curs/capitol-N.html` (10 files, one link each), the closing paragraph of `curs/capitol-10.html` (a second link), and the landing page `index.html` (`curs/repte-1.html`, ~173). These pages are hand-written HTML: edit them directly.
 - [ ] **`.github/workflows/`** — nothing to change (`tests.yml` runs the same three commands). Remember that workflow files cannot be changed through a ZIP.
@@ -183,17 +191,17 @@ Spec sections 4 and 5 define the target. File by file:
 
 `1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`. Per-cell checklist: spec section 10. Each added cell changes the previous/next links of its neighbours.
 
-Cells with an unverified API dependency: `10b` (object type of a locus). `7b` (`Distance` with a literal point) was confirmed on 2026-11-10.
+No cell of this block has an unverified API dependency left (`7b` and `10b` were confirmed on 2026-11-10).
 
 ### Block D — The ten C cells (→ 30/30)
 
 `1c`, `2c`, `3c`, `4c`, `5c`, `6c`, `7c`, `8c`, `9c`, `10c`.
 
-Unverified API dependency: `10c` (object type of a locus). When the last cell lands, the landing stat becomes `30`.
+When the last cell lands, the landing stat becomes `30`.
 
 ### Block E — Verification debts
 
-- [ ] Confirm or refute each **unverified** row of spec 7.4 with the end-to-end tester, and update the spec. If `setValue` is unreliable, downgrade `10a` to the static test and say so in the spec.
+- [x] Every row of spec 7.4 is confirmed or refuted against the live applet (2026-11-10). What is still unproven is each reference validator of section 9 as a whole: the end-to-end tester proves it when the cell is implemented.
 - [x] `getValue(polygonLabel)` is the area: confirmed on 2026-11-10 against the live applet (`t=Polygon((0,0),(6,0),(3,4))` → 12).
 - [ ] **Catalan names in hints.** Hints name tools between «» following the Word draft, and commands as in the previous spec (`PolígonRegular`, `Mediatriu`, `Bisectriu`, `PuntMig`, `Translació`, `Intersecció`, `Lliscador`, `Circumferència`). Check them against the Catalan GeoGebra interface when each page is first opened; fix the hint text in the spec and the JSON together.
 - [ ] Known limits of the validators, accepted as they are: "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.

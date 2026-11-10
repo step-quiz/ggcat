@@ -98,8 +98,7 @@ const VALIDATORS = {
 
     // At least one angle ≈ 53.13°
     var hasAngle = GV.anyOfType('angle', function(a) {
-      var deg = api.getValue(a) * 180 / Math.PI;
-      return Math.abs(deg - 53.13) < 1.0;
+      return GV.angleIs(a, 53.13, 1.0);
     });
 
     return hasArea && hasAngle;
@@ -139,9 +138,7 @@ const VALIDATORS = {
     var lines = api.getAllObjectNames('line') || [];
     var hasMedb = lines.some(function(l) {
       try {
-        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
-        var perp  = api.getValue('ArePerpendicular(s,' + l + ')') === 1;
-        return onMid && perp;
+        return GV.isPerpBisector(l, 'A', 'B');
       } catch(e) { return false; }
     });
     if (!hasMedb) return false;
@@ -158,7 +155,7 @@ const VALIDATORS = {
   // Student must create a regular polygon (equilateral triangle)
   // with all sides equal and at least one angle of 60°.
   'repte-7': function(api, GV) {
-    var polys = api.getAllObjectNames('polygon') || [];
+    var polys = GV.names('polygon');
     if (polys.length < 1) return false;
 
     var segs = api.getAllObjectNames('segment') || [];
@@ -172,8 +169,7 @@ const VALIDATORS = {
     if (Math.abs(maxL - minL) > 0.15) return false;  // sides not all equal
 
     return GV.anyOfType('angle', function(a) {
-      var deg = api.getValue(a) * 180 / Math.PI;
-      return Math.abs(deg - 60) < 1.5;
+      return GV.angleIs(a, 60);
     });
   },
 
@@ -251,9 +247,7 @@ const VALIDATORS = {
       try { tp = (api.getObjectType(nm) || '').toLowerCase(); } catch(e) {}
       if (!tp.includes('angle')) continue;
       try {
-        var v   = api.getValue(nm);
-        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
-        if (Math.abs(deg - 90) < 1.5) return false;
+        if (GV.angleIs(nm, 90)) return false;   // 90° o 270° (angle mesurat a l'inrevés)
       } catch(e) {}
     }
     return true;
@@ -285,14 +279,9 @@ const VALIDATORS = {
 
   // ── Capítol 3 — Circumferència centre origen, radi 3 ──
   'cap-3-ex': function(api, GV) {
-    var conics = api.getAllObjectNames('conic');
-    return conics.some(function(c) {
-      var cx = api.getValue('x(Center(' + c + '))');
-      var cy = api.getValue('y(Center(' + c + '))');
-      var r  = api.getValue('Radius(' + c + ')');
-      return isFinite(cx) && isFinite(cy) && isFinite(r) &&
-             Math.abs(cx) < 0.15 && Math.abs(cy) < 0.15 &&
-             Math.abs(r - 3) < 0.15;
+    return GV.circles().some(function(c) {
+      return Math.abs(c.cx) < 0.15 && Math.abs(c.cy) < 0.15 &&
+             Math.abs(c.r - 3) < 0.15;
     });
   },
 
@@ -300,11 +289,7 @@ const VALIDATORS = {
   'cap-4-ex': function(api, GV) {
     var angles = api.getAllObjectNames('angle');
     return angles.some(function(a) {
-      try {
-        var v   = api.getValue(a);
-        var deg = (v > Math.PI) ? v : v * 180 / Math.PI;
-        return Math.abs(deg - 56.31) < 1.5;
-      } catch (e) { return false; }
+      try { return GV.angleIs(a, 56.31); } catch (e) { return false; }
     });
   },
 
@@ -312,11 +297,7 @@ const VALIDATORS = {
   'cap-5-ex': function(api, GV) {
     var lines = api.getAllObjectNames('line');
     return lines.some(function(l) {
-      try {
-        var onMid = api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
-        var perp  = api.getValue('ArePerpendicular(Segment(A,B),' + l + ')') === 1;
-        return onMid && perp;
-      } catch (e) { return false; }
+      return GV.isPerpBisector(l, 'A', 'B');
     });
   },
 
@@ -326,7 +307,7 @@ const VALIDATORS = {
     return lines.some(function(l) {
       if (l === 'f') return false;
       try {
-        var onP = api.getValue('IsOnPath(P,' + l + ')') === 1;
+        var onP = GV.pointOnLine('P', l);
         var par = api.getValue('AreParallel(f,' + l + ')') === 1;
         return onP && par;
       } catch (e) { return false; }
@@ -335,7 +316,7 @@ const VALIDATORS = {
 
   // ── Capítol 7 — Polígon regular de 6 costats iguals ───
   'cap-7-ex': function(api, GV) {
-    var polys = api.getAllObjectNames('polygon');
+    var polys = GV.names('polygon');
     if (polys.length === 0) return false;
     var segs = api.getAllObjectNames('segment') || [];
     var lens = [];
@@ -355,7 +336,7 @@ const VALIDATORS = {
 
   // ── Capítol 8 — Reflexió: triangle imatge amb vèrtexs propers a (-1,1),(-4,1),(-2,4) ──
   'cap-8-ex': function(api, GV) {
-    var polys = api.getAllObjectNames('polygon');
+    var polys = GV.names('polygon');
     if (polys.length < 2) return false;
     var pts = api.getAllObjectNames('point');
     var targets = [[-1, 1], [-4, 1], [-2, 4]];
@@ -387,13 +368,8 @@ const VALIDATORS = {
 
   // ── Capítol 10 — Almenys un lliscador + un polígon o cònica ──
   'cap-10-ex': function(api, GV) {
-    var nums = api.getAllObjectNames('numeric');
-    var hasSlider = nums.some(function(n) {
-      try { return api.isMoveable(n); } catch (e) { return false; }
-    });
-    var polys  = api.getAllObjectNames('polygon');
-    var conics = api.getAllObjectNames('conic');
-    return hasSlider && (polys.length > 0 || conics.length > 0);
+    return GV.sliders().length > 0 &&
+           (GV.names('polygon').length > 0 || GV.names('conic').length > 0);
   },
 
 };

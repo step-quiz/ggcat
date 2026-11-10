@@ -222,26 +222,58 @@ Validators are entries of the `VALIDATORS` map in `curs/validators.js`, keyed by
 | Images of transformations, centres with irrational coordinates | 0.2 |
 | Areas | 0.3 (0.4–0.5 where stated) |
 | Angles | 1.5° |
-| Exact incidence (`IsOnPath`, `ArePerpendicular`, `AreParallel`) | GeoGebra's own; compare the result with `=== 1` |
+| Angles, orientation | accept α and 360° − α: `GV.angleIs` |
+| Point on a line | `GV.pointOnLine`: `Distance(P,l)` < 0.01 (`IsOnPath` does not exist) |
+| `ArePerpendicular`, `AreParallel` | GeoGebra's own; compare the result with `=== 1` |
 
 `GV.eps` (0.001) and the existing strict helpers (`GV.coordsEqual`, `GV.distanceEqual`, …) are too tight for constructions made by clicking; do not use them in new validators.
 
-### 7.3 `GV` extension required by the new validators
+### 7.3 `GV` extension used by the validators
 
-Add these members to the `GV` object in `curs/geovalidator.js` (after `circlePassesThroughPoints`). The reference validators of section 9 depend on them. The four published validators do not, and stay as they are.
+These members of the `GV` object are **in `curs/geovalidator.js` since 2026-11-10** (after `circlePassesThroughPoints`); the code below is a copy, and the file is the authority. The reference validators of section 9 depend on them, and so do the published chapter validators.
+
+Use them instead of the raw API for three things, each of which was a bug in the published validators (`TODO.md`, check 0.4):
+
+- **Object lists**: `GV.names('polygon')` and `GV.names('conic')`, never `api.getAllObjectNames('polygon' | 'conic')`. `GV.anyOfType` / `GV.filterOfType` take a specific type and are fine for `'line'`, `'angle'`, `'point'`, `'segment'`.
+- **Incidence**: `GV.pointOnLine(P, l)`, never `IsOnPath`.
+- **Angle measures**: `GV.angleIs(a, deg)`, unless the validator lists the accepted orientations itself (as 9C does).
 
 ```js
   // ── Tolerant helpers for the grid challenges (repte-<theme><level>) ──
   // All of them read the applet through the global ggbApplet, like the
   // helpers above. `exclude` is an optional array of labels to skip
   // (normally the pre-built, fixed objects of the challenge).
+  //
+  // Three facts about the real applet, checked on 2026-11-10, shape them:
+  //   · getObjectType / getAllObjectNames use the SPECIFIC type: a circle is
+  //     'circle' (not 'conic'); Polygon(A,B,C) is 'triangle', a 4-gon
+  //     'quadrilateral', then 'pentagon', 'hexagon', and only the rest (and
+  //     the regular Polygon(A,B,n)) are 'polygon'.  → GV.names()
+  //   · IsOnPath is not a GeoGebra command, and getValue() of an unknown
+  //     expression returns 0, not NaN.  → GV.pointOnLine()
+  //   · Angles are oriented: the same three points clicked clockwise give
+  //     the reflex angle (2π − α).  → GV.angleIs()
 
   /** Default tolerance for coordinates, lengths and radii. */
   tol: 0.15,
 
-  /** Labels of every object of a type ([] instead of null/undefined). */
+  /** Real object types behind each family name accepted by GV.names(). */
+  FAMILIES: {
+    polygon: ['triangle', 'quadrilateral', 'pentagon', 'hexagon', 'polygon'],
+    conic:   ['circle', 'ellipse', 'hyperbola', 'parabola', 'conic']
+  },
+
+  /** Labels of every object of a type ([] instead of null/undefined).
+   *  'polygon' and 'conic' are families: they gather every specific type. */
   names: function(type) {
-    return ggbApplet.getAllObjectNames(type) || [];
+    var types = GV.FAMILIES[type] || [type];
+    var out = [];
+    types.forEach(function(t) {
+      (ggbApplet.getAllObjectNames(t) || []).forEach(function(n) {
+        if (out.indexOf(n) === -1) out.push(n);
+      });
+    });
+    return out;
   },
 
   /** Labels of every object in the construction, whatever its type. */
@@ -301,12 +333,11 @@ Add these members to the `GV` object in `curs/geovalidator.js` (after `circlePas
     });
   },
 
-  /** Every circle as { label, cx, cy, r } (conics without a finite
-   *  centre and radius are skipped). */
+  /** Every circle as { label, cx, cy, r }. */
   circles: function(exclude) {
     exclude = exclude || [];
     var out = [];
-    GV.names('conic').forEach(function(c) {
+    GV.names('circle').forEach(function(c) {
       if (exclude.indexOf(c) !== -1) return;
       try {
         var cx = ggbApplet.getValue('x(Center(' + c + '))');
@@ -330,16 +361,37 @@ Add these members to the `GV` object in `curs/geovalidator.js` (after `circlePas
     });
   },
 
-  /** Value of an angle object in degrees (getValue returns radians). */
+  /** Value of an angle object in degrees, 0…360 (getValue returns radians). */
   degrees: function(angleLabel) {
     return ggbApplet.getValue(angleLabel) * 180 / Math.PI;
+  },
+
+  /** True if the angle object measures `deg` ± tol, in either orientation
+   *  (α or 360° − α): the student cannot be asked to click anticlockwise. */
+  angleIs: function(angleLabel, deg, tol) {
+    tol = (tol == null) ? 1.5 : tol;
+    var d = GV.degrees(angleLabel);
+    return isFinite(d) &&
+           (Math.abs(d - deg) < tol || Math.abs(360 - d - deg) < tol);
+  },
+
+  /** True if the point lies on the line (or segment, ray) labelled `l`.
+   *  `pointExpr` is a label ('P'), 'Midpoint(A,B)' or a literal '(1,2)'.
+   *  `l` must be the label of an existing object: with an undefined one
+   *  the distance evaluates to 0 and the test would be true. */
+  pointOnLine: function(pointExpr, l, tol) {
+    tol = (tol == null) ? 0.01 : tol;
+    try {
+      var d = ggbApplet.getValue('Distance(' + pointExpr + ',' + l + ')');
+      return isFinite(d) && d < tol;
+    } catch (e) { return false; }
   },
 
   /** True if line `l` is the perpendicular bisector of the segment that
    *  joins the points labelled `a` and `b`. */
   isPerpBisector: function(l, a, b) {
     try {
-      return ggbApplet.getValue('IsOnPath(Midpoint(' + a + ',' + b + '),' + l + ')') === 1 &&
+      return GV.pointOnLine('Midpoint(' + a + ',' + b + ')', l) &&
              ggbApplet.getValue('ArePerpendicular(Segment(' + a + ',' + b + '),' + l + ')') === 1;
     } catch (e) { return false; }
   },
@@ -364,7 +416,7 @@ Add these members to the `GV` object in `curs/geovalidator.js` (after `circlePas
 
 ### 7.4 What has been verified, and what has not
 
-The reference validators of this file have not been run against a live GeoGebra applet. On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0), and **three API assumptions that this file shares with them turned out to be false** — see the ❌ rows below and `TODO.md` block 0.4. Until block 0.4 is done, do not copy a reference validator that uses `IsOnPath`, `getAllObjectNames('conic')` or `getAllObjectNames('polygon')` without applying the correction.
+The reference validators of this file have not been run against a live GeoGebra applet. On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0): three API assumptions turned out to be false (the ❌ rows below). They are now corrected in the published validators (end-to-end: 20/20), in the `GV` extension of section 7.3 and in the reference validators of section 9, which go through `GV.names`, `GV.circles`, `GV.pointOnLine` and `GV.isPerpBisector`.
 
 Two kinds of checks were done earlier on 2026-11-10:
 
@@ -376,10 +428,10 @@ API usage by evidence level:
 | API usage | Evidence | Cells that depend on it |
 |---|---|---|
 | `getAllObjectNames('point' \| 'segment' \| 'line' \| 'angle' \| 'function' \| 'numeric')`, `getXcoord`, `getYcoord` | ✅ e2e green | all |
-| `getAllObjectNames('conic')` returns circles | ❌ **false**: a circle has type `circle` and is not in the `conic` list. Ask for both. | every cell with a circle |
-| `getAllObjectNames('polygon')` returns every polygon | ❌ **false**: `Polygon(A,B,C)` is a `triangle`, a 4-gon a `quadrilateral`; only the rest (and `Polygon(A,B,n)`) are `polygon`. Ask for the three. | every cell with a polygon |
+| `getAllObjectNames('conic')` returns circles | ❌ **false**: a circle has type `circle` and is not in the `conic` list. Use `GV.circles()` / `GV.names('conic')`. | every cell with a circle |
+| `getAllObjectNames('polygon')` returns every polygon | ❌ **false**: `Polygon(A,B,C)` is a `triangle`, a 4-gon a `quadrilateral`; only the rest (and `Polygon(A,B,n)`) are `polygon`. A 5-gon is a `pentagon`, a 6-gon a `hexagon`. Use `GV.names('polygon')`. | every cell with a polygon |
 | `getValue('Length(s)')`, `getValue('x(Center(c))')`, `getValue('Radius(c)')` | used by published validators | many |
-| `getValue('IsOnPath(P,l)')`, also with `Midpoint(A,B)` as the point | ❌ **false**: `IsOnPath` is not a GeoGebra command and always evaluates to 0. Use `Distance(P,l) < tol`. | 5a, 5c, 6a, 7c |
+| `getValue('IsOnPath(P,l)')`, also with `Midpoint(A,B)` as the point | ❌ **false**: `IsOnPath` is not a GeoGebra command and always evaluates to 0 (as does any expression the applet cannot parse). Use `GV.pointOnLine` (`Distance(P,l)` < tol; confirmed with a label, with `Midpoint(A,B)` and with a literal point). | 5a, 5c, 6a, 7c |
 | `getValue('ArePerpendicular(Segment(A,B),l)')`, `getValue('AreParallel(f,l)')` | used by published validators (`cap-5-ex`, `cap-6-ex`) | 5a, 5c, 7b, 7c |
 | `getValue(fn + '(k)')` on a function | used by a published validator (`cap-9-ex`) | 9a, 9b, 9c |
 | `getValue(angle)` in radians | ✅ confirmed; angles are oriented, so a clockwise click order returns the reflex angle (2π − α): accept both | 9c |
@@ -388,13 +440,13 @@ API usage by evidence level:
 | A transformed polygon exposes its image vertices as points | ✅ confirmed on the live applet (`A'`, `B'`, `C'`) | 8a, 8b, 8c |
 | `getValue(polygonLabel)` returns the area | ✅ confirmed on the live applet | 1c, 2b, 2c, 4a, 4b, 4c, 8a, 8b, 8c, 10a |
 | `getValue('Distance((x,y),l)')` with a literal point | ✅ confirmed on the live applet | 7b |
-| `getObjectType` of a locus contains `locus` | **unverified** | 10b, 10c |
-| `setValue(slider, v)` updates dependent objects synchronously | **unverified** | 10a |
+| `getObjectType` of a locus contains `locus` | ✅ confirmed on the live applet (`Locus(M,Q)` → `locus`) | 10b, 10c |
+| `setValue(slider, v)` updates dependent objects synchronously | ✅ confirmed on the live applet (`Circle(D,k)`: radius 1 → 3 right after `setValue('k',3)`) | 10a |
 | `Polygon(A, B, n)` is accepted as regular polygon by `evalCommand` | used by the e2e tester (`cap-7-ex`) | test solutions |
 
 "Used by published validators" means the expression is in code that is live on the site; the proof that it works is the end-to-end tester (`curs/index.html?debug=1`), which must be run in a browser.
 
-The **unverified** rows must be confirmed with the end-to-end tester when the cell is implemented. If one fails, change the validator, keep the pass condition, and update this file.
+No row is unverified any more. What remains unproven is each reference validator as a whole, and each test solution: run the end-to-end tester when the cell is implemented. If it fails, change the validator, keep the pass condition, and update this file.
 
 ## 8. Tests required for every cell
 
@@ -1234,8 +1286,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 ```js
 'repte-6a': function(api, GV) {
   return GV.anyOfType('line', function(l) {
-    return api.getValue('IsOnPath(O,' + l + ')') === 1 &&
-           api.getValue('IsOnPath(Midpoint(A,B),' + l + ')') === 1;
+    return GV.pointOnLine('O', l) && GV.pointOnLine('Midpoint(A,B)', l);
   });
 },
 ```
@@ -1514,7 +1565,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
   var altitudes = GV.filterOfType('line', function(l) {
     return alt.some(function(s) {
       return api.getValue('ArePerpendicular(Segment(' + s[0] + ',' + s[1] + '),' + l + ')') === 1 &&
-             api.getValue('IsOnPath(' + s[2] + ',' + l + ')') === 1;
+             GV.pointOnLine(s[2], l);
     });
   }).length;
   return altitudes >= 2 && GV.hasPointAt(3, 2.5, 0.2, ['A', 'B', 'C']);
@@ -2142,4 +2193,4 @@ Not carried over from the draft: the informal proofs attached to some cells. The
 
 ## Appendix C — Open items
 
-Tracked in `TODO.md` (block 0 and block E). Settled on 2026-11-10: the input bar (now shown) and `customToolBar` in the `graphing` app (works). Still open: the three false API assumptions of section 7.4 (`TODO.md` block 0.4); the unverified API rows of section 7.4; the Catalan command names used in hints for commands that no published page uses yet (`Translació`, `Bisectriu`, `PuntMig`, `Mediatriu` come from the previous specification; tool names between «» follow the Word draft and should be checked against the Catalan GeoGebra interface).
+Tracked in `TODO.md` (block 0 and block E). Settled on 2026-11-10: the input bar (now shown) and `customToolBar` in the `graphing` app (works). Also settled: the API rows of section 7.4 (three were false and are corrected). Still open: the Catalan command names used in hints for commands that no published page uses yet (`Translació`, `Bisectriu`, `PuntMig`, `Mediatriu` come from the previous specification; tool names between «» follow the Word draft and should be checked against the Catalan GeoGebra interface).
