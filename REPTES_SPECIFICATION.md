@@ -197,7 +197,7 @@ The palette guides the student; it is not a security boundary. The student can a
 
 - Every hint describes the **tool route first** and gives the command as an alternative.
 - Cells **9A, 9B and 9C need the input bar** (a function can only be defined by typing). All other cells can be solved with the palette alone.
-- Whether `customToolBar` is honoured by the `graphing` app (theme 9) is also unverified.
+- `customToolBar` is honoured by the `graphing` app too (theme 9): the «Eines» tab lists exactly the tools of the palette (verified on 2026-11-10).
 
 ## 7. Validators
 
