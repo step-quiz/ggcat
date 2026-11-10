@@ -22,7 +22,7 @@ style.css               Estils compartits (topbar, botons, temes)
 curs/
   index.html            Índex del curs (llista de capítols i reptes)
   capitol-N.html        10 capítols del curs
-  repte-N.html          10 reptes (de 30 previstos)
+  repte-N.html          10 reptes amb la numeració antiga (el pla és una graella de 30: vegeu TODO.md)
   curs.css              Estils del curs
   capitols.js           Dades, sidebar, injecció de widgets, glossari
   progress.js           Progrés de l'alumne (fitxer comú; clau geocat_progress)
@@ -32,9 +32,9 @@ curs/
   debug-tester.js       Test end-to-end del botó «Comprova» (curs/index.html?debug=1)
   edit.html             Editor de revisió del text dels capítols (vegeu més avall)
 tools/                  Generador de pàgines JSON → HTML i el seu invers (vegeu tools/README.md)
-REPTES_SPECIFICATION.md Especificació dels 30 reptes candidats
-TODO.md                 Tasques pendents
-GeoCat-30Reptes.docx    Versió en Word de la llista de reptes
+REPTES_SPECIFICATION.md Especificació dels reptes: graella de 10 temes × 3 nivells (30 reptes)
+TODO.md                 Pla de treball i tasques pendents
+GeoCat-30Reptes.docx    Esborrany original de la graella (obsolet: mana REPTES_SPECIFICATION.md)
 test-validators.js      Test Node dels validators amb una API de GeoGebra simulada
 test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 ```
@@ -67,8 +67,10 @@ repositori.
 ## Estat del projecte
 
 - 10 capítols: ✅ complets (amb exercici validat al final)
-- 10 reptes (fàcils + mitjans): ✅ complets
-- 20 reptes (mitjans + difícils): ⬜ pendents (especificats a `REPTES_SPECIFICATION.md`)
+- 10 reptes publicats amb la numeració antiga (`repte-1` … `repte-10`): ✅ funcionen
+- Pla vigent: una graella de 10 temes × 3 nivells (30 reptes, de `repte-1a` a `repte-10c`). Dels 10 reptes
+  publicats, 4 hi tenen casella i es reanomenaran, i 6 es retiraran; queden 26 caselles per fer. ⬜ pendent
+  (el pla és a `TODO.md` i el detall de cada repte, a `REPTES_SPECIFICATION.md`)
 
 ## Fitxers comuns
 

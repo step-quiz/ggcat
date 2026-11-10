@@ -83,8 +83,9 @@ Dins d'una `part` o `section`, el camp `simulador` genera el `<div class="geogeb
 - `tools/pages/repte-1.json` — repte fàcil (sense ordres inicials).
 - `tools/pages/repte-6.json` — repte mitjà.
 
-Els reptes 11–30 estan especificats a `REPTES_SPECIFICATION.md`: es poden escriure com a JSON i
-generar amb aquesta eina.
+Els reptes de la graella de 10 temes × 3 nivells estan especificats a `REPTES_SPECIFICATION.md`. Abans de
+poder-los generar amb aquesta eina, el generador ha d'acceptar l'identificador amb lletra (`"id": "3b"`)
+i l'atribut `tools` del simulador (la paleta d'eines): vegeu `TODO.md`, bloc A.
 
 ### Verificació
 
