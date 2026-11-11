@@ -32,6 +32,13 @@ const VALIDATORS = {
            GV.countSegments(4) >= 3;
   },
 
+  // ── 1B — Triangle rectangle A(0,0) B(4,0) C(0,3): la hipotenusa fa 5 ──
+  'repte-1b': function(api, GV) {
+    if (GV.names('polygon').length < 1) return false;
+    return GV.hasPointAt(0, 0) && GV.hasPointAt(4, 0) && GV.hasPointAt(0, 3) &&
+           GV.countSegments(5) >= 1;
+  },
+
   // ── 2A — Quadrat a l'origen, costat 3 (era el repte 5) ──
   'repte-2a': function(api, GV) {
     var tol  = 0.15;
@@ -51,6 +58,14 @@ const VALIDATORS = {
       } catch(e) {}
     });
     return hasOrigin && has30 && sides3 >= 4;
+  },
+
+  // ── 2B — Quadrat de vèrtexs oposats A(0,0) i C(5,5): falten (5,0) i (0,5) ──
+  'repte-2b': function(api, GV) {
+    var given = ['A', 'C'];
+    return GV.hasPointAt(5, 0, GV.tol, given) &&
+           GV.hasPointAt(0, 5, GV.tol, given) &&
+           GV.polygonsWithArea(25, 0.3).length >= 1;
   },
 
   // ── 3A — Circumferències concèntriques a l'origen, r=2 i r=4 (era el repte 3) ──
@@ -73,12 +88,29 @@ const VALIDATORS = {
     return found2 && found4;
   },
 
+  // ── 3B — Circumferència per A(−3,0) i B(3,0) amb el centre a l'eix Y ──
+  'repte-3b': function(api, GV) {
+    return GV.circles().some(function(c) {
+      return Math.abs(c.cx) < GV.tol &&
+             GV.circleThrough(c, [[-3, 0], [3, 0]]);
+    });
+  },
+
   // ── 4A — Pentàgon regular de costat 2 sobre (0,0)–(2,0) ──
   'repte-4a': function(api, GV) {
     var area = Math.sqrt(5 * (5 + 2 * Math.sqrt(5)));   // costat 2 → ≈ 6.882
     return GV.hasPointAt(0, 0) && GV.hasPointAt(2, 0) &&
            GV.countSegments(2) >= 5 &&
            GV.polygonsWithArea(area, 0.3).length >= 1;
+  },
+
+  // ── 4B — Hexàgon regular inscrit a la circumferència de radi 3 ──
+  'repte-4b': function(api, GV) {
+    var onCircle = GV.pointCoords(['O']).filter(function(p) {
+      return Math.abs(Math.sqrt(p[0] * p[0] + p[1] * p[1]) - 3) < GV.tol;
+    }).length;
+    return onCircle >= 6 &&
+           GV.polygonsWithArea(13.5 * Math.sqrt(3), 0.5).length >= 1;   // 27√3/2 ≈ 23.383
   },
 
   // ── 5A — Mediatriu de AB (A=(-2,0), B=(4,0)) i el punt mig (1,0) ──
@@ -110,6 +142,15 @@ const VALIDATORS = {
     });
   },
 
+  // ── 6B — Incentre del triangle A(0,0) B(8,0) C(3,6) ≈ (3.449, 2.132) ──
+  'repte-6b': function(api, GV) {
+    var a = Math.sqrt(61), b = Math.sqrt(45), c = 8;   // |BC|, |CA|, |AB|
+    var ix = (b * 8 + c * 3) / (a + b + c);            // ≈ 3.449
+    var iy = (c * 6) / (a + b + c);                    // ≈ 2.132
+    return GV.names('line').length >= 2 &&
+           GV.hasPointAt(ix, iy, 0.2, ['A', 'B', 'C']);
+  },
+
   // ── 7A — Perpendicular a f per P i el peu (64/17, 16/17) (era el repte 8) ──
   'repte-7a': function(api, GV) {
     var footX = 64 / 17;
@@ -126,12 +167,35 @@ const VALIDATORS = {
     return hasFoot;
   },
 
+  // ── 7B — Dues paral·leles a f a distància 2, una a cada banda ──
+  'repte-7b': function(api, GV) {
+    function parallelThrough(x, y) {
+      return GV.anyOfType('line', function(l) {
+        if (l === 'f') return false;
+        if (api.getValue('AreParallel(f,' + l + ')') !== 1) return false;
+        return GV.pointOnLine('(' + x + ',' + y + ')', l, GV.tol);
+      });
+    }
+    return parallelThrough(-1.2, 1.6) && parallelThrough(1.2, -1.6);   // O ± 2·(−3/5, 4/5)
+  },
+
   // ── 8A — Imatge del triangle t per la translació de vector (4, 2) ──
   'repte-8a': function(api, GV) {
     var given = ['A', 'B', 'C'];
     var images = [[4, 2], [7, 2], [5, 5]];
     var allThere = images.every(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); });
     return allThere && GV.polygonsWithArea(4.5, 0.3, ['t']).length >= 1;
+  },
+
+  // ── 8B — Imatge del triangle t pel gir de 60° antihorari al voltant de O ──
+  'repte-8b': function(api, GV) {
+    var given = ['O', 'A', 'B', 'C'];
+    var co = 0.5, si = Math.sqrt(3) / 2;        // cos 60°, sin 60°
+    var images = [[2, 0], [5, 0], [5, 2]].map(function(p) {
+      return [p[0] * co - p[1] * si, p[0] * si + p[1] * co];
+    });
+    var allThere = images.every(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); });
+    return allThere && GV.polygonsWithArea(3, 0.3, ['t']).length >= 1;
   },
 
   // ── 9A — f(x) = x² − 4 i les dues arrels, (2,0) i (−2,0) ──
@@ -142,6 +206,21 @@ const VALIDATORS = {
              Math.abs(api.getValue(fn + '(2)'))     < GV.tol;
     });
     return hasF && GV.hasPointAt(2, 0) && GV.hasPointAt(-2, 0);
+  },
+
+  // ── 9B — f(x) = x², g(x) = x + 2 i els punts de tall (2,4) i (−1,1) ──
+  'repte-9b': function(api, GV) {
+    var hasParabola = GV.anyOfType('function', function(fn) {
+      return Math.abs(api.getValue(fn + '(-1)') - 1) < GV.tol &&
+             Math.abs(api.getValue(fn + '(1)')  - 1) < GV.tol &&
+             Math.abs(api.getValue(fn + '(2)')  - 4) < GV.tol;
+    });
+    var hasLine = GV.names('line').length >= 1 ||           // y = x + 2 escrit com a recta
+      GV.anyOfType('function', function(fn) {
+        return Math.abs(api.getValue(fn + '(0)') - 2) < GV.tol &&
+               Math.abs(api.getValue(fn + '(1)') - 3) < GV.tol;
+      });
+    return hasParabola && hasLine && GV.hasPointAt(2, 4) && GV.hasPointAt(-1, 1);
   },
 
   // ── 10A — Polígon regular que depèn d'un lliscador ──
@@ -168,6 +247,19 @@ const VALIDATORS = {
       } catch (e) {}
       try { api.setValue(s, original); } catch (e) {}
       return ok;
+    });
+  },
+
+  // ── 10B — Lloc geomètric del punt mig M de PQ, amb P sobre la circumferència ──
+  'repte-10b': function(api, GV) {
+    if (!GV.hasObjectOfType('locus')) return false;
+    var pts = GV.pointCoords(['O', 'Q']);
+    return pts.some(function(P) {
+      if (Math.abs(Math.sqrt(P[0] * P[0] + P[1] * P[1]) - 3) > GV.tol) return false;
+      var mx = (P[0] + 6) / 2, my = (P[1] + 2) / 2;
+      return pts.some(function(M) {
+        return M !== P && Math.abs(M[0] - mx) < GV.tol && Math.abs(M[1] - my) < GV.tol;
+      });
     });
   },
 

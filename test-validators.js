@@ -253,6 +253,17 @@ const CORRECT_SOLUTIONS = {
     { name: 'h', type: 'segment', length: 4 },
   ],
 
+
+  // ── 1B: triangle rectangle A(0,0) B(4,0) C(0,3); els costats fan 4, 5 i 3
+  'repte-1b': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 4, y: 0 },
+    { name: 'C', type: 'point', x: 0, y: 3 },
+    { name: 't', type: 'triangle', value: 6 },
+    { name: 'c', type: 'segment', length: 4 },
+    { name: 'a', type: 'segment', length: 5 },
+    { name: 'b', type: 'segment', length: 3 },
+  ],
   // ── 2A: quadrat amb vèrtexs a (0,0) i (3,0), 4 costats de longitud 3
   'repte-2a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -266,6 +277,13 @@ const CORRECT_SOLUTIONS = {
     { name: 'i', type: 'segment', length: 3 },
   ],
 
+
+  // ── 2B: els vèrtexs que falten, (5,0) i (0,5), i el quadrat d'àrea 25
+  'repte-2b': [
+    { name: 'B', type: 'point', x: 5, y: 0 },
+    { name: 'D', type: 'point', x: 0, y: 5 },
+    { name: 'q', type: 'quadrilateral', value: 25 },
+  ],
   // ── 3A: dues circumferències concèntriques a (0,0), r=2 i r=4
   'repte-3a': [
     { name: 'O', type: 'point', x: 0, y: 0 },
@@ -273,6 +291,12 @@ const CORRECT_SOLUTIONS = {
     { name: 'd', type: 'circle', center: [0, 0], radius: 4 },
   ],
 
+
+  // ── 3B: centre (0,4) a l'eix Y, radi 5 = |KA|
+  'repte-3b': [
+    { name: 'K', type: 'point', x: 0, y: 4 },
+    { name: 'd', type: 'circle', center: [0, 4], radius: 5 },
+  ],
   // ── 4A: pentàgon regular de costat 2 (àrea ≈ 6.882)
   'repte-4a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -288,6 +312,17 @@ const CORRECT_SOLUTIONS = {
     { name: 'j', type: 'segment', length: 2 },
   ],
 
+
+  // ── 4B: hexàgon regular inscrit (àrea 27√3/2 ≈ 23.383), fet amb Polígon(A,B,6)
+  'repte-4b': [
+    { name: 'A', type: 'point', x: 3, y: 0 },
+    { name: 'B', type: 'point', x: 1.5, y: 2.598 },
+    { name: 'C', type: 'point', x: -1.5, y: 2.598 },
+    { name: 'D', type: 'point', x: -3, y: 0 },
+    { name: 'E', type: 'point', x: -1.5, y: -2.598 },
+    { name: 'F', type: 'point', x: 1.5, y: -2.598 },
+    { name: 'h', type: 'polygon', value: 23.383 },
+  ],
   // ── 5A: la mediatriu (x = 1) i el punt mig (1, 0)
   'repte-5a': [
     { name: 'm', type: 'line', p: [1, 0], d: [0, 1] },
@@ -304,12 +339,25 @@ const CORRECT_SOLUTIONS = {
     { name: 'b', type: 'line', p: [0, 0], d: [Math.cos(Math.PI / 8), Math.sin(Math.PI / 8)] },
   ],
 
+
+  // ── 6B: dues bisectrius i l'incentre ≈ (3.449, 2.132)
+  'repte-6b': [
+    { name: 'm', type: 'line', p: [0, 0], d: [3.449, 2.132] },
+    { name: 'n', type: 'line', p: [8, 0], d: [3.449 - 8, 2.132] },
+    { name: 'I', type: 'point', x: 3.449, y: 2.132 },
+  ],
   // ── 7A: la perpendicular per P i el peu (64/17, 16/17)
   'repte-7a': [
     { name: 'g', type: 'line', p: [3, 4], d: [-1, 4] },
     { name: 'F', type: 'point', x: 64 / 17, y: 16 / 17 },
   ],
 
+
+  // ── 7B: les dues paral·leles, per O ± 2·(−3/5, 4/5)
+  'repte-7b': [
+    { name: 'g', type: 'line', p: [-1.2, 1.6], d: [4, 3] },
+    { name: 'h', type: 'line', p: [1.2, -1.6], d: [4, 3] },
+  ],
   // ── 8A: el triangle traslladat (4, 2)
   'repte-8a': [
     { name: "A'", type: 'point', x: 4, y: 2 },
@@ -318,6 +366,14 @@ const CORRECT_SOLUTIONS = {
     { name: "t'", type: 'triangle', value: 4.5 },
   ],
 
+
+  // ── 8B: el triangle girat 60° (A'(1, 1.732), B'(2.5, 4.330), C'(0.768, 5.330))
+  'repte-8b': [
+    { name: "A'", type: 'point', x: 1, y: 1.732 },
+    { name: "B'", type: 'point', x: 2.5, y: 4.330 },
+    { name: "C'", type: 'point', x: 0.768, y: 5.330 },
+    { name: "t'", type: 'triangle', value: 3 },
+  ],
   // ── 9A: f(x) = x² − 4 i les dues arrels
   'repte-9a': [
     { name: 'f', type: 'function', fn: function(x) { return x * x - 4; } },
@@ -325,6 +381,14 @@ const CORRECT_SOLUTIONS = {
     { name: 'Z_2', type: 'point', x:  2, y: 0 },
   ],
 
+
+  // ── 9B: f(x) = x², g(x) = x + 2 i els dos punts de tall
+  'repte-9b': [
+    { name: 'f', type: 'function', fn: function(x) { return x * x; } },
+    { name: 'g', type: 'function', fn: function(x) { return x + 2; } },
+    { name: 'P_1', type: 'point', x: -1, y: 1 },
+    { name: 'P_2', type: 'point', x:  2, y: 4 },
+  ],
   // ── 10A: lliscador n i polígon regular de n costats inscrit en un cercle
   //    de radi 1: l'àrea, (n/2)·sin(2π/n), depèn del lliscador.
   'repte-10a': [
@@ -333,6 +397,13 @@ const CORRECT_SOLUTIONS = {
     { name: 'B', type: 'point', x: -0.5, y: 0.866 },
     { name: 'p', type: 'polygon',
       valueFn: function(valorDe) { var n = valorDe('n'); return n / 2 * Math.sin(2 * Math.PI / n); } },
+  ],
+
+  // ── 10B: P sobre c, M punt mig de PQ i el lloc geomètric de M
+  'repte-10b': [
+    { name: 'P', type: 'point', x: 3, y: 0 },
+    { name: 'M', type: 'point', x: 4.5, y: 1 },
+    { name: 'l', type: 'locus' },
   ],
 };
 
@@ -351,6 +422,17 @@ const WRONG_SOLUTIONS = {
     { name: 'h', type: 'segment', length: 3.606 },
   ],
 
+
+  // 1B: C a (0, 2): la hipotenusa fa √20 ≈ 4.47
+  'repte-1b': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 4, y: 0 },
+    { name: 'C', type: 'point', x: 0, y: 2 },
+    { name: 't', type: 'triangle', value: 4 },
+    { name: 'c', type: 'segment', length: 4 },
+    { name: 'a', type: 'segment', length: 4.472 },
+    { name: 'b', type: 'segment', length: 2 },
+  ],
   // 2A: quadrat de costat 2 (no 3)
   'repte-2a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -364,12 +446,25 @@ const WRONG_SOLUTIONS = {
     { name: 'i', type: 'segment', length: 2 },
   ],
 
+
+  // 2B: el quart vèrtex a (0, 4): àrea 22.5
+  'repte-2b': [
+    { name: 'B', type: 'point', x: 5, y: 0 },
+    { name: 'D', type: 'point', x: 0, y: 4 },
+    { name: 'q', type: 'quadrilateral', value: 22.5 },
+  ],
   // 3A: només una circumferència
   'repte-3a': [
     { name: 'O', type: 'point', x: 0, y: 0 },
     { name: 'c', type: 'circle', center: [0, 0], radius: 2 },
   ],
 
+
+  // 3B: centre (1, 4), fora de l'eix Y: passa per A però no per B
+  'repte-3b': [
+    { name: 'K', type: 'point', x: 1, y: 4 },
+    { name: 'd', type: 'circle', center: [1, 4], radius: Math.sqrt(32) },
+  ],
   // 4A: hexàgon regular de costat 2 (àrea ≈ 10.39)
   'repte-4a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -383,6 +478,15 @@ const WRONG_SOLUTIONS = {
     { name: 'k', type: 'segment', length: 2 },
   ],
 
+
+  // 4B: quadrat inscrit (4 punts sobre c, àrea 18)
+  'repte-4b': [
+    { name: 'A', type: 'point', x: 3, y: 0 },
+    { name: 'B', type: 'point', x: 0, y: 3 },
+    { name: 'C', type: 'point', x: -3, y: 0 },
+    { name: 'D', type: 'point', x: 0, y: -3 },
+    { name: 'h', type: 'polygon', value: 18 },
+  ],
   // 5A: perpendicular per A (no pel punt mig), amb el punt mig
   'repte-5a': [
     { name: 'm', type: 'line', p: [-2, 0], d: [0, 1] },
@@ -399,12 +503,25 @@ const WRONG_SOLUTIONS = {
     { name: 'b', type: 'line', p: [0, 0], d: [4, 2] },
   ],
 
+
+  // 6B: dues mediatrius i el circumcentre (4, 1.75)
+  'repte-6b': [
+    { name: 'm', type: 'line', p: [4, 0], d: [0, 1] },
+    { name: 'n', type: 'line', p: [5.5, 3], d: [6, 5] },
+    { name: 'I', type: 'point', x: 4, y: 1.75 },
+  ],
   // 7A: la perpendicular, però el peu al lloc equivocat
   'repte-7a': [
     { name: 'g', type: 'line', p: [3, 4], d: [-1, 4] },
     { name: 'F', type: 'point', x: 3, y: 2 },
   ],
 
+
+  // 7B: totes dues paral·leles a la mateixa banda (distàncies 2 i 4)
+  'repte-7b': [
+    { name: 'g', type: 'line', p: [-1.2, 1.6], d: [4, 3] },
+    { name: 'h', type: 'line', p: [-2.4, 3.2], d: [4, 3] },
+  ],
   // 8A: traslladat amb un altre vector, (2, 4)
   'repte-8a': [
     { name: "A'", type: 'point', x: 2, y: 4 },
@@ -413,6 +530,14 @@ const WRONG_SOLUTIONS = {
     { name: "t'", type: 'triangle', value: 4.5 },
   ],
 
+
+  // 8B: gir de 60° en sentit horari
+  'repte-8b': [
+    { name: "A'", type: 'point', x: 1, y: -1.732 },
+    { name: "B'", type: 'point', x: 2.5, y: -4.330 },
+    { name: "C'", type: 'point', x: 4.232, y: -3.330 },
+    { name: "t'", type: 'triangle', value: 3 },
+  ],
   // 9A: una altra paràbola, x² − 1, amb les seves arrels
   'repte-9a': [
     { name: 'f', type: 'function', fn: function(x) { return x * x - 1; } },
@@ -420,6 +545,12 @@ const WRONG_SOLUTIONS = {
     { name: 'Z_2', type: 'point', x:  1, y: 0 },
   ],
 
+
+  // 9B: les dues funcions, sense marcar els punts de tall
+  'repte-9b': [
+    { name: 'f', type: 'function', fn: function(x) { return x * x; } },
+    { name: 'g', type: 'function', fn: function(x) { return x + 2; } },
+  ],
   // 10A: hi ha lliscador, però el polígon (un quadrat) no en depèn
   'repte-10a': [
     { name: 'n', type: 'numeric', value: 3, moveable: true },
@@ -427,11 +558,48 @@ const WRONG_SOLUTIONS = {
     { name: 'B', type: 'point', x: 0, y: 1 },
     { name: 'p', type: 'polygon', value: 2 },
   ],
+
+  // 10B: P i M ben fets, però sense el lloc geomètric
+  'repte-10b': [
+    { name: 'P', type: 'point', x: 3, y: 0 },
+    { name: 'M', type: 'point', x: 4.5, y: 1 },
+  ],
 };
 
 // ── 4b. Més solucions incorrectes (errors típics) ───────
 
 const EXTRA_WRONG = {
+
+  // 1B: els tres punts i la hipotenusa com a segment, sense polígon
+  'repte-1b': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 4, y: 0 },
+    { name: 'C', type: 'point', x: 0, y: 3 },
+    { name: 'a', type: 'segment', length: 5 },
+  ],
+
+  // 2B: els dos vèrtexs, sense el polígon
+  'repte-2b': [
+    { name: 'B', type: 'point', x: 5, y: 0 },
+    { name: 'D', type: 'point', x: 0, y: 5 },
+  ],
+
+  // 3B: centre a l'eix Y, però radi 4 (no passa per A ni per B)
+  'repte-3b': [
+    { name: 'K', type: 'point', x: 0, y: 4 },
+    { name: 'd', type: 'circle', center: [0, 4], radius: 4 },
+  ],
+
+  // 4B: hexàgon regular cap a fora (Polígon(B,A,6)): només A i B sobre c
+  'repte-4b': [
+    { name: 'A', type: 'point', x: 3, y: 0 },
+    { name: 'B', type: 'point', x: 1.5, y: 2.598 },
+    { name: 'C', type: 'point', x: 4.5, y: 2.598 },
+    { name: 'D', type: 'point', x: 3, y: 5.196 },
+    { name: 'E', type: 'point', x: 6, y: 5.196 },
+    { name: 'F', type: 'point', x: 4.5, y: 7.794 },
+    { name: 'h', type: 'polygon', value: 23.383 },
+  ],
   // 5A: la mediatriu, però sense marcar el punt mig
   'repte-5a': [
     { name: 'm', type: 'line', p: [1, 0], d: [0, 1] },
@@ -442,11 +610,21 @@ const EXTRA_WRONG = {
     { name: 'alfa', type: 'angle', value: Math.PI / 4 },
   ],
 
+
+  // 6B: el punt a l'incentre, però sense cap bisectriu
+  'repte-6b': [
+    { name: 'I', type: 'point', x: 3.449, y: 2.132 },
+  ],
   // 7A: el peu ben posat, però cap recta nova
   'repte-7a': [
     { name: 'F', type: 'point', x: 64 / 17, y: 16 / 17 },
   ],
 
+
+  // 7B: només la perpendicular a f per O (passa pels dos punts, però no és paral·lela)
+  'repte-7b': [
+    { name: 'p', type: 'line', p: [0, 0], d: [-3, 4] },
+  ],
   // 8A: els tres punts imatge, sense el polígon
   'repte-8a': [
     { name: 'D', type: 'point', x: 4, y: 2 },
@@ -454,12 +632,26 @@ const EXTRA_WRONG = {
     { name: 'F', type: 'point', x: 5, y: 5 },
   ],
 
+
+  // 8B: els tres punts imatge, sense el polígon
+  'repte-8b': [
+    { name: 'D', type: 'point', x: 1, y: 1.732 },
+    { name: 'E', type: 'point', x: 2.5, y: 4.330 },
+    { name: 'F', type: 'point', x: 0.768, y: 5.330 },
+  ],
   // 9A: la funció bona, però només una de les dues arrels
   'repte-9a': [
     { name: 'f', type: 'function', fn: function(x) { return x * x - 4; } },
     { name: 'Z', type: 'point', x: 2, y: 0 },
   ],
 
+
+  // 9B: les dues funcions i només un dels dos punts de tall
+  'repte-9b': [
+    { name: 'f', type: 'function', fn: function(x) { return x * x; } },
+    { name: 'g', type: 'function', fn: function(x) { return x + 2; } },
+    { name: 'P', type: 'point', x: 2, y: 4 },
+  ],
   // 10A: polígon que depèn d'un nombre que no és cap lliscador
   'repte-10a': [
     { name: 'n', type: 'numeric', value: 3 },
@@ -467,6 +659,13 @@ const EXTRA_WRONG = {
       valueFn: function(valorDe) { var n = valorDe('n'); return n / 2 * Math.sin(2 * Math.PI / n); } },
   ],
 
+
+  // 10B: lloc geomètric, però P no és sobre c (P = (1, 0))
+  'repte-10b': [
+    { name: 'P', type: 'point', x: 1, y: 0 },
+    { name: 'M', type: 'point', x: 3.5, y: 1 },
+    { name: 'l', type: 'locus' },
+  ],
   // Capítol 5: perpendicular a AB que no passa pel punt mitjà
   'cap-5-ex': [
     { name: 'm', type: 'line', p: [1, 0], d: [0, 1] },
@@ -497,6 +696,11 @@ const EXTRA_CORRECT = {
     { name: 'c', type: 'segment', length: 4 },
   ],
 
+
+  // 3B: centre a l'origen, radi 3 (també val)
+  'repte-3b': [
+    { name: 'd', type: 'circle', center: [0, 0], radius: 3 },
+  ],
   // 4A: el pentàgon fet punt per punt (tipus 'pentagon')
   'repte-4a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -517,6 +721,14 @@ const EXTRA_CORRECT = {
     { name: 'M', type: 'point', x: 1, y: 0 },
   ],
 
+
+  // 9B: la recta escrita com a y = x + 2 (tipus 'line')
+  'repte-9b': [
+    { name: 'f', type: 'function', fn: function(x) { return x * x; } },
+    { name: 'g', type: 'line', p: [0, 2], d: [1, 1] },
+    { name: 'A', type: 'point', x: -1, y: 1 },
+    { name: 'B', type: 'point', x:  2, y: 4 },
+  ],
   // 10A: polígon de costat fix 1 (l'àrea, n/(4·tan(π/n)), també creix amb n)
   'repte-10a': [
     { name: 'k', type: 'numeric', value: 6, moveable: true },
@@ -549,6 +761,18 @@ const EXTRA_CORRECT = {
 // reptes i per als capítols. Totes les solucions s'hi afegeixen.
 
 const INITIAL = {
+  'repte-2b': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'C', type: 'point', x: 5, y: 5 },
+  ],
+  'repte-3b': [
+    { name: 'A', type: 'point', x: -3, y: 0 },
+    { name: 'B', type: 'point', x:  3, y: 0 },
+  ],
+  'repte-4b': [
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+  ],
   'repte-5a': [
     { name: 'A', type: 'point', x: -2, y: 0 },
     { name: 'B', type: 'point', x:  4, y: 0 },
@@ -567,9 +791,19 @@ const INITIAL = {
     { name: 'f', type: 'ray', a: 'O', b: 'A' },
     { name: 'g', type: 'ray', a: 'O', b: 'B' },
   ],
+  'repte-6b': [
+    { name: 'A', type: 'point', x: 0, y: 0 },
+    { name: 'B', type: 'point', x: 8, y: 0 },
+    { name: 'C', type: 'point', x: 3, y: 6 },
+    { name: 't', type: 'triangle', value: 24 },
+  ],
   'repte-7a': [
     { name: 'f', type: 'line', p: [0, 0], d: [4, 1] },
     { name: 'P', type: 'point', x: 3, y: 4 },
+  ],
+  'repte-7b': [
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'f', type: 'line', p: [0, 0], d: [4, 3] },
   ],
   'repte-8a': [
     { name: 'A', type: 'point', x: 0, y: 0 },
@@ -577,6 +811,18 @@ const INITIAL = {
     { name: 'C', type: 'point', x: 1, y: 3 },
     { name: 't', type: 'triangle', value: 4.5 },
     { name: 'v', type: 'vector' },
+  ],
+  'repte-8b': [
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'A', type: 'point', x: 2, y: 0 },
+    { name: 'B', type: 'point', x: 5, y: 0 },
+    { name: 'C', type: 'point', x: 5, y: 2 },
+    { name: 't', type: 'triangle', value: 3 },
+  ],
+  'repte-10b': [
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+    { name: 'Q', type: 'point', x: 6, y: 2 },
   ],
   'cap-2-ex': [
     { name: 'A', type: 'point', x: -3, y: 0 },

@@ -66,16 +66,25 @@ var TEMES_DATA = [
 // La dificultat surt del nivell: a → facil, b → mitja, c → dificil.
 var REPTES_DATA = [
   { id: '1a',  tema: 1,  nivell: 'a', titol: 'Triangle equilàter',            arxiu: 'repte-1a.html',  goalId: 'repte-1a',  dificultat: 'facil' },
+  { id: '1b',  tema: 1,  nivell: 'b', titol: 'Triangle 3-4-5',                arxiu: 'repte-1b.html',  goalId: 'repte-1b',  dificultat: 'mitja' },
   { id: '2a',  tema: 2,  nivell: 'a', titol: 'Quadrat a l\'origen',           arxiu: 'repte-2a.html',  goalId: 'repte-2a',  dificultat: 'facil' },
+  { id: '2b',  tema: 2,  nivell: 'b', titol: 'Quadrat per vèrtexs oposats',   arxiu: 'repte-2b.html',  goalId: 'repte-2b',  dificultat: 'mitja' },
   { id: '3a',  tema: 3,  nivell: 'a', titol: 'Circumferències concèntriques', arxiu: 'repte-3a.html',  goalId: 'repte-3a',  dificultat: 'facil' },
+  { id: '3b',  tema: 3,  nivell: 'b', titol: 'Circumferència per dos punts',  arxiu: 'repte-3b.html',  goalId: 'repte-3b',  dificultat: 'mitja' },
   { id: '4a',  tema: 4,  nivell: 'a', titol: 'Pentàgon regular',              arxiu: 'repte-4a.html',  goalId: 'repte-4a',  dificultat: 'facil' },
+  { id: '4b',  tema: 4,  nivell: 'b', titol: 'Hexàgon inscrit',               arxiu: 'repte-4b.html',  goalId: 'repte-4b',  dificultat: 'mitja' },
   { id: '5a',  tema: 5,  nivell: 'a', titol: 'Mediatriu d\'un segment',       arxiu: 'repte-5a.html',  goalId: 'repte-5a',  dificultat: 'facil' },
   { id: '5b',  tema: 5,  nivell: 'b', titol: 'El circumcentre',               arxiu: 'repte-5b.html',  goalId: 'repte-5b',  dificultat: 'mitja' },
   { id: '6a',  tema: 6,  nivell: 'a', titol: 'Bisectriu d\'un angle',         arxiu: 'repte-6a.html',  goalId: 'repte-6a',  dificultat: 'facil' },
+  { id: '6b',  tema: 6,  nivell: 'b', titol: 'L\'incentre',                   arxiu: 'repte-6b.html',  goalId: 'repte-6b',  dificultat: 'mitja' },
   { id: '7a',  tema: 7,  nivell: 'a', titol: 'Perpendicular i peu',           arxiu: 'repte-7a.html',  goalId: 'repte-7a',  dificultat: 'facil' },
+  { id: '7b',  tema: 7,  nivell: 'b', titol: 'Paral·leles a distància 2',     arxiu: 'repte-7b.html',  goalId: 'repte-7b',  dificultat: 'mitja' },
   { id: '8a',  tema: 8,  nivell: 'a', titol: 'Translació d\'un triangle',     arxiu: 'repte-8a.html',  goalId: 'repte-8a',  dificultat: 'facil' },
+  { id: '8b',  tema: 8,  nivell: 'b', titol: 'Rotació de 60°',                arxiu: 'repte-8b.html',  goalId: 'repte-8b',  dificultat: 'mitja' },
   { id: '9a',  tema: 9,  nivell: 'a', titol: 'Arrels de la paràbola',         arxiu: 'repte-9a.html',  goalId: 'repte-9a',  dificultat: 'facil' },
+  { id: '9b',  tema: 9,  nivell: 'b', titol: 'Paràbola i recta',              arxiu: 'repte-9b.html',  goalId: 'repte-9b',  dificultat: 'mitja' },
   { id: '10a', tema: 10, nivell: 'a', titol: 'Polígon dinàmic',               arxiu: 'repte-10a.html', goalId: 'repte-10a', dificultat: 'facil' },
+  { id: '10b', tema: 10, nivell: 'b', titol: 'Lloc del punt mig',             arxiu: 'repte-10b.html', goalId: 'repte-10b', dificultat: 'mitja' },
 ];
 
 

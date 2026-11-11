@@ -9,8 +9,8 @@ The challenges form a **grid of 10 themes × 3 levels = 30 challenges**. This re
 Authority and precedence:
 
 1. **This file is the single source of truth for the challenge plan.** `GeoCat-30Reptes.docx` is the original prose draft of the grid; it is kept in the repository for reference only and is **obsolete**. Where they differ, this file wins (the known differences are listed in Appendix B).
-2. For anything **already implemented**, the repository rule applies: if code and document disagree, the document is the one to fix. Eleven cells are published (the ten A cells and 5B, since 2026-11-11). Four of them (2A, 3A, 5B, 7A) continue legacy challenges: their text, data and validator body are reproduced here verbatim from the code.
-3. Everything in the 19 cells marked *to build* is a specification, not tested production code. Section 7.4 states exactly what has and has not been verified.
+2. For anything **already implemented**, the repository rule applies: if code and document disagree, the document is the one to fix. Twenty cells are published (the whole A and B columns, since 2026-11-11). Four of them (2A, 3A, 5B, 7A) continue legacy challenges: their text, data and validator body are reproduced here verbatim from the code.
+3. Everything in the 10 cells marked *to build* (the C column) is a specification, not tested production code. Section 7.4 states exactly what has and has not been verified.
 
 Owner decisions recorded on 2026-11-10:
 
@@ -29,16 +29,16 @@ Owner decisions recorded on 2026-11-10:
 
 | # | Theme (`TEMES_DATA.titol`) | A — Fàcil | B — Mitjà | C — Difícil |
 |---|---|---|---|---|
-| 1 | El triangle | `1a` Triangle equilàter ✅ | `1b` Triangle 3-4-5 | `1c` Triangle medial |
-| 2 | El quadrat | `2a` Quadrat a l'origen ✅ | `2b` Quadrat per vèrtexs oposats | `2c` Duplicació del quadrat |
-| 3 | La circumferència | `3a` Circumferències concèntriques ✅ | `3b` Circumferència per dos punts | `3c` Cercle circumscrit |
-| 4 | Polígons regulars | `4a` Pentàgon regular ✅ | `4b` Hexàgon inscrit | `4c` Octàgon dins d'un quadrat |
+| 1 | El triangle | `1a` Triangle equilàter ✅ | `1b` Triangle 3-4-5 ✅ | `1c` Triangle medial |
+| 2 | El quadrat | `2a` Quadrat a l'origen ✅ | `2b` Quadrat per vèrtexs oposats ✅ | `2c` Duplicació del quadrat |
+| 3 | La circumferència | `3a` Circumferències concèntriques ✅ | `3b` Circumferència per dos punts ✅ | `3c` Cercle circumscrit |
+| 4 | Polígons regulars | `4a` Pentàgon regular ✅ | `4b` Hexàgon inscrit ✅ | `4c` Octàgon dins d'un quadrat |
 | 5 | Mediatriu i circumcentre | `5a` Mediatriu d'un segment ✅ | `5b` El circumcentre ✅ | `5c` Tales i la hipotenusa |
-| 6 | Bisectriu i incentre | `6a` Bisectriu d'un angle ✅ | `6b` L'incentre | `6c` Cercle inscrit |
-| 7 | Perpendiculars i paral·leles | `7a` Perpendicular i peu ✅ | `7b` Paral·leles a distància 2 | `7c` L'ortocentre |
-| 8 | Transformacions | `8a` Translació d'un triangle ✅ | `8b` Rotació de 60° | `8c` Reflexió amb lliscament |
-| 9 | Funcions i corbes | `9a` Arrels de la paràbola ✅ | `9b` Paràbola i recta | `9c` Sinus i cosinus |
-| 10 | Lliscadors i lloc geomètric | `10a` Polígon dinàmic ✅ | `10b` Lloc del punt mig | `10c` L'el·lipse com a lloc geomètric |
+| 6 | Bisectriu i incentre | `6a` Bisectriu d'un angle ✅ | `6b` L'incentre ✅ | `6c` Cercle inscrit |
+| 7 | Perpendiculars i paral·leles | `7a` Perpendicular i peu ✅ | `7b` Paral·leles a distància 2 ✅ | `7c` L'ortocentre |
+| 8 | Transformacions | `8a` Translació d'un triangle ✅ | `8b` Rotació de 60° ✅ | `8c` Reflexió amb lliscament |
+| 9 | Funcions i corbes | `9a` Arrels de la paràbola ✅ | `9b` Paràbola i recta ✅ | `9c` Sinus i cosinus |
+| 10 | Lliscadors i lloc geomètric | `10a` Polígon dinàmic ✅ | `10b` Lloc del punt mig ✅ | `10c` L'el·lipse com a lloc geomètric |
 
 ## 3. Level semantics
 
@@ -231,7 +231,7 @@ Commands (English → Catalan). In the input bar the student types the Catalan n
 
 Order of arguments: `Rotació(obj, angle, centre)`, `Homotècia(obj, raó, centre)`, `Perpendicular(punt, recta)`, `Recta(punt, recta)` for the parallel. There is no `Punt(x,y)`: an unnamed point is typed as `(x,y)`.
 
-Typing in the `graphing` app goes through a formula editor: after an exponent the cursor stays in it until the student presses →, and say so in the hint. Accented command names could not be tested there with a simulated keyboard (the accent was dropped), so in theme 9 prefer a name without accents (`Arrel(f)`) or the tool route.
+Typing in the `graphing` app goes through a formula editor: after an exponent the cursor stays in it until the student presses →, and say so in the hint. Accented command names work there: `Intersecció(f,g)` (9B) and `Intersecció(f,EixX)` (9A) typed into the formula editor give ✓ (2026-11-11). An earlier test had concluded otherwise because Playwright's `keyboard.type` drops non-ASCII characters in that editor; a test must send them as CDP key events (`Input.dispatchKeyEvent` with `text: 'ó'`). In `classic` the plain `keyboard.type` works.
 
 The palette guides the student; it is not a security boundary. The student can also type commands: since 2026-11-10 every non-read-only applet shows the input bar (`classic`: at the bottom; `graphing` exercises: in the left panel, next to the «Eines» tab that holds the palette — see `TODO.md`, check 0.1). Therefore:
 
@@ -456,7 +456,7 @@ Use them instead of the raw API for three things, each of which was a bug in the
 
 ### 7.4 What has been verified, and what has not
 
-The reference validators of this file have not been run against a live GeoGebra applet. On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0): three API assumptions turned out to be false (the ❌ rows below). They are now corrected in the published validators (end-to-end: 20/20), in the `GV` extension of section 7.3 and in the reference validators of section 9, which go through `GV.names`, `GV.circles`, `GV.pointOnLine` and `GV.isPerpBisector`.
+The reference validators of the 10 C cells have not been run against a live GeoGebra applet; those of the 20 published cells pass the end-to-end tester (30/30 on 2026-11-11, chapters included). On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0): three API assumptions turned out to be false (the ❌ rows below). They are now corrected in the published validators (end-to-end: 20/20), in the `GV` extension of section 7.3 and in the reference validators of section 9, which go through `GV.names`, `GV.circles`, `GV.pointOnLine` and `GV.isPerpBisector`.
 
 Two kinds of checks were done earlier on 2026-11-10:
 
@@ -493,7 +493,7 @@ No row is unverified any more. What remains unproven is each reference validator
 A cell is not done until all three exist and pass:
 
 1. **`test-validators.js`** (Node, mock API): three scenes per cell — correct solution → `true`, initial scene (`INITIAL`) → `false`, wrong solution → `false` — plus other correct routes and typical errors where useful. Scenes use the real object types. Extend the mock if a new validator needs an expression it lacks.
-2. **`curs/debug-tester.js`** (browser, real applet): one `TEST_SOLUTIONS['repte-<id>']` entry with `correct` and `wrong` command lists. Section 9 provides them for every new cell; they use English command names, which work regardless of the applet language. Those of the 11 published cells pass on the live applet; the rest were checked only against the emulator of section 7.4.
+2. **`curs/debug-tester.js`** (browser, real applet): one `TEST_SOLUTIONS['repte-<id>']` entry with `correct` and `wrong` command lists. Section 9 provides them for every new cell; they use English command names, which work regardless of the applet language. Those of the 20 published cells pass on the live applet; the rest (the C column) were checked only against the emulator of section 7.4.
 3. **`node tools/generate-pages.js --comprova`**: the page is reproduced exactly by its JSON.
 
 ## 9. The 30 cells
@@ -556,7 +556,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 1B — `repte-1b` · Triangle 3-4-5
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** old CH12 («Pitàgores visual»)
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** *(empty)*
@@ -585,7 +585,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Crea els tres punts i uneix-los amb l'eina «Polígon». Amb l'eina «Longitud, perímetre o distància», fes clic a cada costat: obtindràs 4, 3 i 5. Comprova-ho: 3² + 4² = 9 + 16 = 25 = 5².
+> Crea els tres punts i uneix-los amb l'eina «Polígon» (fes clic a A, B, C i torna a A). Amb la barra d'entrada: <code>A=(0,0)</code>, <code>B=(4,0)</code>, <code>C=(0,3)</code> i <code>Polígon(A, B, C)</code>. Amb l'eina «Longitud, perímetre o distància», fes clic a cada costat: obtindràs 4, 3 i 5. Comprova-ho: 3² + 4² = 9 + 16 = 25 = 5².
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -711,7 +711,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 2B — `repte-2b` · Quadrat per vèrtexs oposats
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** new
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,C`
@@ -745,7 +745,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> El segment AC és una diagonal del quadrat. L'altra diagonal fa la mateixa longitud, passa pel punt mig de AC i hi és perpendicular: és un tros de la mediatriu de AC. Els vèrtexs que falten són (5, 0) i (0, 5). Crea'ls i uneix els quatre punts, per ordre, amb «Polígon».
+> El segment AC és una diagonal del quadrat. L'altra diagonal fa la mateixa longitud, passa pel punt mig de AC i hi és perpendicular: és un tros de la mediatriu de AC. Els vèrtexs que falten són (5, 0) i (0, 5). Crea'ls i uneix els quatre punts, per ordre, amb «Polígon». Amb la barra d'entrada: <code>B=(5,0)</code>, <code>D=(0,5)</code> i <code>Polígon(A, B, C, D)</code>.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -864,7 +864,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 3B — `repte-3b` · Circumferència per dos punts
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** new
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B`
@@ -897,7 +897,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> El centre d'una circumferència que passa per A i per B és a la mateixa distància de tots dos: és un punt de la mediatriu de AB, que aquí és l'eix Y. Tria'n un qualsevol, per exemple (0, 4), i amb l'eina «Circumferència donats el centre i un punt per on passa» fes clic al centre i després a A. Hi ha infinites solucions.
+> El centre d'una circumferència que passa per A i per B és a la mateixa distància de tots dos: és un punt de la mediatriu de AB, que aquí és l'eix Y. Tria'n un qualsevol, per exemple (0, 4), i amb l'eina «Circumferència donats el centre i un punt per on passa» fes clic al centre i després a A. Amb la barra d'entrada: <code>K=(0,4)</code> i <code>Circumferència(K, A)</code>. Hi ha infinites solucions.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -1021,7 +1021,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 4B — `repte-4b` · Hexàgon inscrit
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** old CH25
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `O,c`
@@ -1056,7 +1056,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> En un hexàgon regular inscrit, el costat fa el mateix que el radi. Posa un punt A sobre la circumferència, per exemple (3, 0). Dibuixa la circumferència de centre A que passa per O i marca on talla c: és el vèrtex següent, B. Amb «Polígon regular», fes clic a A i a B i indica 6 vèrtexs. Si l'hexàgon surt cap a fora, fes clic primer a B i després a A.
+> En un hexàgon regular inscrit, el costat fa el mateix que el radi. Posa un punt A sobre la circumferència, per exemple (3, 0). Dibuixa la circumferència de centre A que passa per O i marca on talla c: és el vèrtex següent, B. Amb «Polígon regular», fes clic a A i a B i indica 6 vèrtexs. Si l'hexàgon surt cap a fora, fes clic primer a B i després a A. Amb la barra d'entrada: <code>A=(3,0)</code>, <code>B=Rotació(A, 60°, O)</code> i <code>Polígon(A, B, 6)</code>.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -1352,7 +1352,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 6B — `repte-6b` · L'incentre
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** old CH17
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
@@ -1389,7 +1389,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Amb l'eina «Bisectriu», fes clic a tres punts amb el vèrtex al mig: B, A, C per a l'angle A, i A, B, C per a l'angle B. Marca el punt de tall amb «Intersecció». La tercera bisectriu passa pel mateix punt: l'incentre és a la mateixa distància dels tres costats.
+> Amb l'eina «Bisectriu», fes clic a tres punts amb el vèrtex al mig: B, A, C per a l'angle A, i A, B, C per a l'angle B. Marca el punt de tall amb «Intersecció». Amb la barra d'entrada: <code>m=Bisectriu(B, A, C)</code>, <code>n=Bisectriu(A, B, C)</code> i <code>I=Intersecció(m, n)</code>. La tercera bisectriu passa pel mateix punt: l'incentre és a la mateixa distància dels tres costats.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -1515,7 +1515,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 7B — `repte-7b` · Paral·leles a distància 2
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** old CH11, reworked
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `O,f`
@@ -1544,17 +1544,16 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
     return GV.anyOfType('line', function(l) {
       if (l === 'f') return false;
       if (api.getValue('AreParallel(f,' + l + ')') !== 1) return false;
-      var d = api.getValue('Distance((' + x + ',' + y + '),' + l + ')');
-      return isFinite(d) && d < GV.tol;
+      return GV.pointOnLine('(' + x + ',' + y + ')', l, GV.tol);
     });
   }
-  return parallelThrough(-1.2, 1.6) && parallelThrough(1.2, -1.6);
+  return parallelThrough(-1.2, 1.6) && parallelThrough(1.2, -1.6);   // O ± 2·(−3/5, 4/5)
 },
 ```
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Traça la perpendicular a f que passa per O. Dibuixa la circumferència de centre O i radi 2 i marca els dos punts on talla la perpendicular: són a distància 2 de f, un a cada banda. Amb l'eina «Paral·lela», fes passar per cadascun una paral·lela a f.
+> Amb l'eina «Recta perpendicular», traça la perpendicular a f que passa per O. Amb «Circumferència: Centre i Radi», dibuixa la circumferència de centre O i radi 2, i marca amb «Intersecció» els dos punts on talla la perpendicular: són a distància 2 de f, un a cada banda. Amb l'eina «Recta paral·lela», fes passar per cadascun una paral·lela a f. Amb la barra d'entrada: <code>p=Perpendicular(O, f)</code>, <code>k=Circumferència(O, 2)</code>, <code>P=Intersecció(p, k, 1)</code>, <code>Q=Intersecció(p, k, 2)</code>, <code>Recta(P, f)</code> i <code>Recta(Q, f)</code>.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -1687,7 +1686,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 8B — `repte-8b` · Rotació de 60°
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** new
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `O,A,B,C,t`
@@ -1727,7 +1726,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Amb l'eina «Rotació al voltant d'un punt», fes clic al triangle, després al centre O, i indica 60° en sentit antihorari. Amb l'eina «Àrea», fes clic a cada triangle: tots dos fan 3. Un gir no canvia ni les longituds ni les àrees.
+> Amb l'eina «Rotació al voltant d'un punt», fes clic al triangle, després al centre O, i indica 60° en sentit antihorari. Amb la barra d'entrada: <code>Rotació(t, 60°, O)</code>. Amb l'eina «Àrea», fes clic a cada triangle: tots dos fan 3. Un gir no canvia ni les longituds ni les àrees.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -1857,7 +1856,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 9B — `repte-9b` · Paràbola i recta
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** old CH21
 - **App:** `graphing` (`data-app="graphing"`)
 - **`data-fixed`:** *(empty)*
@@ -1894,7 +1893,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Escriu <code>f(x) = x^2</code> i <code>g(x) = x + 2</code> a la barra d'entrada. Amb l'eina «Intersecció», fes clic a les dues gràfiques (<code>Intersecció(f, g)</code>). Amb àlgebra: x² = x + 2 → x² − x − 2 = 0 → (x − 2)(x + 1) = 0. Els punts són (2, 4) i (−1, 1).
+> Escriu <code>f(x) = x^2</code> a la barra d'entrada (després de l'exponent, prem la tecla → per sortir-ne) i després <code>g(x) = x + 2</code>. Amb l'eina «Intersecció» de la pestanya «Eines», fes clic a les dues gràfiques, o escriu <code>Intersecció(f, g)</code>. Amb àlgebra: x² = x + 2 → x² − x − 2 = 0 → (x − 2)(x + 1) = 0. Els punts són (2, 4) i (−1, 1).
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -2045,7 +2044,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 10B — `repte-10b` · Lloc del punt mig
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** to build
+- **Status:** **published** (2026-11-11)
 - **Origin:** new
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `O,c,Q`
@@ -2085,7 +2084,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 **Hint** (Catalan; inner HTML of the hint `<p>`):
 
-> Amb l'eina «Punt en un objecte», fes clic a la circumferència per crear P. Amb «Punt mitjà o centre», fes clic a P i a Q per crear M. Amb l'eina «Lloc geomètric», fes clic primer a M i després a P. El lloc és una circumferència de radi 1.5 (la meitat de 3) amb centre a (3, 1), el punt mig de O i Q.
+> Amb l'eina «Punt en un objecte», fes clic a la circumferència per crear P. Amb «Punt mitjà o centre», fes clic a P i a Q per crear M. Amb l'eina «Lloc geomètric», fes clic primer a M i després a P. Amb la barra d'entrada: <code>P=Punt(c)</code>, <code>M=PuntMitjà(P, Q)</code> i <code>LlocGeomètric(M, P)</code>. El lloc és una circumferència de radi 1.5 (la meitat de 3) amb centre a (3, 1), el punt mig de O i Q.
 
 **Test solutions** (English GeoGebra commands, run after `data-commands`):
 
@@ -2233,4 +2232,4 @@ Not carried over from the draft: the informal proofs attached to some cells. The
 
 ## Appendix C — Open items
 
-Tracked in `TODO.md` (block 0 and block E). Settled on 2026-11-10: the input bar (now shown) and `customToolBar` in the `graphing` app (works). Also settled: the API rows of section 7.4 (three were false and are corrected). Still open: nothing about names: the Catalan tool and command names are now the applet's own (tables in section 6), and the hints of the 11 published cells were typed into the input bar and pass. For the 19 cells still to build, the names in the hints were corrected by the same tables, but each hint must still be typed once when its page is built.
+Tracked in `TODO.md` (block 0 and block E). Settled on 2026-11-10: the input bar (now shown) and `customToolBar` in the `graphing` app (works). Also settled: the API rows of section 7.4 (three were false and are corrected). Still open: nothing about names: the Catalan tool and command names are now the applet's own (tables in section 6), and the hints of the 20 published cells were typed into the input bar and pass. For the 10 C cells still to build, the names in the hints were corrected by the same tables, but each hint must still be typed once when its page is built.

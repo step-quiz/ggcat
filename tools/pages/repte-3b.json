@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "3b",
+  "titol": "Circumferència per dos punts",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-3a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-4a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>El centre d'una circumferència que passa per A i per B és a la mateixa distància de tots dos: és un punt de la mediatriu de AB, que aquí és l'eix Y. Tria'n un qualsevol, per exemple (0, 4), i amb l'eina «Circumferència donats el centre i un punt per on passa» fes clic al centre i després a A. Amb la barra d'entrada: <code>K=(0,4)</code> i <code>Circumferència(K, A)</code>. Hi ha infinites solucions.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Els punts <strong>A = (−3, 0)</strong> i <strong>B = (3, 0)</strong> ja estan construïts. Construeix una <strong>circumferència que passi per A i per B</strong> i que tingui el <strong>centre sobre l'eix Y</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(-3,0)\nB=(3,0)",
+            "fixed": "A,B",
+            "tools": "0 | 1 19 | 8 4 | 10 11 34 | 15",
+            "goalId": "repte-3b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

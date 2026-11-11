@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "2b",
+  "titol": "Quadrat per vèrtexs oposats",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-2a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-3a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>El segment AC és una diagonal del quadrat. L'altra diagonal fa la mateixa longitud, passa pel punt mig de AC i hi és perpendicular: és un tros de la mediatriu de AC. Els vèrtexs que falten són (5, 0) i (0, 5). Crea'ls i uneix els quatre punts, per ordre, amb «Polígon». Amb la barra d'entrada: <code>B=(5,0)</code>, <code>D=(0,5)</code> i <code>Polígon(A, B, C, D)</code>.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Els punts <strong>A = (0, 0)</strong> i <strong>C = (5, 5)</strong> ja estan construïts: són dos <strong>vèrtexs oposats</strong> d'un quadrat. Troba els altres dos vèrtexs i construeix el <strong>quadrat</strong> (un polígon tancat).</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nC=(5,5)",
+            "fixed": "A,C",
+            "tools": "0 | 1 19 5 | 15 4 8 | 16",
+            "goalId": "repte-2b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-7a.html",
+    "url": "repte-6b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Amb l'eina «Bisectriu», fes clic als punts A, O i B, per aquest ordre (el vèrtex al mig): <code>Bisectriu(A, O, B)</code>. La bisectriu parteix l'angle en dos angles de 22.5°.</p>",

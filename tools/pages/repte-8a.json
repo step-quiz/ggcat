@@ -4,11 +4,11 @@
   "titol": "Translació d'un triangle",
   "difficulty": "facil",
   "prev": {
-    "url": "repte-7a.html",
+    "url": "repte-7b.html",
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-9a.html",
+    "url": "repte-8b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Amb l'eina «Translació segons un vector», fes clic al triangle i després al vector: <code>Translació(t, v)</code>. Cada vèrtex es desplaça 4 unitats a la dreta i 2 amunt; la forma i l'àrea no canvien.</p>",

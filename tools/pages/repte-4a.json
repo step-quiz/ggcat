@@ -4,11 +4,11 @@
   "titol": "Pentàgon regular",
   "difficulty": "facil",
   "prev": {
-    "url": "repte-3a.html",
+    "url": "repte-3b.html",
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-5a.html",
+    "url": "repte-4b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Crea <code>A=(0,0)</code> i <code>B=(2,0)</code>. Amb l'eina «Polígon regular», fes clic a A, després a B i indica 5 vèrtexs (<code>Polígon(A, B, 5)</code>).</p>",
