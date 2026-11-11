@@ -48,12 +48,12 @@
            SECCIÓ 1 — Crear un lliscador
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Crear un lliscador: <code>Lliscador(min,max,pas)</code></h2>
+        <h2>Crear un lliscador: <code>PuntLliscant(min,max,pas)</code></h2>
 
-        <p>La comanda <code>Lliscador(min,max,pas)</code> crea un control numèric interactiu. El paràmetre resultant pot usar-se en qualsevol expressió:</p>
+        <p>La comanda <code>PuntLliscant(min,max,pas)</code> crea un control numèric interactiu. El paràmetre resultant pot usar-se en qualsevol expressió:</p>
 
-        <pre class="code-example">a = Lliscador(1, 5, 0.1)
-b = Lliscador(0, 10, 0.5)</pre>
+        <pre class="code-example">a = PuntLliscant(1, 5, 0.1)
+b = PuntLliscant(0, 10, 0.5)</pre>
 
         <p>Un cercle amb radi controlat per un lliscador — arrossega el lliscador per canviar el radi:</p>
 
@@ -76,8 +76,8 @@ c=Circle(O,r)"
 
         <p>Pots usar un lliscador com a paràmetre en una funció per explorar famílies de corbes. Aquesta és una manera excel·lent d'entendre com cada coeficient afecta la gràfica:</p>
 
-        <pre class="code-example">a = Lliscador(-3, 3, 0.1)
-b = Lliscador(-5, 5, 0.5)
+        <pre class="code-example">a = PuntLliscant(-3, 3, 0.1)
+b = PuntLliscant(-5, 5, 0.5)
 f(x) = a*x^2 + b</pre>
 
         <p>Canvia els coeficients amb els lliscadors i observa com es transforma la paràbola:</p>
@@ -98,16 +98,18 @@ f(x)=a*x^2+b"
            SECCIÓ 3 — Lloc geomètric
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Lloc geomètric: <code>Lloc(B,A)</code></h2>
+        <h2>Lloc geomètric: <code>LlocGeomètric(B,A)</code></h2>
 
-        <p>La comanda <code>Lloc(B,A)</code> dibuixa el camí que segueix el punt B quan el punt A es mou per un objecte. És ideal per descobrir corbes geomètriques:</p>
+        <p>La comanda <code>LlocGeomètric(B,A)</code> dibuixa el camí que segueix el punt B quan el punt A es mou per un objecte. És ideal per descobrir corbes geomètriques:</p>
 
-        <pre class="code-example">c = Cercle((0,0), 3)
-A = Punt(c)       (* A es mou per c *)
-M = PuntMig(A,(4,0))
-Lloc(M,A)</pre>
+        <pre class="code-example">c = Circumferència((0,0), 3)
+A = Punt(c)
+M = PuntMitjà(A,(4,0))
+LlocGeomètric(M,A)</pre>
 
-        <p>El lloc de tots els punts mig entre un punt d'un cercle i un punt fix exterior forma una el·lipse:</p>
+        <p>El punt A, creat amb <code>Punt(c)</code>, només es pot moure per la circumferència c.</p>
+
+        <p>El lloc de tots els punts mitjans entre un punt d'una circumferència i un punt fix exterior és una altra circumferència, de radi la meitat:</p>
 
         <div class="geogebra"
              data-commands="c=Circle((0,0),3)
@@ -119,7 +121,7 @@ loc=Locus(M,A)"
              data-height="400">
         </div>
 
-        <p>Arrossega el punt A per la circumferència i veuràs que M traça una el·lipse. La comanda <code>Lloc</code> fa aquest traçat automàticament.</p>
+        <p>Arrossega el punt A per la circumferència i veuràs que M traça una circumferència més petita. La comanda <code>LlocGeomètric</code> fa aquest traçat automàticament.</p>
       </section>
 
 
