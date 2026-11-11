@@ -78,7 +78,7 @@ t2=Translate(t,v)"
            SECCIÓ 2 — Rotació
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Rotació: <code>Rotació(obj,A,α)</code></h2>
+        <h2>Rotació: <code>Rotació(obj,α,A)</code></h2>
 
         <p>Una <strong>rotació</strong> gira un objecte un angle α al voltant d'un punt central A. L'angle es pot expressar en graus (posant el símbol °):</p>
 
@@ -88,7 +88,7 @@ C=(4,3)
 D=(1,2)
 p=Polígon(A,B,C,D)
 O=(0,0)
-p2=Rotació(p,O,90°)</pre>
+p2=Rotació(p,90°,O)</pre>
 
         <div class="geogebra"
              data-commands="B=(3,1)
@@ -109,7 +109,7 @@ p2=Rotate(p,90°,O)"
            SECCIÓ 3 — Reflexió
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Reflexió: <code>Reflexió(obj,f)</code></h2>
+        <h2>Reflexió (simetria axial): <code>Simetria(obj,f)</code></h2>
 
         <p>Una <strong>reflexió</strong> (o simetria axial) "capgira" una figura respecte una recta eix. La figura resultant és la imatge especular de l'original:</p>
 
@@ -118,7 +118,7 @@ B=(4,1)
 C=(3,4)
 t=Polígon(A,B,C)
 eix=Recta((0,0),(0,1))
-t2=Reflexió(t,eix)</pre>
+t2=Simetria(t,eix)</pre>
 
         <div class="geogebra"
              data-commands="A=(1,1)
@@ -139,7 +139,7 @@ t2=Reflect(t,eix)"
            SECCIÓ 4 — Homotècia
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Homotècia: <code>Homotècia(obj,O,k)</code></h2>
+        <h2>Homotècia: <code>Homotècia(obj,k,O)</code></h2>
 
         <p>L'<strong>homotècia</strong> (o semblança de raó k) amplia o redueix una figura respecte un centre O. Si k=2, la figura es dobla; si k=0.5, es redueix a la meitat:</p>
 
@@ -183,7 +183,7 @@ f=Line((0,-5),(0,5))"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Quatre transformacions: <code>Translació(obj,v)</code> desplaça per un vector; <code>Rotació(obj,O,α)</code> gira un angle al voltant d'un punt; <code>Reflexió(obj,f)</code> reflecteix respecte una recta; <code>Homotècia(obj,O,k)</code> amplia o redueix per un factor k. Translació, rotació i reflexió conserven les distàncies (isometries); l'homotècia les escala.</p>
+        <p>Quatre transformacions: <code>Translació(obj,v)</code> desplaça per un vector; <code>Rotació(obj,α,O)</code> gira un angle al voltant d'un punt; <code>Simetria(obj,f)</code> reflecteix respecte una recta; <code>Homotècia(obj,k,O)</code> amplia o redueix per un factor k. Translació, rotació i reflexió conserven les distàncies (isometries); l'homotècia les escala.</p>
       </section>
 
 

@@ -226,7 +226,10 @@ Commands (English → Catalan). In the input bar the student types the Catalan n
 | `Vector` | `Vector` | `Center`, `Radius` | `Centre`, `Radi` |
 | `Point(path)` | `Punt` | `Incircle` | `CircumferènciaInscrita` |
 | `xAxis`, `yAxis` | `EixX`, `EixY` | `Ellipse` | `El·lipse` |
-| `Locus` | not checked — read it with `getCommandString(label, true)` when 10B is built | `Sequence` | `Seqüència` |
+| `Locus` | `LlocGeomètric` | `Sequence` | `Seqüència` |
+| `Function(f,a,b)` | `Funció` | `Circle(A,B,C)` (circumscribed) | `Circumferència(A,B,C)` |
+
+Order of arguments: `Rotació(obj, angle, centre)`, `Homotècia(obj, raó, centre)`, `Perpendicular(punt, recta)`, `Recta(punt, recta)` for the parallel. There is no `Punt(x,y)`: an unnamed point is typed as `(x,y)`.
 
 Typing in the `graphing` app goes through a formula editor: after an exponent the cursor stays in it until the student presses →, and say so in the hint. Accented command names could not be tested there with a simulated keyboard (the accent was dropped), so in theme 9 prefer a name without accents (`Arrel(f)`) or the tool route.
 
