@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "4a",
+  "titol": "Pentàgon regular",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-3a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-5a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Crea <code>A=(0,0)</code> i <code>B=(2,0)</code>. Amb l'eina «Polígon regular», fes clic a A, després a B i indica 5 vèrtexs (<code>Polígon(A, B, 5)</code>).</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Construeix un <strong>pentàgon regular de costat 2</strong> amb un costat sobre l'eix X: dos vèrtexs consecutius han de ser <strong>(0, 0)</strong> i <strong>(2, 0)</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 | 51",
+            "goalId": "repte-4a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

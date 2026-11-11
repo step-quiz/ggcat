@@ -7,7 +7,7 @@
 // Funcions exportades al window global:
 //   injectCursLogo()           — pobla .logo-icon
 //   renderSidebar(currentNum)  — omple #sidebar-nav (amb ✓ de progrés)
-//   renderReptesSidebar(num)   — sidebar pels reptes (amb ✓ de progrés)
+//   renderReptesSidebar(id)    — sidebar pels reptes, per temes (id: «3b»)
 //   renderSimuladors()         — converteix .geogebra → applets inline
 //   initSidebarToggle()        — hamburger mòbil
 //   initGlossariCurs()         — glossari modal
@@ -43,17 +43,39 @@ var CAPITOLS_DATA = [
   { num: 10, titol: 'Lliscadors i constr. dinàmiques',arxiu: 'capitol-10.html', goalId: 'cap-10-ex' },
 ];
 
+// ── Dades dels reptes: una graella de 10 temes × 3 nivells ──
+// Cada repte és una casella: tema (1…10) + nivell ('a' Fàcil, 'b' Mitjà,
+// 'c' Difícil). L'identificador és «3b»: pàgina repte-3b.html, goalId
+// 'repte-3b', etiqueta «Repte 3B». Vegeu REPTES_SPECIFICATION.md (secció 4).
+
+var TEMES_DATA = [
+  { num: 1,  titol: 'El triangle' },
+  { num: 2,  titol: 'El quadrat' },
+  { num: 3,  titol: 'La circumferència' },
+  { num: 4,  titol: 'Polígons regulars' },
+  { num: 5,  titol: 'Mediatriu i circumcentre' },
+  { num: 6,  titol: 'Bisectriu i incentre' },
+  { num: 7,  titol: 'Perpendiculars i paral·leles' },
+  { num: 8,  titol: 'Transformacions' },
+  { num: 9,  titol: 'Funcions i corbes' },
+  { num: 10, titol: 'Lliscadors i lloc geomètric' },
+];
+
+// Només hi ha les caselles que tenen pàgina, en l'ordre de la graella (per
+// tema i, dins del tema, a < b < c). Aquest ordre és el de la navegació.
+// La dificultat surt del nivell: a → facil, b → mitja, c → dificil.
 var REPTES_DATA = [
-  { num: 1,  titol: 'Triangle des de zero',          arxiu: 'repte-1.html',  goalId: 'repte-1',  dificultat: 'facil' },
-  { num: 2,  titol: 'Segment de longitud exacta',    arxiu: 'repte-2.html',  goalId: 'repte-2',  dificultat: 'facil' },
-  { num: 3,  titol: 'Circumferències concèntriques', arxiu: 'repte-3.html',  goalId: 'repte-3',  dificultat: 'facil' },
-  { num: 4,  titol: 'Triangle amb mesures',          arxiu: 'repte-4.html',  goalId: 'repte-4',  dificultat: 'facil' },
-  { num: 5,  titol: 'Quadrat a l\'origen',           arxiu: 'repte-5.html',  goalId: 'repte-5',  dificultat: 'facil' },
-  { num: 6,  titol: 'Mediatriu i intersecció',       arxiu: 'repte-6.html',  goalId: 'repte-6',  dificultat: 'mitja' },
-  { num: 7,  titol: 'Equilàter comprovat',           arxiu: 'repte-7.html',  goalId: 'repte-7',  dificultat: 'mitja' },
-  { num: 8,  titol: 'Perpendicular i peu',           arxiu: 'repte-8.html',  goalId: 'repte-8',  dificultat: 'mitja' },
-  { num: 9,  titol: 'El circumcentre',               arxiu: 'repte-9.html',  goalId: 'repte-9',  dificultat: 'mitja' },
-  { num: 10, titol: 'El rombus',                     arxiu: 'repte-10.html', goalId: 'repte-10', dificultat: 'mitja' },
+  { id: '1a',  tema: 1,  nivell: 'a', titol: 'Triangle equilàter',            arxiu: 'repte-1a.html',  goalId: 'repte-1a',  dificultat: 'facil' },
+  { id: '2a',  tema: 2,  nivell: 'a', titol: 'Quadrat a l\'origen',           arxiu: 'repte-2a.html',  goalId: 'repte-2a',  dificultat: 'facil' },
+  { id: '3a',  tema: 3,  nivell: 'a', titol: 'Circumferències concèntriques', arxiu: 'repte-3a.html',  goalId: 'repte-3a',  dificultat: 'facil' },
+  { id: '4a',  tema: 4,  nivell: 'a', titol: 'Pentàgon regular',              arxiu: 'repte-4a.html',  goalId: 'repte-4a',  dificultat: 'facil' },
+  { id: '5a',  tema: 5,  nivell: 'a', titol: 'Mediatriu d\'un segment',       arxiu: 'repte-5a.html',  goalId: 'repte-5a',  dificultat: 'facil' },
+  { id: '5b',  tema: 5,  nivell: 'b', titol: 'El circumcentre',               arxiu: 'repte-5b.html',  goalId: 'repte-5b',  dificultat: 'mitja' },
+  { id: '6a',  tema: 6,  nivell: 'a', titol: 'Bisectriu d\'un angle',         arxiu: 'repte-6a.html',  goalId: 'repte-6a',  dificultat: 'facil' },
+  { id: '7a',  tema: 7,  nivell: 'a', titol: 'Perpendicular i peu',           arxiu: 'repte-7a.html',  goalId: 'repte-7a',  dificultat: 'facil' },
+  { id: '8a',  tema: 8,  nivell: 'a', titol: 'Translació d\'un triangle',     arxiu: 'repte-8a.html',  goalId: 'repte-8a',  dificultat: 'facil' },
+  { id: '9a',  tema: 9,  nivell: 'a', titol: 'Arrels de la paràbola',         arxiu: 'repte-9a.html',  goalId: 'repte-9a',  dificultat: 'facil' },
+  { id: '10a', tema: 10, nivell: 'a', titol: 'Polígon dinàmic',               arxiu: 'repte-10a.html', goalId: 'repte-10a', dificultat: 'facil' },
 ];
 
 
@@ -61,6 +83,29 @@ var REPTES_DATA = [
 // getProgress(), saveGoalCompleted(goalId) i isGoalCompleted(goalId) són a
 // progress.js, un fitxer comú (step-quiz-commons) que cada pàgina carrega
 // abans d'aquest. La clau de localStorage no ha canviat.
+
+// Migració (11/11/2026): quatre reptes de la numeració antiga continuen a la
+// graella amb la mateixa feina. Qui els tenia superats els conserva: es copia
+// l'èxit a la clau nova. Les claus antigues es queden on són (no fan cap mal,
+// i un èxit no es desgrava mai). progress.js és un fitxer comú: per això la
+// migració és aquí.
+var _REPTES_REANOMENATS = {
+  'repte-3': 'repte-3a',
+  'repte-5': 'repte-2a',
+  'repte-8': 'repte-7a',
+  'repte-9': 'repte-5b'
+};
+
+function migraProgresReptes() {
+  if (typeof getProgress !== 'function' || typeof saveGoalCompleted !== 'function') return;
+  var p = getProgress();
+  for (var antic in _REPTES_REANOMENATS) {
+    var nou = _REPTES_REANOMENATS[antic];
+    if (p[antic] && !p[nou]) saveGoalCompleted(nou);
+  }
+}
+
+migraProgresReptes();
 
 
 // ── Sidebar: capítols ────────────────────────────────────
@@ -88,26 +133,32 @@ function renderSidebar(currentNum) {
 
 // ── Sidebar: reptes ──────────────────────────────────────
 
-function renderReptesSidebar(currentNum) {
+// currentId: identificador de la casella («3b»), o res si no n'hi ha cap d'activa.
+// Un bloc per tema (només els temes que tenen algun repte), amb una entrada
+// per casella: «3B · Títol».
+
+function renderReptesSidebar(currentId) {
   var nav = document.getElementById('sidebar-nav');
   if (!nav) return;
   var progress = getProgress();
 
-  var difLabels = { facil: 'Fàcil', mitja: 'Mitjà', dificil: 'Difícil' };
-
   var html = '<div class="sidebar-section-title">Reptes</div>';
-  html += '<ul class="sidebar-list">';
-  for (var i = 0; i < REPTES_DATA.length; i++) {
-    var r = REPTES_DATA[i];
-    var isActive = r.num === currentNum;
-    var check = (r.goalId && progress[r.goalId])
-      ? '<span class="sidebar-check" aria-label="completat">✓</span>' : '';
-    html += '<li class="sidebar-item' + (isActive ? ' active' : '') + '">' +
-      '<a href="' + r.arxiu + '">' +
-        check + 'Repte ' + r.num + ': ' + r.titol +
-      '</a></li>';
-  }
-  html += '</ul>';
+  TEMES_DATA.forEach(function(tema) {
+    var reptes = REPTES_DATA.filter(function(r) { return r.tema === tema.num; });
+    if (!reptes.length) return;
+    html += '<div class="sidebar-tema-title">' + tema.num + ' · ' + tema.titol + '</div>';
+    html += '<ul class="sidebar-list">';
+    reptes.forEach(function(r) {
+      var isActive = r.id === currentId;
+      var check = (r.goalId && progress[r.goalId])
+        ? '<span class="sidebar-check" aria-label="completat">✓</span>' : '';
+      html += '<li class="sidebar-item' + (isActive ? ' active' : '') + '">' +
+        '<a href="' + r.arxiu + '">' +
+          check + r.id.toUpperCase() + ' · ' + r.titol +
+        '</a></li>';
+    });
+    html += '</ul>';
+  });
   nav.innerHTML = html;
 }
 
@@ -409,9 +460,9 @@ function initSidebarToggle() {
 function _refreshSidebar() {
   var path = window.location.pathname;
   var capMatch = path.match(/capitol-(\d+)\.html/);
-  var repMatch = path.match(/repte-(\d+)\.html/);
+  var repMatch = path.match(/repte-(\d+[a-c])\.html/);
   if (capMatch) renderSidebar(parseInt(capMatch[1], 10));
-  else if (repMatch) renderReptesSidebar(parseInt(repMatch[1], 10));
+  else if (repMatch) renderReptesSidebar(repMatch[1]);
 }
 
 
@@ -464,4 +515,5 @@ window.getProgress          = getProgress;
 window.saveGoalCompleted    = saveGoalCompleted;
 window.isGoalCompleted      = isGoalCompleted;
 window.CAPITOLS_DATA        = CAPITOLS_DATA;
+window.TEMES_DATA           = TEMES_DATA;
 window.REPTES_DATA          = REPTES_DATA;

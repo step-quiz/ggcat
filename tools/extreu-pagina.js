@@ -4,8 +4,8 @@
 // de curs/ i n'escriu el JSON per a tools/pages/.
 //
 // Ús:
-//   node tools/extreu-pagina.js curs/repte-7.html            # escriu el JSON a la sortida
-//   node tools/extreu-pagina.js curs/repte-7.html --desa     # el desa a tools/pages/repte-7.json
+//   node tools/extreu-pagina.js curs/repte-3b.html           # escriu el JSON a la sortida
+//   node tools/extreu-pagina.js curs/repte-3b.html --desa    # el desa a tools/pages/repte-3b.json
 //
 // Serveix per passar a JSON un repte que encara només existeix en HTML. Després,
 // «node tools/generate-pages.js --comprova» diu si el JSON reprodueix exactament
@@ -60,10 +60,12 @@ function simulador(div) {
 function extreu(html) {
   const main = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'));
   const pagina = {};
-  const ins = main.match(/<span class="chapter-badge[^"]*"[^>]*>⚡ Repte (\d+)(?: — ([^<]+))?<\/span>/);
+  // «⚡ Repte 7» (numerat) o «⚡ Repte 3B» (graella: tema + nivell)
+  const ins = main.match(/<span class="chapter-badge[^"]*"[^>]*>⚡ Repte (\d+[A-Z]?)(?: — ([^<]+))?<\/span>/);
   if (!ins) throw new Error('no és un repte (no trobo la insígnia «⚡ Repte N»)');
   pagina.type = 'repte';
-  pagina.num = Number(ins[1]);
+  if (/[A-Z]$/.test(ins[1])) pagina.id = ins[1].toLowerCase();
+  else pagina.num = Number(ins[1]);
   pagina.titol = main.match(/<h1>([\s\S]*?)<\/h1>/)[1].trim();
   if (ins[2]) pagina.difficulty = DIFICULTATS[ins[2].trim()];
 

@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "1a",
+  "titol": "Triangle equilàter",
+  "difficulty": "facil",
+  "prev": {
+    "url": "capitol-1.html",
+    "label": "← Capítols"
+  },
+  "next": {
+    "url": "repte-2a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Crea els punts <code>A=(0,0)</code> i <code>B=(4,0)</code>. Amb l'eina «Polígon regular», fes clic a A, després a B i indica 3 vèrtexs. Amb la barra d'entrada: <code>Polígon(A, B, 3)</code>.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Construeix un <strong>triangle equilàter de costat 4</strong> amb un vèrtex a l'origen <strong>(0, 0)</strong> i un altre a <strong>(4, 0)</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 | 15 | 16 51",
+            "goalId": "repte-1a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,7 @@ hi canvia el bloc `PROJECTE` del principi del fitxer (l'esquelet de cada curs).
 node tools/generate-pages.js
 
 # Genera només una (per nom del fitxer de sortida sense extensió)
-node tools/generate-pages.js --only repte-6
+node tools/generate-pages.js --only repte-3b
 
 # Dry run: mostra què generaria sense escriure cap fitxer
 node tools/generate-pages.js --dry-run
@@ -37,12 +37,13 @@ Cada pàgina és un `tools/pages/{nom}.json` amb aquesta estructura:
 ```jsonc
 {
   "type":  "capitol" | "repte",       // obligatori
-  "num":   6,                          // número del capítol/repte
-  "titol": "Parell o senar",           // títol visible
+  "num":   6,                          // capítols: el número
+  "id":    "3b",                       // reptes: tema + nivell (pàgina repte-3b.html, «Repte 3B»)
+  "titol": "Circumferència per dos punts",   // títol visible
   "difficulty": "facil" | "mitja" | "dificil",   // només reptes
   "lead":  "<p>Text d'introducció…</p>",              // només capítols (opcional)
-  "prev":  { "url": "repte-5.html", "label": "← Repte anterior" },   // opcional
-  "next":  { "url": "repte-7.html", "label": "Repte següent →" },     // opcional
+  "prev":  { "url": "repte-3a.html", "label": "← Repte anterior" },  // opcional
+  "next":  { "url": "repte-3c.html", "label": "Repte següent →" },    // opcional
   "hint":  "<p>Pista HTML opcional…</p>",             // només reptes (opcional)
   "sections": [
     // Forma simple: una secció amb un h2 i body
@@ -66,10 +67,11 @@ Dins d'una `part` o `section`, el camp `simulador` genera el `<div class="geogeb
 
 ```jsonc
 "simulador": {
-  "goalId":   "repte-11",          // per al progrés i per trobar el validador
+  "goalId":   "repte-3b",          // per al progrés i per trobar el validador
   "commands": "A=(0,0)\nB=(4,0)",  // ordres de GeoGebra inicials (una per línia)
   "fixed":    "A,B",               // objectes que l'alumne no pot moure
   "app":      "graphing",          // només per als reptes de funcions (si no: classic)
+  "tools":    "0 | 1 19 | 8",      // paleta d'eines (identificadors de GeoGebra; «|» separa grups)
   "height":   440
 }
 ```
@@ -78,14 +80,20 @@ Dins d'una `part` o `section`, el camp `simulador` genera el `<div class="geogeb
 (clau: `goalId`). Cada repte nou en necessita un, i també la seva entrada a `REPTES_DATA`
 (`curs/capitols.js`). Vegeu `REPTES_SPECIFICATION.md`.
 
+Un repte també pot portar `"num"` (un número) en lloc de `"id"`: és com funciona el generador a PyCat i
+JSCat. La còpia de GeoCat és la que entén `"id"` i `"tools"`.
+
+`prev` i `next` segueixen l'ordre de `REPTES_DATA`: quan s'afegeix un repte, cal canviar-los també als JSON
+dels dos veïns i tornar-los a generar.
+
 ### Pàgines d'exemple
 
-- `tools/pages/repte-1.json` — repte fàcil (sense ordres inicials).
-- `tools/pages/repte-6.json` — repte mitjà.
+- `tools/pages/repte-1a.json` — repte sense ordres inicials.
+- `tools/pages/repte-5a.json` — repte amb construcció inicial i objectes fixos.
+- `tools/pages/repte-9a.json` — repte amb l'app `graphing`.
 
-Els reptes de la graella de 10 temes × 3 nivells estan especificats a `REPTES_SPECIFICATION.md`. Abans de
-poder-los generar amb aquesta eina, el generador ha d'acceptar l'identificador amb lletra (`"id": "3b"`)
-i l'atribut `tools` del simulador (la paleta d'eines): vegeu `TODO.md`, bloc A.
+Hi ha un JSON per a cada repte publicat (11). Els que falten estan especificats a
+`REPTES_SPECIFICATION.md`.
 
 ### Verificació
 
@@ -109,9 +117,9 @@ indentació de l'HTML, però sí qualsevol canvi de text, d'atributs o de codi).
 Fa el camí invers: llegeix un repte de `curs/` i n'escriu el JSON.
 
 ```bash
-node tools/extreu-pagina.js curs/repte-1.html          # el mostra
-node tools/extreu-pagina.js curs/repte-1.html --desa   # el desa a tools/pages/repte-1.json
+node tools/extreu-pagina.js curs/repte-1a.html          # el mostra
+node tools/extreu-pagina.js curs/repte-1a.html --desa   # el desa a tools/pages/repte-1a.json
 ```
 
 Després, `node tools/generate-pages.js --comprova` diu si el JSON reprodueix exactament la pàgina.
-Comprovat amb tots els reptes publicats el 18/10/2026: tots surten idèntics.
+Comprovat amb els 11 reptes publicats l'11/11/2026: tots surten idèntics.

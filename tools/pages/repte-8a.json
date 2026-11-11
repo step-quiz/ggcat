@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "8a",
+  "titol": "Translació d'un triangle",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-7a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-9a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Amb l'eina «Translació segons un vector», fes clic al triangle i després al vector: <code>Translació(t, v)</code>. Cada vèrtex es desplaça 4 unitats a la dreta i 2 amunt; la forma i l'àrea no canvien.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El triangle <strong>t</strong> i el vector <strong>v = (4, 2)</strong> ja estan construïts. Construeix la <strong>imatge del triangle per la translació de vector v</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nB=(3,0)\nC=(1,3)\nt=Polygon(A,B,C)\nv=Vector((0,0),(4,2))",
+            "fixed": "A,B,C,t,v",
+            "tools": "0 | 1 | 15 16 | 31",
+            "goalId": "repte-8a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

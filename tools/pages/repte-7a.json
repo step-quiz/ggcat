@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "7a",
+  "titol": "Perpendicular i peu",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-6a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-8a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Escriu <code>Perpendicular(P, f)</code> per crear la recta perpendicular a f que passa per P. Després escriu <code>Intersecció(f, g)</code> (on <code>g</code> és el nom de la perpendicular) per marcar el peu. El punt d'intersecció apareixerà sobre f.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>La recta <strong>f</strong> i el punt <strong>P = (3, 4)</strong> ja estan construïts. Crea la <strong>recta perpendicular a f</strong> que passi per P. Marca el <strong>punt d'intersecció</strong> entre f i la perpendicular (el \"peu\" de la perpendicular).</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "f=Line((0,0),(4,1))\nP=(3,4)",
+            "fixed": "f,P",
+            "tools": "0 | 1 5 | 2 | 4",
+            "goalId": "repte-7a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

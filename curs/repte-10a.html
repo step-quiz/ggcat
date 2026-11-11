@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repte 1 — Triangle des de zero | GeoCat</title>
+  <title>Repte 10A — Polígon dinàmic | GeoCat</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="curs.css">
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
@@ -18,9 +18,9 @@
   </span>
   <nav class="curs-nav">
     <a href="capitol-1.html">Capítols</a>
-    <a href="repte-1.html" class="active">Reptes</a>
+    <a href="repte-1a.html" class="active">Reptes</a>
   </nav>
-  <span class="curs-header-title">Repte 1 — Triangle des de zero</span>
+  <span class="curs-header-title">Repte 10A — Polígon dinàmic</span>
   <div class="curs-header-actions"></div>
 </header>
 
@@ -33,21 +33,22 @@
   <main class="curs-content">
 
     <header class="chapter-header">
-      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 1 — Fàcil</span>
-      <h1>Triangle des de zero</h1>
+      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 10A — Fàcil</span>
+      <h1>Polígon dinàmic</h1>
     </header>
 
     <section class="chapter-section">
       <h2>Objectiu</h2>
-      <p>Crea els punts <strong>A = (−2, −1)</strong>, <strong>B = (4, −1)</strong> i <strong>C = (1, 4)</strong> al pla. Després, crea el <strong>triangle</strong> (polígon tancat) format per aquests tres punts.</p>
+<p>Crea un lliscador <strong>n</strong> que vagi de 3 a 12, d'un en un. Dibuixa un <strong>polígon regular de n costats</strong>. Quan moguis el lliscador, el polígon ha de canviar: de triangle a dodecàgon.</p>
 
       <h2>Widget</h2>
-      <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
 
       <div class="geogebra"
-             data-commands=""
-             data-fixed=""
-           data-goal-id="repte-1"
+           data-commands=""
+           data-fixed=""
+           data-tools="0 | 1 | 25 | 51"
+           data-goal-id="repte-10a"
            data-height="440">
       </div>
     </section>
@@ -55,13 +56,13 @@
     <details style="margin-top: 1.5rem;">
       <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
       <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
-        <p>Escriu <code>A=(-2,-1)</code>, <code>B=(4,-1)</code> i <code>C=(1,4)</code> a la barra d'entrada (un per un). Després escriu <code>Polígon(A,B,C)</code> per crear el triangle.</p>
+        <p>Amb l'eina «Punt lliscant», fes clic a la vista i posa-hi nom n, mínim 3, màxim 12 i increment 1 (<code>n = PuntLliscant(3, 12, 1)</code>). Crea dos punts A i B. Amb «Polígon regular», fes clic a A i a B i, on demana el nombre de vèrtexs, escriu <code>n</code> (<code>Polígon(A, B, n)</code>).</p>
       </div>
     </details>
 
     <nav class="chapter-nav">
-      <a href="capitol-1.html" class="btn-nav btn-nav--prev">← Capítols</a>
-      <a href="repte-2.html" class="btn-nav btn-nav--next">Repte següent →</a>
+      <a href="repte-9a.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="index.html" class="btn-nav btn-nav--next">Inici →</a>
     </nav>
 
   </main>
@@ -74,7 +75,7 @@
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();
-  renderReptesSidebar(1);
+  renderReptesSidebar('10a');
   renderSimuladors();
   initSidebarToggle();
 </script>

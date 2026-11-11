@@ -8,7 +8,7 @@
 //
 // Ús:
 //   node tools/generate-pages.js                    # genera tot a curs/
-//   node tools/generate-pages.js --only repte-6     # només una pàgina
+//   node tools/generate-pages.js --only repte-3b    # només una pàgina
 //   node tools/generate-pages.js --dry-run          # no escriu, només mostra
 //   node tools/generate-pages.js --comprova         # no escriu: diu si cada JSON
 //                                                   # produeix la pàgina que hi ha a curs/
@@ -17,6 +17,10 @@
 //
 // El mateix fitxer és a PyCat, JSCat i GeoCat: només hi canvia el bloc PROJECTE
 // (i, a GeoCat, el que genera el simulador, que és un applet de GeoGebra).
+// Des de l'11/11/2026 la còpia de GeoCat va per davant de les altres: un repte
+// es pot identificar amb "id" (tema + nivell: "3b" → repte-3b.html, «Repte 3B»)
+// en lloc de "num". Amb "num" tot funciona com abans, de manera que aquest
+// fitxer es pot copiar als altres cursos canviant-hi només el bloc PROJECTE.
 // El format del JSON és a tools/README.md.
 // ════════════════════════════════════════════════════════
 
@@ -31,6 +35,8 @@ const PROJECTE = {
   // 'complet':  la pàgina porta escrites la capçalera i la barra lateral.
   esquelet: 'complet',
   headExtra: ['<script src="https://www.geogebra.org/apps/deployggb.js"></script>'],
+  // Pàgina on porta l'enllaç «Reptes» de la capçalera (si no hi és: repte-1.html)
+  primerRepte: 'repte-1a.html',
   // Scripts del final, en ordre: un nom de fitxer, o { inline: page => codi }.
   scripts: [
     'glossari-data.js',
@@ -39,7 +45,7 @@ const PROJECTE = {
     'progress.js',
     'capitols.js',
     { inline: page => `  injectCursLogo();
-  ${page.type === 'capitol' ? 'renderSidebar' : 'renderReptesSidebar'}(${page.num});
+  ${page.type === 'capitol' ? 'renderSidebar' : 'renderReptesSidebar'}(${refJs(page)});
   renderSimuladors();
   initSidebarToggle();` },
   ],
@@ -57,9 +63,9 @@ const PROJECTE = {
   </span>
   <nav class="curs-nav">
     <a href="capitol-1.html"${page.type === 'capitol' ? ' class="active"' : ''}>Capítols</a>
-    <a href="repte-1.html"${page.type === 'capitol' ? '' : ' class="active"'}>Reptes</a>
+    <a href="${PROJECTE.primerRepte}"${page.type === 'capitol' ? '' : ' class="active"'}>Reptes</a>
   </nav>
-  <span class="curs-header-title">${page.type === 'capitol' ? 'Capítol' : 'Repte'} ${page.num} — ${page.titol}</span>
+  <span class="curs-header-title">${nomPagina(page)} — ${page.titol}</span>
   <div class="curs-header-actions"></div>
 </header>
 
@@ -73,8 +79,9 @@ const PROJECTE = {
   //   commands → ordres de GeoGebra inicials (una per línia)
   //   fixed    → etiquetes dels objectes que no es poden moure (separades per comes)
   //   app      → 'graphing' per als reptes de funcions (si no hi és: classic)
+  //   tools    → paleta d'eines (customToolBar): «0 | 1 | 51»
   classeSimulador: 'geogebra',
-  atributsSimulador: ['commands', 'fixed', 'app', 'goal-id', 'height'],
+  atributsSimulador: ['commands', 'fixed', 'app', 'tools', 'goal-id', 'height'],
   alcadaSimulador: 440,         // data-height si el JSON no en diu cap
 };
 
@@ -96,7 +103,7 @@ function parseArgs(argv) {
 
 function printHelp() {
   console.log('Ús: node tools/generate-pages.js [opcions]');
-  console.log('  --only NAME    Genera només aquesta pàgina (p.ex. repte-6)');
+  console.log('  --only NAME    Genera només aquesta pàgina (p.ex. repte-3b)');
   console.log('  --dry-run      No escriu, mostra el contingut que generaria');
   console.log('  --comprova     No escriu: comprova que cada JSON produeix la pàgina de curs/');
   console.log('  --input DIR    Directori d\'entrada (defecte: tools/pages)');
@@ -105,6 +112,23 @@ function printHelp() {
 }
 
 // ── Helpers ─────────────────────────────────────────────
+
+// Identificador d'una pàgina. Els capítols i els reptes numerats tenen "num"; un
+// repte d'una graella té "id" (tema + nivell: "3b").
+function refPagina(page) {                 // per al nom del fitxer: 6, "3b"
+  return page.type === 'repte' && page.id != null ? page.id : page.num;
+}
+function etiquetaPagina(page) {            // la que es veu: 6, "3B"
+  const r = refPagina(page);
+  return typeof r === 'string' ? r.toUpperCase() : r;
+}
+function nomPagina(page) {                 // «Capítol 6», «Repte 3B»
+  return (page.type === 'capitol' ? 'Capítol ' : 'Repte ') + etiquetaPagina(page);
+}
+function refJs(page) {                     // com a literal de JavaScript: 6, '3b'
+  const r = refPagina(page);
+  return typeof r === 'string' ? "'" + r + "'" : r;
+}
 function escAttr(s) {
   // Escapa per atribut amb cometes dobles. Preserva salts de línia.
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -184,8 +208,8 @@ function renderNav(prev, next, page) {
 function renderBadge(page) {
   if (page.type === 'capitol') return '      <span class="chapter-badge">Capítol ' + page.num + '</span>';
   const diff = page.difficulty && DIFFICULTY_BADGE[page.difficulty];
-  if (!diff) return '      <span class="chapter-badge">⚡ Repte ' + page.num + '</span>';
-  const text = '⚡ Repte ' + page.num + ' — ' + diff.label;
+  if (!diff) return '      <span class="chapter-badge">⚡ ' + nomPagina(page) + '</span>';
+  const text = '⚡ ' + nomPagina(page) + ' — ' + diff.label;
   return PROJECTE.insigniaAmbClasse
     ? '      <span class="chapter-badge badge--' + page.difficulty + '">' + text + '</span>'
     : '      <span class="chapter-badge" style="background: ' + diff.color + '; color: ' + diff.fg + ';">' + text + '</span>';
@@ -248,7 +272,7 @@ function renderCapcalera(page) {
   const togglelabel  = isCapitol ? 'Mostra/amaga els capítols' : 'Mostra/amaga els reptes';
   const sidebarLabel = isCapitol ? 'Capítols del curs' : 'Reptes del curs';
   if (PROJECTE.capcalera) return PROJECTE.capcalera(page, { togglelabel, sidebarLabel });
-  const label = (isCapitol ? 'Capítol ' : 'Repte ') + page.num;
+  const label = nomPagina(page);
   return `<header class="curs-header">
   <button id="sidebar-toggle" aria-label="${togglelabel}" aria-expanded="false">☰</button>
   <span class="curs-header-logo">
@@ -257,7 +281,7 @@ function renderCapcalera(page) {
   </span>
   <nav class="curs-nav">
     <a href="capitol-1.html"${isCapitol ? ' class="active"' : ''}>Capítols</a>
-    <a href="repte-1.html"${isCapitol ? '' : ' class="active"'}>Reptes</a>
+    <a href="${PROJECTE.primerRepte || 'repte-1.html'}"${isCapitol ? '' : ' class="active"'}>Reptes</a>
     <a href="../index.html">Simulador</a>
   </nav>
   <span class="curs-header-title">${label} — ${page.titol}</span>
@@ -273,8 +297,7 @@ function renderCapcalera(page) {
 
 // ── Genera la pàgina HTML completa ───────────────────────
 function renderPage(page) {
-  const isCapitol = page.type === 'capitol';
-  const label = isCapitol ? 'Capítol ' + page.num : 'Repte ' + page.num;
+  const label = nomPagina(page);
   const head = `<!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -286,7 +309,7 @@ function renderPage(page) {
 </head>`;
   if (PROJECTE.esquelet === 'injectat') {
     return `${head}
-<body data-pagina="${page.type}" data-num="${page.num}">
+<body data-pagina="${page.type}" data-num="${refPagina(page)}">
 
 <main class="curs-content">
 
@@ -367,7 +390,7 @@ function diferencia(a, b) {
 
 // ── Determina el nom del fitxer de sortida ──────────────
 function outputFilename(page) {
-  return (page.type === 'capitol' ? 'capitol-' : 'repte-') + page.num + '.html';
+  return (page.type === 'capitol' ? 'capitol-' : 'repte-') + refPagina(page) + '.html';
 }
 
 // ── Valida una pàgina abans de generar-la ──────────────
@@ -375,7 +398,12 @@ function validatePage(page, sourceFile) {
   const errs = [];
   if (!page.type || (page.type !== 'capitol' && page.type !== 'repte'))
     errs.push('type ha de ser "capitol" o "repte"');
-  if (typeof page.num !== 'number') errs.push('num ha de ser un número');
+  if (page.type === 'repte' && page.id != null) {
+    if (!/^\d+[a-z]$/.test(page.id)) errs.push('id ha de ser tema + nivell, en minúscules: "3b"');
+    if (page.num != null) errs.push('un repte porta "id" o "num", no tots dos');
+  } else if (typeof page.num !== 'number') {
+    errs.push(page.type === 'repte' ? 'cal "id" ("3b") o "num" (un número)' : 'num ha de ser un número');
+  }
   if (!page.titol) errs.push('titol és obligatori');
   if (!Array.isArray(page.sections)) errs.push('sections ha de ser un array');
   if (errs.length) {
@@ -416,7 +444,7 @@ function main() {
     if (!validatePage(data, file)) { failed++; continue; }
 
     const outName = outputFilename(data);
-    if (args.only && outName !== args.only + '.html' && data.num + '' !== args.only) { skipped++; continue; }
+    if (args.only && outName !== args.only + '.html' && refPagina(data) + '' !== args.only) { skipped++; continue; }
 
     const html = renderPage(data);
     const outPath = path.join(outputDir, outName);
