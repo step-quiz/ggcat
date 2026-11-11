@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "10a",
+  "titol": "Polígon dinàmic",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-9a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "index.html",
+    "label": "Inici →"
+  },
+  "hint": "<p>Amb l'eina «Punt lliscant», fes clic a la vista i posa-hi nom n, mínim 3, màxim 12 i increment 1 (<code>n = PuntLliscant(3, 12, 1)</code>). Crea dos punts A i B. Amb «Polígon regular», fes clic a A i a B i, on demana el nombre de vèrtexs, escriu <code>n</code> (<code>Polígon(A, B, n)</code>).</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Crea un lliscador <strong>n</strong> que vagi de 3 a 12, d'un en un. Dibuixa un <strong>polígon regular de n costats</strong>. Quan moguis el lliscador, el polígon ha de canviar: de triangle a dodecàgon.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 | 25 | 51",
+            "goalId": "repte-10a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

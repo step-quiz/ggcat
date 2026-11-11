@@ -10,7 +10,8 @@ GeoCat és un curs de geometria interactiva amb GeoGebra, pensat per a estudiant
 
 Obre `index.html` al navegador. Des d'allà pots accedir a:
 - **Capítols** (`curs/capitol-1.html` ... `capitol-10.html`) — Lliçons guiades amb widgets interactius i un exercici final validat ✓/✗.
-- **Reptes** (`curs/repte-1.html` ... `repte-10.html`) — Exercicis amb validació automàtica ✓/✗.
+- **Reptes** (`curs/repte-1a.html` ... ) — Exercicis amb validació automàtica ✓/✗, ordenats en una graella de
+  10 temes × 3 nivells (A fàcil, B mitjà, C difícil). El repte 3B és `curs/repte-3b.html`.
 
 Cal connexió a internet per carregar GeoGebra des del CDN (`geogebra.org`).
 
@@ -20,9 +21,10 @@ Cal connexió a internet per carregar GeoGebra des del CDN (`geogebra.org`).
 index.html              Landing page
 style.css               Estils compartits (topbar, botons, temes)
 curs/
-  index.html            Índex del curs (llista de capítols i reptes)
+  index.html            Índex del curs (llista de capítols i graella de reptes)
   capitol-N.html        10 capítols del curs
-  repte-N.html          10 reptes amb la numeració antiga (el pla és una graella de 30: vegeu TODO.md)
+  repte-<tema><nivell>.html   Reptes de la graella (repte-1a.html, repte-5b.html…): 11 de 30. Es generen
+                        amb tools/generate-pages.js a partir de tools/pages/*.json: no s'editen a mà
   curs.css              Estils del curs
   capitols.js           Dades, sidebar, injecció de widgets, glossari
   progress.js           Progrés de l'alumne (fitxer comú; clau geocat_progress)
@@ -45,16 +47,16 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
   `tools/pages/*.json` són les que hi ha a `curs/`. GitHub ho fa a cada canvi
   (`.github/workflows/tests.yml`, juntament amb la sintaxi de tots els fitxers JS i els dos
   tests de sota).
-- `node test-validators.js` — comprova els validadors dels 10 reptes i dels 10 exercicis dels
+- `node test-validators.js` — comprova els validadors dels 11 reptes i dels 10 exercicis dels
   capítols amb una API de GeoGebra simulada: per a cada un, l'escena inicial, una solució correcta
-  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (70
+  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (81
   comprovacions). El simulacre fa servir els tipus d'objecte reals de GeoGebra (`circle`,
   `triangle`, `quadrilateral`…) i calcula de debò `Distance`, `ArePerpendicular` i
   `AreParallel` a partir dels punts. GitHub també ho executa a cada canvi.
 - `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
 - **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
-  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat del 10/11/2026: 20/20.
+  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat de l'11/11/2026: 21/21.
 
 ## Editor de text (`curs/edit.html`)
 
@@ -67,10 +69,11 @@ repositori.
 ## Estat del projecte
 
 - 10 capítols: ✅ complets (amb exercici validat al final)
-- 10 reptes publicats amb la numeració antiga (`repte-1` … `repte-10`): ✅ funcionen
-- Pla vigent: una graella de 10 temes × 3 nivells (30 reptes, de `repte-1a` a `repte-10c`). Dels 10 reptes
-  publicats, 4 hi tenen casella i es reanomenaran, i 6 es retiraran; queden 26 caselles per fer. ⬜ pendent
-  (el pla és a `TODO.md` i el detall de cada repte, a `REPTES_SPECIFICATION.md`)
+- Reptes: una graella de 10 temes × 3 nivells (30 reptes, de `repte-1a` a `repte-10c`). ✅ 11 publicats (els
+  deu de nivell A i el 5B); ⬜ en falten 19 (el pla és a `TODO.md` i el detall de cada repte, a
+  `REPTES_SPECIFICATION.md`)
+- Els 10 reptes de la numeració antiga (`repte-1` … `repte-10`) ja no hi són: 4 continuen a la graella
+  (qui els tenia superats conserva el ✓) i 6 s'han retirat.
 
 ## Fitxers comuns
 

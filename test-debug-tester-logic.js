@@ -6,7 +6,7 @@
 // a TEST_SOLUTIONS (curs/debug-tester.js) tenen sentit:
 //
 //   1. Que hi ha entrada per a cada goalId que té validator
-//      (10 capítols + 10 reptes).
+//      (10 capítols + els reptes de la graella).
 //   2. Que totes les entrades tenen camps "correct" i "wrong"
 //      amb almenys una comanda no buida (excepte si està buit
 //      intencionadament, com en algun cas de wrong).

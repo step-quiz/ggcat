@@ -103,61 +103,35 @@
 
     // ── Reptes ─────────────────────────────────────────────
 
-    'repte-1': {
-      label: 'Repte 1 — Triangle des de zero',
-      correct: ['A=(-2,-1)', 'B=(4,-1)', 'C=(1,4)', 't=Polygon(A,B,C)'],
-      wrong:   ['A=(-2,-1)', 'B=(4,-1)', 'C=(1,4)']   // punts sense polígon (cap segment)
+    'repte-1a': {
+      label: 'Repte 1A — Triangle equilàter',
+      correct: ['A=(0,0)', 'B=(4,0)', 'p=Polygon(A,B,3)'],
+      wrong:   ['A=(0,0)', 'B=(4,0)', 'C=(2,3)', 'p=Polygon(A,B,C)']   // isòsceles: (2, 3) en lloc de (2, 3.464)
     },
-    'repte-2': {
-      label: 'Repte 2 — Segment longitud 5 sobre eix Y',
-      correct: ['A=(0,-2.5)', 'B=(0,2.5)', 's=Segment(A,B)'],
-      wrong:   ['A=(0,0)', 'B=(0,3)', 's=Segment(A,B)']   // longitud 3, no 5
-    },
-    'repte-3': {
-      label: 'Repte 3 — Circumferències concèntriques r=2 i r=4',
-      correct: ['O=(0,0)', 'c=Circle(O,2)', 'd=Circle(O,4)'],
-      wrong:   ['O=(0,0)', 'c=Circle(O,2)']    // només una circumferència
-    },
-    'repte-4': {
-      label: 'Repte 4 — Triangle amb àrea i angle',
-      correct: [
-        'A=(0,0)', 'B=(6,0)', 'C=(3,4)',
-        't=Polygon(A,B,C)',
-        'ar=Area(t)',                          // ≈ 12
-        'al=Angle(C,B,A)'                      // angle a B ≈ 53.13° (antihorari)
-      ],
-      wrong: [
-        'A=(0,0)', 'B=(6,0)', 'C=(3,4)',
-        't=Polygon(A,B,C)'                     // sense àrea ni angle
-      ]
-    },
-    'repte-5': {
-      label: 'Repte 5 — Quadrat a l\'origen, costat 3',
+    'repte-2a': {
+      label: 'Repte 2A — Quadrat a l\'origen, costat 3',
       correct: ['A=(0,0)', 'B=(3,0)', 'q=Polygon(A,B,4)'],
       wrong:   ['A=(0,0)', 'B=(2,0)', 'q=Polygon(A,B,4)']    // costat 2 (incorrecte)
     },
-    'repte-6': {
-      // Inicial: A=(-4,-1), B=(4,3), s=Segment(A,B) [fixats]
-      // Punt mig de AB = (0, 1) → ja és a l'eix Y.
-      label: 'Repte 6 — Mediatriu i intersecció',
+    'repte-3a': {
+      label: 'Repte 3A — Circumferències concèntriques r=2 i r=4',
+      correct: ['O=(0,0)', 'c=Circle(O,2)', 'd=Circle(O,4)'],
+      wrong:   ['O=(0,0)', 'c=Circle(O,2)']    // només una circumferència
+    },
+    'repte-4a': {
+      label: 'Repte 4A — Pentàgon regular',
+      correct: ['A=(0,0)', 'B=(2,0)', 'p=Polygon(A,B,5)'],
+      wrong:   ['A=(0,0)', 'B=(2,0)', 'p=Polygon(A,B,6)']   // hexàgon
+    },
+    'repte-5a': {
+      // Inicial: A=(-2,0), B=(4,0), s=Segment(A,B) [fixats]
+      label: 'Repte 5A — Mediatriu d\'un segment',
       correct: ['m=PerpendicularBisector(A,B)', 'M=Midpoint(A,B)'],
-      wrong:   ['m=Line(A,B)']                 // recta AB, no mediatriu
+      wrong:   ['m=PerpendicularLine(A,s)', 'M=Midpoint(A,B)']   // perpendicular per A, no pel punt mig
     },
-    'repte-7': {
-      label: 'Repte 7 — Triangle equilàter',
-      // Polygon(A,B,3) crea el tercer vèrtex, C. El validador demana un angle de 60°.
-      correct: ['A=(0,0)', 'B=(4,0)', 'eq=Polygon(A,B,3)', 'al=Angle(B,A,C)'],
-      wrong:   ['A=(0,0)', 'B=(3,0)', 'C=(1,2)', 't=Polygon(A,B,C)']   // escalè
-    },
-    'repte-8': {
-      // Inicial: f=Line((0,0),(4,1)), P=(3,4) [fixats]
-      label: 'Repte 8 — Perpendicular i peu',
-      correct: ['g=PerpendicularLine(P,f)', 'F=Intersect(g,f)'],
-      wrong:   ['F=(0,0)']                     // cap perpendicular, peu equivocat
-    },
-    'repte-9': {
+    'repte-5b': {
       // Inicial: A=(0,0), B=(6,0), C=(2,5), t=Polygon(A,B,C) [fixats]
-      label: 'Repte 9 — Circumcentre',
+      label: 'Repte 5B — Circumcentre',
       correct: [
         'm1=PerpendicularBisector(A,B)',
         'm2=PerpendicularBisector(B,C)',
@@ -165,20 +139,34 @@
       ],
       wrong: ['D=(2,2)']                        // punt qualsevol, no equidistant
     },
-    'repte-10': {
-      // Rombus: costats iguals, sense angle de 90°.
-      // Wrong = quadrat + angle 90° mesurat explícitament (el validador
-      // només detecta el cas "no és rombus" si hi ha un angle creat).
-      label: 'Repte 10 — Rombus a l\'origen',
-      correct: [
-        'A=(0,0)', 'B=(3,0)', 'C=(4.5,2.598)', 'D=(1.5,2.598)',
-        'r=Polygon(A,B,C,D)'                   // rombus amb angle 60°/120°
-      ],
-      wrong: [
-        'A=(0,0)', 'B=(3,0)', 'C=(3,3)', 'D=(0,3)',
-        'sq=Polygon(A,B,C,D)',                 // quadrat (4 costats iguals però angle 90°)
-        'alfa=Angle(D,A,B)'                    // mesura explícitament l'angle de 90°
-      ]
+    'repte-6a': {
+      // Inicial: O=(0,0), A=(4,0), B=(√8,√8), f=Ray(O,A), g=Ray(O,B) [fixats]
+      label: 'Repte 6A — Bisectriu d\'un angle',
+      correct: ['b=AngleBisector(A,O,B)'],
+      wrong:   ['b=Line(O,(4,2))']             // recta per O de pendent 0.5 (no 0.414)
+    },
+    'repte-7a': {
+      // Inicial: f=Line((0,0),(4,1)), P=(3,4) [fixats]
+      label: 'Repte 7A — Perpendicular i peu',
+      correct: ['g=PerpendicularLine(P,f)', 'F=Intersect(g,f)'],
+      wrong:   ['F=(0,0)']                     // cap perpendicular, peu equivocat
+    },
+    'repte-8a': {
+      // Inicial: A=(0,0), B=(3,0), C=(1,3), t=Polygon(A,B,C), v=Vector((0,0),(4,2)) [fixats]
+      label: 'Repte 8A — Translació d\'un triangle',
+      correct: ['Translate(t,v)'],
+      wrong:   ['Translate(t,Vector((0,0),(2,4)))']   // un altre vector
+    },
+    'repte-9a': {
+      // App graphing.
+      label: 'Repte 9A — Arrels de la paràbola',
+      correct: ['f(x)=x^2-4', 'Z=Intersect(f,xAxis)'],
+      wrong:   ['f(x)=x^2-1', 'Z=Intersect(f,xAxis)']   // una altra paràbola: arrels a ±1
+    },
+    'repte-10a': {
+      label: 'Repte 10A — Polígon dinàmic',
+      correct: ['n=Slider(3,12,1)', 'A=(1,0)', 'B=Rotate(A,2*pi/n,(0,0))', 'p=Polygon(A,B,n)'],
+      wrong:   ['n=Slider(3,12,1)', 'A=(1,0)', 'B=(0,1)', 'p=Polygon(A,B,4)']   // hi ha lliscador, però el polígon no en depèn
     }
   };
 
@@ -607,7 +595,7 @@
       .filter(function(r) { return r.goalId && TEST_SOLUTIONS[r.goalId]; })
       .map(function(r) {
         return { arxiu: r.arxiu, goalId: r.goalId,
-                 label: 'Repte ' + r.num + ' — ' + r.titol };
+                 label: 'Repte ' + r.id.toUpperCase() + ' — ' + r.titol };
       });
   }
 
@@ -666,9 +654,9 @@
       .map(function(r) {
         return '<button class="debug-btn" data-test-arxiu="' +
                escapeHTML(r.arxiu) + '" data-test-goal="' +
-               escapeHTML(r.goalId) + '" data-test-label="Repte ' + r.num +
+               escapeHTML(r.goalId) + '" data-test-label="Repte ' + r.id.toUpperCase() +
                ' — ' + escapeHTML(r.titol) +
-               '">Repte ' + r.num + ' (' + escapeHTML(r.arxiu) + ')</button>';
+               '">Repte ' + r.id.toUpperCase() + ' (' + escapeHTML(r.arxiu) + ')</button>';
       }).join('');
 
     panel.innerHTML =

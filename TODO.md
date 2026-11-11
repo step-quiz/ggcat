@@ -45,60 +45,61 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of 2026-11-10. **None of the grid work has started**; the site still runs the legacy numbering. Block 0 is done (results below); the next block is A + B.
+As of 2026-11-11. **Blocks 0, A and B are done**: the site runs the grid ids and offers 11 challenges (the ten A cells and 5B). The legacy pages `repte-1` … `repte-10` are gone. The next block is C.
 
 | Area | State |
 |---|---|
-| Infrastructure (`curs/capitols.js`, `geovalidator.js`, `glossari-data.js`, `curs.css`, `style.css`) | ✅ complete for the legacy numbering |
-| `curs/validators.js` | ✅ the 20 published validators pass the end-to-end tester (fixed on 2026-11-10, check 0.4) |
+| Data and UI (`curs/capitols.js`) | ✅ `TEMES_DATA`, `REPTES_DATA` (grid shape, 11 entries), sidebar grouped by theme, migration of the four legacy progress keys |
+| `curs/validators.js` | ✅ 10 chapter exercises + 11 cells; all pass the end-to-end tester |
 | `curs/geovalidator.js` | ✅ includes the `GV` extension of spec 7.3 |
-| Landing page (`index.html`) | ✅; the stat reads `10/30` |
-| Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`) |
-| Challenges | 10 legacy pages `curs/repte-1.html` … `repte-10.html` are live. Grid cells under their final id: **0/30**. |
-| Generator (`tools/generate-pages.js`) | Works with numeric ids only. Only `repte-1` and `repte-6` have a JSON source in `tools/pages/`. Chapter pages are hand-written HTML. |
-| Tool palettes | `capitols.js` reads `data-tools` → `customToolBar` (verified in `classic` and `graphing`, check 0.2); no page uses it and the generator does not emit it. |
+| Course index (`curs/index.html`) | ✅ chapter list + theme × level table of the challenges (empty cells are dashed boxes) |
+| Landing page (`index.html`) | ✅; the stat reads `11/30` |
+| Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`). ⚠️ Several Catalan command names in their text and in the glossary are wrong (block E) |
+| Challenges | **11/30** live under their final id, each generated from `tools/pages/repte-<id>.json` |
+| Generator (`tools/generate-pages.js`, `tools/extreu-pagina.js`) | ✅ grid ids (`"id": "3b"`) and `simulador.tools` → `data-tools`; numeric `num` still works. Chapter pages are hand-written HTML. This copy is now ahead of the one in PyCat and JSCat (the owner knows). |
+| Tool palettes | ✅ every challenge page has its `data-tools` |
 | Input bar | Shown in every non-read-only applet since 2026-11-10 (check 0.1). |
 
-Test results on 2026-11-10:
+Test results on 2026-11-11:
 
 | Command | Result |
 |---|---|
-| `node tools/generate-pages.js --comprova` | 2 pages checked, both match |
-| `node test-validators.js` | 70/70 (challenges and chapter exercises) |
-| `node test-debug-tester-logic.js` | 100/100 |
+| `node tools/generate-pages.js --comprova` | 11 pages checked, all match |
+| `node test-validators.js` | 81/81 (11 cells and 10 chapter exercises) |
+| `node test-debug-tester-logic.js` | 105/105 |
 | `node --check` on every `.js` | all pass |
-| End-to-end (`curs/index.html?debug=1`, real GeoGebra in a browser) | **20/20 green** after the fixes of check 0.4 (it was 10/20 before them) |
+| End-to-end (`curs/index.html?debug=1`, real GeoGebra, headless Chromium) | **21/21 green** |
+| Hints typed by hand (the Catalan commands of each hint typed into the input bar, then «Comprova») | **11/11 ✓** |
+| Progress migration (a browser holding `repte-3` and `repte-9`) | ✓ appears on 3A and 5B |
 
 ### Grid status
 
-🔁 = live under a legacy name, to be renamed · ⬜ = to build · ✅ = live under its final id
+⬜ = to build · ✅ = live
 
 | Theme | A | B | C |
 |---|---|---|---|
-| 1 El triangle | ⬜ 1a | ⬜ 1b | ⬜ 1c |
-| 2 El quadrat | 🔁 2a (`repte-5`) | ⬜ 2b | ⬜ 2c |
-| 3 La circumferència | 🔁 3a (`repte-3`) | ⬜ 3b | ⬜ 3c |
-| 4 Polígons regulars | ⬜ 4a | ⬜ 4b | ⬜ 4c |
-| 5 Mediatriu i circumcentre | ⬜ 5a | 🔁 5b (`repte-9`) | ⬜ 5c |
-| 6 Bisectriu i incentre | ⬜ 6a | ⬜ 6b | ⬜ 6c |
-| 7 Perpendiculars i paral·leles | 🔁 7a (`repte-8`) | ⬜ 7b | ⬜ 7c |
-| 8 Transformacions | ⬜ 8a | ⬜ 8b | ⬜ 8c |
-| 9 Funcions i corbes | ⬜ 9a | ⬜ 9b | ⬜ 9c |
-| 10 Lliscadors i lloc geomètric | ⬜ 10a | ⬜ 10b | ⬜ 10c |
+| 1 El triangle | ✅ 1a | ⬜ 1b | ⬜ 1c |
+| 2 El quadrat | ✅ 2a | ⬜ 2b | ⬜ 2c |
+| 3 La circumferència | ✅ 3a | ⬜ 3b | ⬜ 3c |
+| 4 Polígons regulars | ✅ 4a | ⬜ 4b | ⬜ 4c |
+| 5 Mediatriu i circumcentre | ✅ 5a | ✅ 5b | ⬜ 5c |
+| 6 Bisectriu i incentre | ✅ 6a | ⬜ 6b | ⬜ 6c |
+| 7 Perpendiculars i paral·leles | ✅ 7a | ⬜ 7b | ⬜ 7c |
+| 8 Transformacions | ✅ 8a | ⬜ 8b | ⬜ 8c |
+| 9 Funcions i corbes | ✅ 9a | ⬜ 9b | ⬜ 9c |
+| 10 Lliscadors i lloc geomètric | ✅ 10a | ⬜ 10b | ⬜ 10c |
 
-Totals: 4 🔁, 26 ⬜, 0 ✅. Keep this table up to date as cells land.
+Totals: 11 ✅, 19 ⬜. Keep this table up to date as cells land.
 
 ---
 
 ## 4. Work blocks
 
-Order: **0 (done) → A + B together → C → D**. Blocks E and F can be done at any time.
-
-The ordering guarantees that the live site never offers fewer challenges than today (10): the legacy pages stay until the first grid release (block B) replaces them with 11 cells.
+Order: **0, A, B (done) → C → D**. Blocks E and F can be done at any time.
 
 ### Block 0 — Browser checks that gate the design
 
-Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) against the real applet loaded from `www.geogebra.org`, serving the repository with `python3 -m http.server`. An assistant whose sandbox allows that host can repeat them; otherwise ask the owner, with numbered steps in Catalan.
+The ids `repte-1` … `repte-10` below are the legacy challenges that were live at the time. Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) against the real applet loaded from `www.geogebra.org`, serving the repository with `python3 -m http.server`. An assistant whose sandbox allows that host can repeat them; otherwise ask the owner, with numbered steps in Catalan.
 
 - [x] **0.1 Is the input bar available to the student?** **No, it was not** — a live bug, fixed in `curs/capitols.js`:
   - `classic`: `showAlgebraInput: true` alone shows nothing; it also needs `algebraInputPosition: 'bottom'`. Both are now set for every non-read-only applet.
@@ -133,63 +134,21 @@ Checks 0.1–0.3 were run on 2026-11-10 with headless Chromium (Playwright) agai
 
   Facts confirmed by the same probes (block E): `getValue(polygonLabel)` is the area (`t` = 12); `Distance((0,3),f)` with a literal point works; the vertices of a transformed polygon are points (`A'`, `B'`, `C'`); `isMoveable(slider)` is true; a locus has object type `locus`; `setValue(slider, v)` updates dependent objects synchronously.
 
-### Block A — Infrastructure for grid ids
+### Blocks A and B — Grid ids and the first 11 cells (done, 2026-11-11)
 
-Do not release block A alone: it changes ids that the legacy pages depend on. Ship it together with block B.
+Delivered in one pull request (the legacy files were deleted in the same commit, so there was no red window).
 
-Spec sections 4 and 5 define the target. File by file:
-
-- [ ] **`curs/capitols.js`**
-  - Add `TEMES_DATA`; replace `REPTES_DATA` with the new shape (`id`, `tema`, `nivell`, `titol`, `arxiu`, `goalId`, `dificultat`; no `num`). Export `window.TEMES_DATA`.
-  - `renderReptesSidebar(currentId)`: takes the cell id (string) and groups entries by theme (spec 4.3).
-  - One-time progress migration of the four legacy keys (spec 4.4). It goes here, not in `progress.js`.
-- [x] **`curs/geovalidator.js`** — the `GV` extension of spec 7.3 is in (2026-11-10).
-- [ ] **`tools/generate-pages.js`**
-  - Accept `"id": "3b"` for `type: "repte"` (chapters keep `num`). Affected: `validatePage` (line ~378 requires a numeric `num`), `outputFilename` (~370), the badge and labels that print `page.num` (~185–188, ~251, ~277), the header title (~62), the sidebar call (~42: it must print `renderReptesSidebar('3b')`, quoted) and `--only` (~419).
-  - The label shown is the id with the level in upper case: `Repte 3B`.
-  - Add `tools` to `atributsSimulador` so that `simulador.tools` becomes `data-tools`.
-  - The «Reptes» header link is hard-coded as `repte-1.html` in two templates (~60, ~260): change to `repte-1a.html`.
-  - This generator is also used, with a different `PROJECTE` block, by the sibling courses PyCat and JSCat. Keep numeric `num` working so the change can be copied there unchanged, and tell the owner that the generator now differs from the siblings' copy.
-- [ ] **`tools/extreu-pagina.js`** — the badge regex `⚡ Repte (\d+)` and `pagina.num = Number(…)` (~66) must read `3B` and produce `id: "3b"`; add `tools` to the known applet attributes.
-- [ ] **`curs/index.html`** — the challenge list uses `r.num` (~85). Replace the flat list of challenges with the theme × level table of spec 4.3. Header link `repte-1.html` (~19) → `repte-1a.html`.
-- [ ] **`curs/debug-tester.js`** — labels built from `r.num` (~609, ~668–670) → `r.id`. `TEST_SOLUTIONS` keys follow the goalIds.
-- [ ] **`test-validators.js`** — the main loop already iterates over the keys of `CORRECT_SOLUTIONS`, and the mock has the value of a polygon (its area), `Distance(point, line)` with a literal point, `getObjectType` and `isMoveable` (2026-11-10). Still to add for `10a`: `setValue` on a slider with dependent objects. Scenes must use the real object types (the mock throws otherwise).
-- [ ] **`test-debug-tester-logic.js`** — only the header comment mentions "10 reptes"; the checks iterate `REPTES_DATA` and need no change.
-- [ ] **Hard-coded links to `repte-1.html`** → `repte-1a.html`: the header of each `curs/capitol-N.html` (10 files, one link each), the closing paragraph of `curs/capitol-10.html` (a second link), and the landing page `index.html` (`curs/repte-1.html`, ~173). These pages are hand-written HTML: edit them directly.
-- [ ] **`.github/workflows/`** — nothing to change (`tests.yml` runs the same three commands). Remember that workflow files cannot be changed through a ZIP.
-
-### Block B — First grid release: the ten A cells + 5B (11 cells)
-
-- [ ] **Rename the four published cells** and give them their palette (`data-tools`). Text, initial construction and validator body stay exactly as they are (the spec reproduces them):
-
-  | Legacy | New | `data-tools` |
-  |---|---|---|
-  | `repte-5` | `repte-2a` | `0 \| 1 \| 51` |
-  | `repte-3` | `repte-3a` | `0 \| 1 \| 34 10` |
-  | `repte-8` | `repte-7a` | `0 \| 1 5 \| 2 \| 4` |
-  | `repte-9` | `repte-5b` | `0 \| 1 19 5 \| 15 \| 8 \| 10 34` |
-
-  For each: new JSON in `tools/pages/`, generated page, `VALIDATORS` key, `REPTES_DATA` entry, keys in `test-validators.js` (`CORRECT_SOLUTIONS`, `WRONG_SOLUTIONS`) and in `debug-tester.js` (`TEST_SOLUTIONS`). `repte-8` changes level from Mitjà to Fàcil (badge and `dificultat`).
-- [ ] **Build the seven missing A cells**: `1a`, `4a`, `5a`, `6a`, `8a`, `9a`, `10a`. Follow the per-cell checklist of spec section 10. `9a` depends on check 0.1 and `10a` on the `setValue` row of spec 7.4.
-- [ ] **Remove the legacy challenges from the code**: the six retired validators (`repte-1`, `-2`, `-4`, `-6`, `-7`, `-10`) and their scenes in `test-validators.js` and `debug-tester.js`.
-- [ ] **Delete the legacy files.** A ZIP uploaded to `_uploads/` can add and overwrite files but **cannot delete** them, so the owner has to do it. Give the owner these steps (in Catalan, explaining each one), to be run in a Codespace terminal **right after** the release ZIP has been processed by the «Extract and commit zip uploads» action:
-
-  ```bash
-  git pull
-  git rm curs/repte-1.html curs/repte-2.html curs/repte-3.html curs/repte-4.html curs/repte-5.html \
-         curs/repte-6.html curs/repte-7.html curs/repte-8.html curs/repte-9.html curs/repte-10.html \
-         tools/pages/repte-1.json tools/pages/repte-6.json
-  git commit -m "Retira els reptes de la numeració antiga (1-10)"
-  git push
-  ```
-
-  Between the ZIP and this push the «Tests» action will be red: `--comprova` still finds the two legacy JSON files, whose pages no longer match the new generator. That is expected and ends with the push. The commit message must not contain any skip-CI tag.
-- [ ] **Counters and docs**: landing stat `10/30` → `11/30`; grid status table above; `README.md` (structure list and «Estat del projecte»); `tools/README.md` (JSON format: `id`, `tools`; example pages).
-- [ ] **Owner check in the browser**: `curs/index.html?debug=1` green for the 11 cells; progress of a browser that had completed `repte-3`, `-5`, `-8` or `-9` shows ✓ on the renamed cells.
+- **Infrastructure**: `curs/capitols.js` (`TEMES_DATA`, `REPTES_DATA`, `renderReptesSidebar(id)`, `migraProgresReptes()`), the generator and the extractor (grid ids, `tools`, `PROJECTE.primerRepte`), `curs/index.html` (table), `curs/debug-tester.js` (labels from `r.id`), `test-validators.js` (scenes for the cells, sliders in the mock), every hard-coded link `repte-1.html` → `repte-1a.html`.
+- **Cells**: `2a`, `3a`, `7a`, `5b` renamed from `repte-5`, `-3`, `-8`, `-9` (text, construction and validator body unchanged; palette added; `7a` is now Fàcil); `1a`, `4a`, `5a`, `6a`, `8a`, `9a`, `10a` built from the spec.
+- **Retired**: the pages, validators, scenes and JSON of `repte-1`, `-2`, `-4`, `-6`, `-7`, `-10`.
+- **What the browser taught** (all recorded in the spec):
+  - Catalan command names in the hints of 1A, 2A, 4A, 5A and 10A were wrong and GeoGebra rejected them. The real ones are `Polígon` (also for regular polygons), `PuntMitjà`, `PuntLliscant`. Tables of tool and command names: spec section 6.
+  - In the `graphing` app the input is a formula editor: after an exponent the student must press → (the 9A hint says so), and accented names could not be tested with a simulated keyboard, so 9A offers `Arrel(f)`.
+  - `repte-10a` moves the slider and restores it: works on the live applet.
 
 ### Block C — The nine remaining B cells (→ 20/30)
 
-`1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`. Per-cell checklist: spec section 10. Each added cell changes the previous/next links of its neighbours.
+`1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`. Per-cell checklist: spec section 10. Each added cell changes the previous/next links of its neighbours. Type each hint into the input bar once (spec section 10, step 7): five of the first eleven hints failed that test.
 
 No cell of this block has an unverified API dependency left (`7b` and `10b` were confirmed on 2026-11-10).
 
@@ -203,7 +162,9 @@ When the last cell lands, the landing stat becomes `30`.
 
 - [x] Every row of spec 7.4 is confirmed or refuted against the live applet (2026-11-10). What is still unproven is each reference validator of section 9 as a whole: the end-to-end tester proves it when the cell is implemented.
 - [x] `getValue(polygonLabel)` is the area: confirmed on 2026-11-10 against the live applet (`t=Polygon((0,0),(6,0),(3,4))` → 12).
-- [ ] **Catalan names in hints.** Hints name tools between «» following the Word draft, and commands as in the previous spec (`PolígonRegular`, `Mediatriu`, `Bisectriu`, `PuntMig`, `Translació`, `Intersecció`, `Lliscador`, `Circumferència`). Check them against the Catalan GeoGebra interface when each page is first opened; fix the hint text in the spec and the JSON together.
+- [x] **Catalan names in hints.** Read from the live applet on 2026-11-11 (spec section 6) and applied to every hint of the spec; the 11 published hints were typed and pass. The 19 remaining hints still have to be typed once each.
+- [ ] **Wrong Catalan command names in the chapters and the glossary** (found on 2026-11-11, not fixed: it needs an audit of every command they mention, each typed into the live applet). Known so far: `PuntMig` (chapters 2 and 10, glossary) should be `PuntMitjà`; `PolígonRegular` (chapter 7, glossary) should be `Polígon`; `Lliscador` (chapter 10, glossary) should be `PuntLliscant`; `Paral·lela(f,A)` (chapter 6, glossary) should be `Recta(A, f)`; `CercleCircumscrit` (chapter 6) is unchecked. A student who copies these gets «Comandament desconegut». The tables of spec section 6 give the right names.
+- [ ] **5B: vertex C = (2, 5) is outside the initial view** (the applet shows y up to about 4). Inherited from `repte-9`; the student can drag the view. Either set the view in `data-commands` or leave it.
 - [ ] Known limits of the validators, accepted as they are: "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.
 
 ### Block F — Robustness when the GeoGebra CDN is down
@@ -219,7 +180,8 @@ The course pages load `https://www.geogebra.org/apps/deployggb.js` synchronously
 - **Tolerances** are in spec 7.2. In short: 0.15 for coordinates and lengths, 0.2 for images and irrational centres, 0.3 for areas, 1.5° for angles; `GV.eps` (0.001) is too strict for student constructions.
 - **Never test labels chosen by the student**: iterate with `getAllObjectNames(type)`. Labels of pre-built objects can be used and excluded.
 - **After every edit**: `node --check <file>.js`, then the three commands of section 3. Report the results to the owner before delivering.
-- **Delivery**: a ZIP whose root is the repository root, uploaded by the owner to `_uploads/`; files under `.github/` in a ZIP are ignored. Give the owner numbered, copy-paste steps for anything they must do (see `CLAUDE.md`).
+- **Delivery**: either a pull request (an assistant with Git access; the owner merges it — files can be deleted this way) or a ZIP whose root is the repository root, uploaded by the owner to `_uploads/` (a ZIP cannot delete files, and files under `.github/` in it are ignored). Give the owner numbered, copy-paste steps for anything they must do (see `CLAUDE.md`).
+- **Browser tests**: a sandbox that allows `www.geogebra.org` can run them itself with headless Chromium (Playwright): serve the repository with `python3 -m http.server`, open `curs/index.html?debug=1`, click `#dbg-all` and wait for `#dbg-summary`. To type like a student in `classic`, click the `input` inside `.geogebra-wrap`; the live API of each applet is `wrapper._ggbApi`.
 - **Docs with the code**: when behaviour changes, update `README.md`, `tools/README.md`, this file and the spec in the same delivery.
 - **What the spec has and has not verified** is stated in its section 7.4. The reference validators were logic-tested against an emulator that is not in the repository; the real proof is `test-validators.js` plus the end-to-end tester.
 - `TODO.md` and `REPTES_SPECIFICATION.md` are written in English for AI readers; `README.md` and `tools/README.md` are in Catalan.

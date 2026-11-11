@@ -16,7 +16,7 @@
   </span>
   <nav class="curs-nav">
     <a href="capitol-1.html" class="active">Capítols</a>
-    <a href="repte-1.html">Reptes</a>
+    <a href="repte-1a.html">Reptes</a>
   </nav>
   <span class="curs-header-title">Curs de GeoGebra</span>
 </header>
@@ -30,6 +30,8 @@
 </div>
 
 <ul class="capitols-list" id="capitols-list"></ul>
+
+<section class="reptes-graella-wrap" id="reptes-graella" aria-label="Reptes"></section>
 
 <script src="glossari-data.js"></script>
 <script src="progress.js"></script>
@@ -46,7 +48,7 @@
   // En mode debug, debug-tester.js substitueix el contingut: no rendritzem la llista normal.
   if (location.search.indexOf('debug=1') === -1) {
 
-    // Genera la llista de capítols i reptes
+    // Genera la llista de capítols i la graella de reptes
     (function renderIndex() {
       const list = document.getElementById('capitols-list');
       if (!list) return;
@@ -68,28 +70,31 @@
         </li>`;
     }
 
-    // Separador
-    html += '<li style="margin:1.2rem 0;border-top:1px solid #d0d0d0"></li>';
-
-    // Etiquetes de dificultat per als reptes
-    const difLabel = { facil: '🟢 Fàcil', mitja: '🟡 Mitjà', dificil: '🔴 Difícil' };
-
-    // Reptes
-    for (const r of REPTES_DATA) {
-      const done = r.goalId && progress[r.goalId];
-      const check = done ? ' ✓' : '';
-      const dif = difLabel[r.dificultat] || '';
-      html += `
-        <li class="capitol-card">
-          <a href="${r.arxiu}">
-            <span class="capitol-card-num">⚡${r.num}</span>
-            <span class="capitol-card-titol">${r.titol}${check}</span>
-            <span class="capitol-card-arrow" style="font-size:0.7rem;color:#4b5563">${dif}</span>
-          </a>
-        </li>`;
-    }
-
     list.innerHTML = html;
+
+    // Reptes: una graella amb una fila per tema i tres columnes (nivells A, B, C).
+    // Una casella que encara no té repte queda buida i sense enllaç.
+    const graella = document.getElementById('reptes-graella');
+    if (graella) {
+      const nivells = [['a', '🟢 A · Fàcil'], ['b', '🟡 B · Mitjà'], ['c', '🔴 C · Difícil']];
+      let t = '<h2 class="reptes-graella-titol">⚡ Reptes</h2>' +
+              '<div class="reptes-graella-scroll"><table class="reptes-graella">' +
+              '<thead><tr><th scope="col">Tema</th>' +
+              nivells.map(n => `<th scope="col">${n[1]}</th>`).join('') + '</tr></thead><tbody>';
+      for (const tema of TEMES_DATA) {
+        t += `<tr><th scope="row"><span class="reptes-graella-num">${tema.num}</span> ${tema.titol}</th>`;
+        for (const n of nivells) {
+          const r = REPTES_DATA.find(x => x.tema === tema.num && x.nivell === n[0]);
+          if (!r) { t += '<td class="reptes-graella-buida"></td>'; continue; }
+          const done = r.goalId && progress[r.goalId];
+          t += `<td><a href="${r.arxiu}"${done ? ' class="fet"' : ''}>` +
+               `<span class="reptes-graella-id">${r.id.toUpperCase()}${done ? ' ✓' : ''}</span>` +
+               `${r.titol}</a></td>`;
+        }
+        t += '</tr>';
+      }
+      graella.innerHTML = t + '</tbody></table></div>';
+    }
     })();
 
   }

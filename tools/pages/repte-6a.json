@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "6a",
+  "titol": "Bisectriu d'un angle",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-5b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-7a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Amb l'eina «Bisectriu», fes clic als punts A, O i B, per aquest ordre (el vèrtex al mig): <code>Bisectriu(A, O, B)</code>. La bisectriu parteix l'angle en dos angles de 22.5°.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Les semirectes <strong>f</strong> i <strong>g</strong> surten de l'origen O: f segueix l'eix X i g segueix la recta y = x. Formen un angle de 45°. Construeix la <strong>bisectriu</strong> d'aquest angle.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "O=(0,0)\nA=(4,0)\nB=(sqrt(8),sqrt(8))\nf=Ray(O,A)\ng=Ray(O,B)",
+            "fixed": "O,A,B,f,g",
+            "tools": "0 | 1 5 | 2 18 | 9 36",
+            "goalId": "repte-6a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

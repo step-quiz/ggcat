@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "5b",
+  "titol": "El circumcentre",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-5a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-6a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Construeix les mediatrius: <code>Mediatriu(A,B)</code>, <code>Mediatriu(B,C)</code> i <code>Mediatriu(A,C)</code>. Les tres rectes es tallen en un únic punt. Marca'l amb <code>Intersecció(m1, m2)</code>. Aquest punt és equidistant dels tres vèrtexs.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El triangle ABC amb <strong>A = (0, 0)</strong>, <strong>B = (6, 0)</strong> i <strong>C = (2, 5)</strong> ja està construït. Construeix les <strong>mediatrius dels tres costats</strong> del triangle. Marca el <strong>punt on es tallen</strong> les tres mediatrius (el circumcentre).</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nB=(6,0)\nC=(2,5)\nt=Polygon(A,B,C)",
+            "fixed": "A,B,C,t",
+            "tools": "0 | 1 19 5 | 15 | 8 | 10 34",
+            "goalId": "repte-5b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

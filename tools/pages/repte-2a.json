@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "2a",
+  "titol": "Quadrat a l'origen",
+  "difficulty": "facil",
+  "prev": {
+    "url": "repte-1a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-3a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Crea <code>A=(0,0)</code> i <code>B=(3,0)</code>. Escriu <code>Polígon(A, B, 4)</code> per crear un quadrat de costat 3 sobre el segment AB.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Crea un <strong>quadrat de costat 3</strong> amb un vèrtex a l'origen <strong>(0, 0)</strong> i un altre vèrtex a <strong>(3, 0)</strong>. El quadrat ha de tenir exactament 4 costats iguals.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 | 51",
+            "goalId": "repte-2a",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

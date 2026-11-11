@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repte 7 — Equilàter comprovat | GeoCat</title>
+  <title>Repte 5A — Mediatriu d'un segment | GeoCat</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="curs.css">
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
@@ -18,9 +18,9 @@
   </span>
   <nav class="curs-nav">
     <a href="capitol-1.html">Capítols</a>
-    <a href="repte-1.html" class="active">Reptes</a>
+    <a href="repte-1a.html" class="active">Reptes</a>
   </nav>
-  <span class="curs-header-title">Repte 7 — Equilàter comprovat</span>
+  <span class="curs-header-title">Repte 5A — Mediatriu d'un segment</span>
   <div class="curs-header-actions"></div>
 </header>
 
@@ -33,21 +33,24 @@
   <main class="curs-content">
 
     <header class="chapter-header">
-      <span class="chapter-badge" style="background: #fef3c7; color: #92400e;">⚡ Repte 7 — Mitjà</span>
-      <h1>Equilàter comprovat</h1>
+      <span class="chapter-badge" style="background: #d1fae5; color: #065f46;">⚡ Repte 5A — Fàcil</span>
+      <h1>Mediatriu d'un segment</h1>
     </header>
 
     <section class="chapter-section">
       <h2>Objectiu</h2>
-      <p>Crea un <strong>triangle equilàter</strong> amb <code>PolígonRegular</code>. Després, mesura els <strong>tres angles interiors</strong> del triangle. Els tres han de ser exactament <strong>60°</strong>.</p>
+<p>El segment AB amb <strong>A = (−2, 0)</strong> i <strong>B = (4, 0)</strong> ja està construït. Construeix la <strong>mediatriu</strong> del segment i marca'n el <strong>punt mig</strong>.</p>
 
       <h2>Widget</h2>
-      <p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
 
       <div class="geogebra"
-             data-commands=""
-             data-fixed=""
-           data-goal-id="repte-7"
+           data-commands="A=(-2,0)
+B=(4,0)
+s=Segment(A,B)"
+           data-fixed="A,B,s"
+           data-tools="0 | 1 19 5 | 15 | 8"
+           data-goal-id="repte-5a"
            data-height="440">
       </div>
     </section>
@@ -55,13 +58,13 @@
     <details style="margin-top: 1.5rem;">
       <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
       <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
-        <p>Crea dos punts A i B i escriu <code>PolígonRegular(A, B, 3)</code>. Això crea un triangle equilàter. Després mesura els angles interiors escrivint <code>Angle(A,B,C)</code>, <code>Angle(B,C,A)</code> i <code>Angle(C,A,B)</code>. Els tres han de donar 60°.</p>
+        <p>Amb l'eina «Mediatriu», fes clic al segment (o als dos extrems): <code>Mediatriu(A, B)</code>. Amb l'eina «Punt mitjà o centre», torna a fer clic al segment: <code>PuntMitjà(A, B)</code>. El punt mig és (1, 0), i la mediatriu hi passa.</p>
       </div>
     </details>
 
     <nav class="chapter-nav">
-      <a href="repte-6.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
-      <a href="repte-8.html" class="btn-nav btn-nav--next">Repte següent →</a>
+      <a href="repte-4a.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-5b.html" class="btn-nav btn-nav--next">Repte següent →</a>
     </nav>
 
   </main>
@@ -74,7 +77,7 @@
 <script src="capitols.js"></script>
 <script>
   injectCursLogo();
-  renderReptesSidebar(7);
+  renderReptesSidebar('5a');
   renderSimuladors();
   initSidebarToggle();
 </script>
