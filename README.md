@@ -59,6 +59,10 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
   correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat del 12/11/2026: 40/40.
 
+## Com es veu una pàgina
+
+Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Les mides de lletra són sis i prou (12, 14, 16, 20, 28 i 40 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`.
+
 ## Editor de text (`curs/edit.html`)
 
 Eina interna per revisar la redacció dels capítols: carrega un capítol, en separa els blocs

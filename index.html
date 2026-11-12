@@ -30,7 +30,7 @@
     }
     .hero-logo svg { width: 3rem; height: 3rem; }
     .hero-logo-name {
-      font-size: 2.4rem;
+      font-size: var(--fs-xxl);
       font-weight: 700;
       letter-spacing: -1px;
       color: var(--text);
@@ -38,7 +38,7 @@
     .hero-logo-name span { color: var(--accent); }
 
     .hero-subtitle {
-      font-size: 0.9rem;
+      font-size: var(--fs-lg);
       color: var(--muted);
       max-width: 38ch;
       line-height: 1.7;
@@ -58,12 +58,12 @@
       gap: 0.15rem;
     }
     .stat-num {
-      font-size: 1.6rem;
+      font-size: var(--fs-xl);
       font-weight: 700;
       color: var(--accent);
     }
     .stat-lbl {
-      font-size: 0.65rem;
+      font-size: var(--fs-xs);
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -78,7 +78,7 @@
     }
     .cta {
       font-family: var(--mono);
-      font-size: 0.82rem;
+      font-size: var(--fs-md);
       font-weight: 700;
       padding: 0.65rem 1.5rem;
       border-radius: 8px;
@@ -116,7 +116,7 @@
       max-width: 420px;
     }
     .feature {
-      font-size: 0.65rem;
+      font-size: var(--fs-sm);
       padding: 0.25rem 0.65rem;
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -126,10 +126,10 @@
 
     /* ── Responsive ──────────────────────────────────── */
     @media (max-width: 480px) {
-      .hero-logo-name { font-size: 1.8rem; }
-      .hero-subtitle  { font-size: 0.82rem; }
-      .cta            { font-size: 0.75rem; padding: 0.55rem 1.1rem; }
-      .stat-num       { font-size: 1.3rem; }
+      .hero-logo-name { font-size: var(--fs-xl); }
+      .hero-subtitle  { font-size: var(--fs-md); }
+      .cta            { font-size: var(--fs-md); padding: 0.55rem 1.1rem; }
+      .stat-num       { font-size: var(--fs-lg); }
     }
   </style>
 </head>

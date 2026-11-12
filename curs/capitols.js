@@ -296,7 +296,102 @@ function _aplicaVista(api, cfg) {
 }
 
 
+// ── Zones de la pàgina ───────────────────────────────────
+// Els capítols i els reptes es llegeixen per zones, cadascuna un desplegable
+// gran amb una franja de color: capítols → Teoria · Exercici · Resum; reptes →
+// Objectiu · Exercici · Pista. L'HTML de les pàgines no canvia (els capítols
+// són fets a mà i els reptes surten del generador): aquesta funció reagrupa
+// les seccions abans que s'injectin els applets. Totes les zones comencen
+// obertes, menys la Pista dels reptes.
+var _ZONES = {
+  teoria:   { icona: '📘', titol: 'Teoria' },
+  exercici: { icona: '✏️', titol: 'Exercici' },
+  resum:    { icona: '📌', titol: 'Resum' },
+  objectiu: { icona: '🎯', titol: 'Objectiu' },
+  pista:    { icona: '💡', titol: 'Pista' }
+};
+
+function _creaZona(tipus, nodes, oberta) {
+  var z = _ZONES[tipus];
+  var d = document.createElement('details');
+  d.className = 'zona zona-' + tipus;
+  d.open = !!oberta;
+  d.innerHTML = '<summary class="zona-cap"><span class="zona-icona" aria-hidden="true">' + z.icona +
+    '</span><span class="zona-titol">' + z.titol + '</span><span class="zona-ajuda"></span></summary>' +
+    '<div class="zona-cos"></div>';
+  var cos = d.querySelector('.zona-cos');
+  nodes[0].parentNode.insertBefore(d, nodes[0]);
+  nodes.forEach(function(n) { cos.appendChild(n); });
+  var ajuda = d.querySelector('.zona-ajuda');
+  function posaAjuda() { ajuda.textContent = d.open ? 'clica per tancar' : 'clica per obrir'; }
+  d.addEventListener('toggle', posaAjuda);
+  posaAjuda();
+  return d;
+}
+
+function _treuTitol(seccio) {
+  var h2 = seccio.querySelector(':scope > h2');
+  if (h2) h2.remove();
+}
+
+function _organitzaZones() {
+  var main = document.querySelector('.curs-content');
+  if (!main || main.querySelector('.zona')) return;
+  var seccions = Array.prototype.slice.call(main.querySelectorAll('section.chapter-section'));
+  if (!seccions.length) return;
+
+  if (/repte-\d+[abc](\.html)?$/.test(location.pathname)) {   // Cloudflare serveix les pàgines sense .html
+    // Repte: una sola secció amb <h2>Objectiu</h2> … <h2>Widget</h2> …; la pista és un <details> a part
+    var sec = seccions[0], objectiu = [], exercici = [], dins = null;
+    Array.prototype.slice.call(sec.childNodes).forEach(function(n) {
+      if (n.nodeType === 1 && n.tagName === 'H2') {
+        dins = /Objectiu/.test(n.textContent) ? objectiu : exercici;
+        n.remove();
+      } else if (dins && (n.nodeType === 1 || n.textContent.trim())) {
+        dins.push(n);
+      }
+    });
+    if (objectiu.length) _creaZona('objectiu', objectiu, true);
+    if (exercici.length) _creaZona('exercici', exercici, true);
+    var pista = main.querySelector('details.pista');
+    if (pista) {
+      var cosPista = Array.prototype.slice.call(pista.childNodes).filter(function(n) { return n.tagName !== 'SUMMARY'; });
+      var zp = _creaZona('pista', cosPista.length ? cosPista : [document.createElement('div')], false);
+      pista.replaceWith(zp);
+    }
+    if (!sec.children.length) sec.remove();
+    return;
+  }
+
+  // Capítol: les seccions de teoria, l'exercici (.chapter-exercise) i el resum (<h2>Resum</h2>)
+  var exercici = seccions.filter(function(s) { return s.classList.contains('chapter-exercise'); });
+  var resum = seccions.filter(function(s) {
+    var h = s.querySelector(':scope > h2');
+    return h && /^\s*Resum\s*$/.test(h.textContent);
+  });
+  var teoria = seccions.filter(function(s) { return exercici.indexOf(s) === -1 && resum.indexOf(s) === -1; });
+  exercici.forEach(_treuTitol);
+  resum.forEach(_treuTitol);
+  if (teoria.length)   _creaZona('teoria', teoria, true);
+  if (exercici.length) _creaZona('exercici', exercici, true);
+  if (resum.length)    _creaZona('resum', resum, true);
+}
+
+// ── Etiqueta de cada applet ──────────────────────────────
+// L'alumne ha de saber si un applet és per mirar (data-readonly: sense eines
+// ni barra d'entrada) o si hi ha de treballar. Etiqueta a sobre i vora diferent.
+function _etiquetaApplet(wrapper, readonly) {
+  wrapper.classList.add(readonly ? 'ggb-mira' : 'ggb-treballa');
+  var t = document.createElement('div');
+  t.className = 'ggb-etiqueta ' + (readonly ? 'ggb-etiqueta-mira' : 'ggb-etiqueta-treballa');
+  t.innerHTML = readonly
+    ? '<span aria-hidden="true">👁</span> <strong>Exemple per mirar</strong> <span class="ggb-etiqueta-detall">— pots moure\'n els punts, però aquí no s\'hi escriuen ordres</span>'
+    : '<span aria-hidden="true">✍️</span> <strong>Et toca a tu</strong> <span class="ggb-etiqueta-detall">— fes servir les eines o escriu ordres a «Entrada…»</span>';
+  wrapper.insertBefore(t, wrapper.firstChild);
+}
+
 function renderSimuladors() {
+  _organitzaZones();
   var divs = document.querySelectorAll('.geogebra');
   if (divs.length === 0) return;
 
@@ -340,6 +435,7 @@ function renderSimuladors() {
   entries.forEach(function(cfg) {
     var wrapper = document.createElement('div');
     wrapper.className = 'geogebra-wrap';
+    _etiquetaApplet(wrapper, cfg.readonly);
 
     var ggbDiv = document.createElement('div');
     ggbDiv.id = cfg.id;
@@ -605,8 +701,9 @@ function initSidebarToggle() {
 // Refresca la sidebar actual
 function _refreshSidebar() {
   var path = window.location.pathname;
-  var capMatch = path.match(/capitol-(\d+)\.html/);
-  var repMatch = path.match(/repte-(\d+[a-c])\.html/);
+  // Cloudflare Pages serveix les pàgines sense «.html» (/curs/repte-5b)
+  var capMatch = path.match(/capitol-(\d+)(\.html)?$/);
+  var repMatch = path.match(/repte-(\d+[a-c])(\.html)?$/);
   if (capMatch) renderSidebar(parseInt(capMatch[1], 10));
   else if (repMatch) renderReptesSidebar(repMatch[1]);
 }
