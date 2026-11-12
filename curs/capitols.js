@@ -741,6 +741,185 @@ function initGlossariCurs() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') overlay.classList.remove('is-open');
   });
+
+  _preparaExemplesGlossari(overlay);
+}
+
+// ── Exemples del glossari ────────────────────────────────
+// Cada paraula del glossari (<code> de les graelles) és un enllaç a un exemple
+// fet expressament (glossari-exemples.js). L'exemple s'obre dins la mateixa
+// finestra: les ordres en català en un quadre editable, ▶ Executa, ↺ Exemple
+// original i un applet amb la vista algebraica (s'hi veuen els valors: àrees,
+// distàncies…). L'alumne pot canviar els valors i tornar a executar, o
+// arrossegar els punts. Un sol applet per pàgina, creat el primer cop.
+
+var _glossariApi = null, _glossariEspera = [];
+
+function _preparaExemplesGlossari(overlay) {
+  if (typeof GLOSSARI_EXEMPLES === 'undefined') return;
+  var modal = overlay.querySelector('.glossari-modal');
+  var body  = overlay.querySelector('.glossari-body');
+  if (!modal || !body) return;
+
+  var panell = document.createElement('div');
+  panell.className = 'glossari-exemple';
+  panell.hidden = true;
+  panell.innerHTML =
+    '<button type="button" class="glossari-tornar">← Torna al glossari</button>' +
+    '<h3 class="glossari-exemple-titol"></h3>' +
+    '<p class="glossari-exemple-desc"></p>' +
+    '<label class="glossari-exemple-label" for="glossari-exemple-codi">Ordres de l\'exemple (pots canviar-les):</label>' +
+    '<textarea id="glossari-exemple-codi" class="glossari-exemple-codi" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>' +
+    '<div class="glossari-exemple-botons">' +
+      '<button type="button" class="ggb-btn ggb-btn-check glossari-executa">▶ Executa</button>' +
+      '<button type="button" class="ggb-btn glossari-original">↺ Exemple original</button>' +
+      '<span class="glossari-exemple-msg" role="status"></span>' +
+    '</div>' +
+    '<p class="glossari-exemple-prova"></p>' +
+    '<div class="glossari-exemple-applet"><div id="ggb-glossari"></div></div>';
+  body.parentNode.insertBefore(panell, body.nextSibling);
+
+  var actual = null;
+  var codi = panell.querySelector('.glossari-exemple-codi');
+  var msg  = panell.querySelector('.glossari-exemple-msg');
+
+  function mostraLlista() {
+    panell.hidden = true; body.hidden = false;
+    modal.classList.remove('amb-exemple');
+  }
+  function executa() {
+    if (!actual) return;
+    msg.textContent = 'carregant GeoGebra…'; msg.className = 'glossari-exemple-msg';
+    _ambApiGlossari(panell, function(api) {
+      var errors = _executaExempleGlossari(api, codi.value.split('\n'), actual.ex.view);
+      if (errors.length) {
+        msg.textContent = '⚠ GeoGebra no ha entès ' + (errors.length === 1 ? 'la línia ' : 'les línies ') +
+          errors.join(', ') + '. Revisa el nom de l\'ordre, els parèntesis i les comes.';
+        msg.className = 'glossari-exemple-msg glossari-exemple-error';
+      } else {
+        msg.textContent = '✓ Fet'; msg.className = 'glossari-exemple-msg glossari-exemple-ok';
+      }
+    });
+  }
+  function obre(clau, desc) {
+    var ex = GLOSSARI_EXEMPLES[clau];
+    if (!ex) return;
+    actual = { clau: clau, ex: ex };
+    panell.querySelector('.glossari-exemple-titol').textContent = clau;
+    panell.querySelector('.glossari-exemple-desc').innerHTML = desc || '';
+    panell.querySelector('.glossari-exemple-prova').innerHTML = '<strong>Prova-ho:</strong> ' + ex.prova;
+    codi.value = ex.codi.join('\n');
+    codi.rows = Math.max(2, ex.codi.length);
+    body.hidden = true; panell.hidden = false;
+    modal.classList.add('amb-exemple');
+    panell.scrollTop = 0;
+    executa();
+  }
+
+  // Les paraules del glossari, convertides en botons
+  body.querySelectorAll('.glossari-grid > code').forEach(function(c) {
+    var clau = c.textContent.trim();
+    if (!GLOSSARI_EXEMPLES[clau]) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'glossari-terme';
+    b.title = 'Mira un exemple';
+    var desc = c.nextElementSibling ? c.nextElementSibling.innerHTML : '';
+    c.parentNode.insertBefore(b, c);
+    b.appendChild(c);
+    b.addEventListener('click', function() { obre(clau, desc); });
+  });
+
+  panell.querySelector('.glossari-tornar').addEventListener('click', mostraLlista);
+  panell.querySelector('.glossari-executa').addEventListener('click', executa);
+  panell.querySelector('.glossari-original').addEventListener('click', function() {
+    if (!actual) return;
+    codi.value = actual.ex.codi.join('\n');
+    executa();
+  });
+  codi.addEventListener('keydown', function(e) {          // Ctrl+Enter també executa
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); executa(); }
+  });
+  // En tancar el glossari, la propera vegada torna a la llista
+  overlay.querySelector('#glossari-close').addEventListener('click', mostraLlista);
+
+  // Per al provador: executa tots els exemples i torna les línies que fallen
+  window.GLOSSARI_PROVA_TOTS = function(fet) {
+    var claus = Object.keys(GLOSSARI_EXEMPLES), out = {};
+    overlay.classList.add('is-open');
+    _ambApiGlossari(panell.hidden ? (obre(claus[0]), panell) : panell, function(api) {
+      claus.forEach(function(k) {
+        var ex = GLOSSARI_EXEMPLES[k];
+        var errors = _executaExempleGlossari(api, ex.codi, ex.view);
+        var indefinits = api.getAllObjectNames().filter(function(n) { return !api.isDefined(n); });
+        if (errors.length || indefinits.length) out[k] = { linies: errors, indefinits: indefinits };
+      });
+      fet({ total: claus.length, fallen: out });
+    });
+  };
+}
+
+// Crida fet(api) quan l'applet del glossari està llest (el crea el primer cop)
+function _ambApiGlossari(panell, fet) {
+  if (_glossariApi) { fet(_glossariApi); return; }
+  _glossariEspera.push(fet);
+  if (_glossariEspera.length > 1) return;
+  var crea = function() {
+    var host = panell.querySelector('#ggb-glossari');
+    var W = host.parentNode.offsetWidth || 640;
+    new GGBApplet({
+      appName: 'classic', width: W, height: 380, language: 'ca', id: 'ggb-glossari',
+      showToolBar: false, showAlgebraInput: false, showMenuBar: false,
+      enableRightClick: false, enableShiftDragZoom: true, errorDialogsActive: false,
+      showKeyboardOnFocus: false, preventFocus: true,
+      appletOnLoad: function(api) {
+        try { api.setPerspective('AG'); } catch (e) {}
+        _glossariApi = api;
+        var cues = _glossariEspera; _glossariEspera = [];
+        cues.forEach(function(f) { f(api); });
+      }
+    }, true).inject('ggb-glossari');
+  };
+  if (typeof GGBApplet !== 'undefined') { crea(); return; }
+  // Pàgines sense applets (l'índex del curs) no carreguen deployggb.js: el carreguem ara
+  var sc = document.createElement('script');
+  sc.src = 'https://www.geogebra.org/apps/deployggb.js';
+  sc.onload = crea;
+  sc.onerror = function() {
+    var m = panell.querySelector('.glossari-exemple-msg');
+    if (m) { m.textContent = '⚠ No s\'ha pogut carregar GeoGebra: comprova la connexió.'; m.className = 'glossari-exemple-msg glossari-exemple-error'; }
+  };
+  document.head.appendChild(sc);
+}
+
+// Esborra la construcció, executa les línies (en català) i torna els números
+// de les que GeoGebra no ha acceptat
+function _executaExempleGlossari(api, linies, view) {
+  try { api.newConstruction(); } catch (e) {}
+  try { api.setPerspective('AG'); api.evalCommand('ShowAxes(true)'); api.evalCommand('ShowGrid(true)'); } catch (e) {}
+  var errors = [];
+  linies.forEach(function(l, i) {
+    l = l.trim();
+    if (!l) return;
+    var ok = false;
+    try { ok = api.evalCommand(tradueixOrdreGlossari(l)); } catch (e) { ok = false; }
+    if (!ok) errors.push(i + 1);
+  });
+  // Una línia «nom=…» pot ser acceptada i desaparèixer després: per exemple, un
+  // polígon posa nom als seus costats (f, g, h…) i una línia posterior «f=…»
+  // el destrueix. Si un objecte amb nom no existeix al final, la línia és un error.
+  linies.forEach(function(l, i) {
+    var m = l.trim().match(/^([A-Za-zÀ-ÖØ-öø-ÿα-ω][A-Za-z0-9À-ÖØ-öø-ÿα-ω_']*)\s*(\([^)]*\))?\s*=/);
+    if (!m || errors.indexOf(i + 1) !== -1) return;
+    try { if (!api.exists(m[1])) errors.push(i + 1); } catch (e) {}
+  });
+  errors.sort(function(a, b) { return a - b; });
+  // Els lliscadors creats amb PuntLliscant(...) no surten a la vista gràfica si no es diu
+  (api.getAllObjectNames('numeric') || []).forEach(function(n) {
+    try { if (api.isMoveable(n)) api.setVisible(n, true); } catch (e) {}
+  });
+  _aplicaVista(api, { view: view });
+  return errors;
 }
 
 // Auto-init

@@ -98,7 +98,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F, G, H, I, J (all done)**.
+Order: **0, A, B, C, D, E, F, G, H, I, J, K, L (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -225,6 +225,22 @@ The owner looked at a chapter as a 14-year-old would. Decided through mock-ups a
 
 1. **Everything one step smaller**, at the owner's request («tot és massa gran»): the scale is now 11 · 12 · 14 · 18 · 24 · 36 px (running text 16 → 14 px); zone headers a little less padded. Measured: exactly these six sizes on the student's screen.
 2. **10 % empty on the right** from 900 px of window width up: `.curs-content { padding-right: max(3rem, 10vw) }`, applets included. Measured: 160 px of 1600 and 102 px of 1024 stay empty; at 800 px (portrait tablet) the old 3rem margin applies.
+
+
+### Block K — A worked example for every glossary word (done, 2026-11-12)
+
+Asked by the owner: every word of the glossary is a link (dashed underline) to a GeoGebra example built for that word alone, which the student can modify.
+
+- **Data**: `curs/glossari-exemples.js`, `GLOSSARI_EXEMPLES` keyed by the exact text of the glossary `<code>` (53 words, 50 examples: `Mediatriu(A,B)`, `Perpendicular(A,f)` and `Recta(A,f)` appear twice in the glossary). Each: `codi` (Catalan commands, one per line), `prova` (what to change), `view`. No figure or coordinate is taken from the chapters or the challenges.
+- **UI** (`_preparaExemplesGlossari()` in `curs/capitols.js`): the word becomes a `<button class="glossari-terme">`; the example opens inside the glossary window (wider: 900 px): editable textarea, ▶ Executa (Ctrl+Enter), ↺ Exemple original, «Prova-ho», and one `classic` applet per page with perspective `AG` (algebra view: values of areas, distances… are visible), created on first use; `deployggb.js` is loaded on demand on pages that have no applet (`curs/index.html`). Errors name the line.
+- **Live fact**: `evalCommand` does **not** accept Catalan command names (`Circumferència(P,2)` → false) although the input bar does. `GLOSSARI_ORDRES` translates them (table of spec section 6); `test-glossari.js` checks that nothing is left untranslated.
+- **Live fact**: a line can return true and its object vanish later: a polygon names its sides `f`, `g`, `h`…, so a later `f=Recta(…)` destroys it (it happened in the `Simetria(obj,f)` example). After running, every `name=…` line whose object no longer exists is reported as an error, to the student and to the tester.
+- **Tests**: `node test-glossari.js` (structure and translation; added to `tests.yml`); in the browser `GLOSSARI_PROVA_TOTS(cb)` runs every example on the live applet: **50/50, no failing line** (2026-11-12). The 50 figures were also looked at one by one.
+
+
+### Block L — Authorship and licence on every page (done, 2026-11-12)
+
+The owner sent a ZIP of `step-quiz-commons` «to copy all the licences and the authorship», explicitly **not** to join the family of courses (no «EXPLORA» selector, no certificate, no `comuns.json` entry). Findings: `LICENSE` and `LLICENCIA.md` were already identical to the commons ones (they are synced daily), and so was the README authorship block. What the sibling courses had and Ggcat lacked was the commons `footer.js`, a page footer with the authorship and both licences. It is now `footer.js` at the root, loaded by every page (landing, course index, chapters, challenges through the generator; not `curs/edit.html`): same text as commons («© 2026 David Arso Civil · INS Miquel Tarradell. Contingut: CC BY-NC-SA 4.0 · Codi: llicència MIT»), configuration written in (`ggcat-footer`, not fixed) and the course's font and type scale. It is **not** synced: if commons changes the text, copy it by hand.
 
 ---
 

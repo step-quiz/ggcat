@@ -55,6 +55,10 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
   `triangle`, `quadrilateral`…) i calcula de debò `Distance`, `ArePerpendicular` i
   `AreParallel` a partir dels punts. GitHub també ho executa a cada canvi.
 - `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
+- `node test-glossari.js` — cada paraula del glossari té el seu exemple, i la traducció de les ordres
+  al nom anglès que entén GeoGebra no deixa cap ordre sense traduir. Que GeoGebra accepti cada exemple
+  es comprova al navegador: a la consola d'una pàgina del curs, `GLOSSARI_PROVA_TOTS(console.log)`.
+  Resultat del 12/11/2026: 50 exemples, cap error.
 - **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
   correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat del 12/11/2026: 40/40.
@@ -62,6 +66,14 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 ## Com es veu una pàgina
 
 Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Les mides de lletra són sis i prou (11, 12, 14, 18, 24 i 36 px; el text normal fa 14 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`. En pantalles de 900 px d'amplada o més, el 10 % dret de la finestra queda buit.
+
+## Glossari
+
+El botó **📐 Glossari** obre la llista d'ordres i de termes. Cada paraula (amb subratllat discontinu) obre
+un exemple fet expressament per a aquella paraula (`curs/glossari-exemples.js`): les ordres en català en un
+quadre que l'alumne pot editar, **▶ Executa** (o Ctrl+Enter), **↺ Exemple original** i un applet amb la
+vista algebraica, on es veuen els valors. Una proposta «Prova-ho» diu què canviar. GeoGebra només entén
+els noms anglesos de les ordres quan s'executen des del codi, i per això `GLOSSARI_ORDRES` les tradueix.
 
 ## Editor de text (`curs/edit.html`)
 
@@ -87,6 +99,12 @@ diferent aquest web (`comuns.json`). El workflow `.github/workflows/comuns.yml` 
 cada dia (o a mà: Actions → «Fitxers comuns» → Run workflow). **No els editis aquí**: el canvi es
 perdria l'endemà. Canvia'ls a step-quiz-commons.
 
+
+`footer.js` (a l'arrel) és el **peu de pàgina amb l'autoria i la llicència** que porten totes les
+pàgines: «© 2026 David Arso Civil · INS Miquel Tarradell. Contingut: CC BY-NC-SA 4.0 · Codi: llicència
+MIT». És una còpia del `footer.js` comú de step-quiz-commons amb el mateix text, però Ggcat no el rep de
+`comuns.json` (no forma part de la família de cursos amb selector i certificat): si el text canvia allà,
+s'ha de copiar aquí a mà.
 ## Progrés de l'alumne
 
 Es guarda localment al navegador (`localStorage`, clau `geocat_progress`). Cap dada s'envia a cap servidor.

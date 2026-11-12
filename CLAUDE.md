@@ -42,4 +42,5 @@ Proves (des de l'arrel del repositori):
 ```
 node tools/generate-pages.js --comprova
 node test-validators.js
+node test-glossari.js
 ```
