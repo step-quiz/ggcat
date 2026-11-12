@@ -174,7 +174,9 @@ Generator JSON for a challenge (`num` is replaced by `id`; `simulador` gains `to
 }
 ```
 
-**Type scale.** Every text size comes from six variables declared in `curs/curs.css` and `style.css`: `--fs-xs` 12 px (small labels), `--fs-sm` 14 px (menus, sidebar, buttons), `--fs-md` 16 px (all running text, statements, glossary, code), `--fs-lg` 20 px (section and zone titles), `--fs-xl` 28 px (page title), `--fs-xxl` 40 px (landing name). Inline `code` takes the size of the text around it. No other font size may be introduced (measured on 2026-11-12: the student sees exactly these six).
+**Type scale.** Every text size comes from six variables declared in `curs/curs.css` and `style.css`: `--fs-xs` 11 px (small labels), `--fs-sm` 12 px (menus, sidebar, buttons), `--fs-md` 14 px (all running text, statements, glossary, code), `--fs-lg` 18 px (section and zone titles), `--fs-xl` 24 px (page title), `--fs-xxl` 36 px (landing name). The owner first chose 16 px for running text and then asked for 14 px (2026-11-12).
+
+**Right margin.** From 900 px of window width up (laptops, desktops, landscape tablets), the right 10 % of the window stays empty: `.curs-content { padding-right: max(3rem, 10vw) }`, and no applet reaches into it. Inline `code` takes the size of the text around it. No other font size may be introduced (measured on 2026-11-12: the student sees exactly these six).
 
 All text visible to the student is in **Catalan**. Validators are **never** in the HTML or in the JSON: they live in `curs/validators.js`.
 

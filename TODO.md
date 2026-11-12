@@ -98,7 +98,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F, G, H, I (all done)**.
+Order: **0, A, B, C, D, E, F, G, H, I, J (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -219,6 +219,12 @@ The owner looked at a chapter as a 14-year-old would. Decided through mock-ups a
 2. **Applet labels**: «👁 Exemple per mirar» (grey dashed border) or «✍️ Et toca a tu» (thick blue border), from `data-readonly`.
 3. **Type scale 12 · 14 · 16 · 20 · 28 · 40 px** (variables `--fs-*`; spec section 5). Before: 25 distinct sizes on the student's screen, from 10.4 to 38.4 px, and running text at 14 or 15.2 px depending on the paragraph. After: exactly the six sizes (measured over the landing page, the course index, chapter 3 and challenge 5B, glossary open). Running text is 16 px.
 4. **Bug fixed on the way**: Cloudflare Pages serves pages without `.html` (`/curs/repte-5b`), and `_refreshSidebar()` matched `repte-…\.html`, so the sidebar ✓ did not appear after «Comprova» on the published site until the page was reloaded. Both regexes now accept the URL with or without `.html`.
+
+
+### Block J — UI/UX, fourth round: smaller type, right margin (done, 2026-11-12)
+
+1. **Everything one step smaller**, at the owner's request («tot és massa gran»): the scale is now 11 · 12 · 14 · 18 · 24 · 36 px (running text 16 → 14 px); zone headers a little less padded. Measured: exactly these six sizes on the student's screen.
+2. **10 % empty on the right** from 900 px of window width up: `.curs-content { padding-right: max(3rem, 10vw) }`, applets included. Measured: 160 px of 1600 and 102 px of 1024 stay empty; at 800 px (portrait tablet) the old 3rem margin applies.
 
 ---
 
