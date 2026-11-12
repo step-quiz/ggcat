@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor · GeoCat</title>
+  <title>Editor · Ggcat</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="curs.css">
 
@@ -462,9 +462,9 @@
 
 <header class="curs-header">
   <button id="sidebar-toggle" aria-label="Mostra/amaga el sidebar">☰</button>
-  <a class="curs-header-logo" href="../index.html" title="Inici de GeoCat">
+  <a class="curs-header-logo" href="../index.html" title="Inici de Ggcat">
     <span class="logo-icon"></span>
-    GeoCat
+    Ggcat
   </a>
   <nav class="curs-nav">
     <a href="#" class="active">Capítols</a>
@@ -518,7 +518,7 @@
 'use strict';
 
 /* ════════════════════════════════════════════════════════════
-   GeoCat · edit.html — Editor PRO de capítols
+   Ggcat · edit.html — Editor PRO de capítols
 
    ARQUITECTURA:
    • L'string crua del HTML font és la font de veritat.
@@ -863,7 +863,7 @@ async function loadChapter(num) {
   }
   originalSource = source;
   const chapterTitle = (CAPITOLS.find(c => c.num === num) || {}).titol || '';
-  document.title = `Edita ${num}. ${chapterTitle} · GeoCat`;
+  document.title = `Edita ${num}. ${chapterTitle} · Ggcat`;
   document.querySelector('.curs-header-title').textContent = chapterTitle;
 
   // Tokenize source

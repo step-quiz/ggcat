@@ -30,7 +30,7 @@ repositori, si n'hi ha més avall, manen sobre aquestes quan diuen una altra cos
 
 ## Aquest repositori
 
-**GeoCat.** Llegeix primer:
+**Ggcat.** Llegeix primer:
 
 - [`README.md`](README.md)
 - [`TODO.md`](TODO.md)

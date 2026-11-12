@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════
-// curs/capitols.js — Dades dels capítols i helpers de UI (GeoCat)
+// curs/capitols.js — Dades dels capítols i helpers de UI (Ggcat)
 //
 // Adaptat de PyCat: canviat _LS_KEY, dades capítols/reptes,
 // logo, renderSimuladors injecta applets GeoGebra inline.
@@ -20,7 +20,7 @@
 function injectCursLogo() {
   document.querySelectorAll('.logo-icon').forEach(function(el) {
     if (!el.innerHTML.trim()) {
-      // Compàs geomètric com a logo de GeoCat
+      // Compàs geomètric com a logo de Ggcat
       el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1.4em" height="1.4em" style="vertical-align:middle"><circle cx="50" cy="22" r="10" fill="#2563eb"/><line x1="50" y1="32" x2="30" y2="82" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/><line x1="50" y1="32" x2="70" y2="82" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/><line x1="26" y1="72" x2="74" y2="72" stroke="#93c5fd" stroke-width="4" stroke-linecap="round"/></svg>';
     }
   });
@@ -279,7 +279,7 @@ function _aplicaVista(api, cfg) {
   if (!cfg.view) return;
   var r = cfg.view.trim().split(/[\s,]+/).map(Number);
   if (r.length !== 4 || r.some(function(n) { return !isFinite(n); })) {
-    console.warn('[GeoCat] data-view no vàlid:', cfg.view);
+    console.warn('[Ggcat] data-view no vàlid:', cfg.view);
     return;
   }
   var xmin = r[0], xmax = r[1], ymin = r[2], ymax = r[3];
@@ -375,7 +375,7 @@ function renderSimuladors() {
             setTimeout(function() {
               var ok = false;
               var validatorFn = cfg.validator;
-              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[GeoCat] validator error:', e); }
+              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[Ggcat] validator error:', e); }
               window.ggbApplet = prev;
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
@@ -435,7 +435,7 @@ function renderSimuladors() {
   // ══════════════════════════════════════════════════════════
 
   if (typeof GGBApplet === 'undefined') {
-    console.warn('[GeoCat] deployggb.js no s\'ha carregat: GeoGebra no és disponible');
+    console.warn('[Ggcat] deployggb.js no s\'ha carregat: GeoGebra no és disponible');
     entries.forEach(function(cfg) {
       _mostraErrorGeoGebra(document.getElementById(cfg.id).parentElement);
     });
@@ -472,7 +472,7 @@ function renderSimuladors() {
       language:            'ca',
       id:                  cfg.id,
       appletOnLoad: function(api) {
-        console.log('[GeoCat] ✓ Applet ' + cfg.id + ' carregat OK');
+        console.log('[Ggcat] ✓ Applet ' + cfg.id + ' carregat OK');
         wrapper._ggbApi = api;
         var avis = wrapper.querySelector('.ggb-error');     // l'applet ha arribat tard
         if (avis) avis.remove();
@@ -490,7 +490,7 @@ function renderSimuladors() {
         // Comandes inicials
         cfg.commands.forEach(function(cmd) {
           if (cmd) try { api.evalCommand(cmd); } catch(e) {
-            console.warn('[GeoCat] evalCommand error:', cmd, e);
+            console.warn('[Ggcat] evalCommand error:', cmd, e);
           }
         });
 
@@ -541,7 +541,7 @@ function renderSimuladors() {
     try {
       new GGBApplet(ggbParams, true).inject(cfg.id);
     } catch (e) {
-      console.warn('[GeoCat] GeoGebra no s\'ha pogut injectar:', e);
+      console.warn('[Ggcat] GeoGebra no s\'ha pogut injectar:', e);
     }
     setTimeout(function() { _mostraErrorGeoGebra(wrapper); }, _GGB_ESPERA_MS);
   });

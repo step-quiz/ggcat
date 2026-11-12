@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════
-   style.css — GeoCat (landing)
+   style.css — Ggcat (landing)
    Conté només el que index.html necessita: variables de tema,
    topbar i botó de canvi de tema. La resta d'estils del curs
    viuen a curs/curs.css.
@@ -58,6 +58,10 @@ body {
   flex-shrink: 0;
 }
 
+a.logo, a.logo:visited, a.logo:hover {
+  color: inherit;
+  text-decoration: none;
+}
 .logo {
   color: inherit;
   text-decoration: none;
@@ -82,18 +86,20 @@ body {
 }
 .topbar-nav-link {
   font-family: var(--mono);
-  font-size: 0.68rem;
-  padding: 4px 10px;
-  border-radius: 5px;
+  font-size: 0.72rem;            /* la mateixa mida que el menú de les pàgines del curs */
+  padding: 2px 10px;
+  border: 2px solid transparent;
+  border-radius: 6px;
   text-decoration: none;
   color: var(--muted);
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.topbar-nav-link:hover  { background: var(--accent); color: #fff; }
-.topbar-nav-link.active { background: var(--accent); color: #fff; }
+.topbar-nav-link:hover  { background: rgba(127,127,127,0.12); color: var(--text); }
+/* Opció seleccionada: només una vora gruixuda, sense fons (negra en el tema clar) */
+.topbar-nav-link.active { background: none; color: var(--text); border-color: currentColor; }
 body.light .topbar-nav-link        { color: var(--muted); }
-body.light .topbar-nav-link:hover  { background: var(--accent); color: #fff; }
-body.light .topbar-nav-link.active { background: var(--accent); color: #fff; }
+body.light .topbar-nav-link:hover  { background: rgba(0,0,0,0.05); color: var(--text); }
+body.light .topbar-nav-link.active { background: none; color: #000; border-color: #000; }
 
 @media (max-width: 500px) {
   .topbar-nav-link { font-size: 0.6rem; padding: 3px 7px; }

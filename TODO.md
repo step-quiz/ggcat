@@ -1,6 +1,6 @@
-# GeoCat — TODO
+# Ggcat — TODO
 
-> **Audience:** an AI assistant that continues the development of GeoCat from a cold start.
+> **Audience:** an AI assistant that continues the development of Ggcat from a cold start.
 > Read this file completely before touching anything. Talk to the owner in Catalan (see `CLAUDE.md`).
 
 Companion documents:
@@ -19,6 +19,7 @@ Never break these:
 
 - **Zero install.** Static HTML, CSS and JavaScript; no build step, no server. A page works by opening it in a browser with an internet connection (GeoGebra is loaded from `geogebra.org`; there is no offline mode and no Service Worker).
 - **Catalan** for every text the student sees.
+- **Name.** The site is called **Ggcat** since 2026-11-12 (it was GeoCat; the owner keeps the two colours on the landing page: «Gg» black, «cat» blue). The `localStorage` keys keep their old prefix (`geocat_progress`, `geocat_ultim_repte`, `geocat-theme`): renaming them would wipe every student's progress.
 - **Local progress only**: `localStorage['geocat_progress']` (plus two conveniences: `geocat_ultim_repte`, the last challenge visited, and `geocat-theme`). No accounts, no server, no student data in the repository.
 - **Automatic feedback** ✓ / ✗ through the «Comprova» button.
 - **Validators live only in `curs/validators.js`** (map `VALIDATORS`, keyed by `goalId`). Never inline in HTML or JSON.
@@ -97,7 +98,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F, G (all done)**.
+Order: **0, A, B, C, D, E, F, G, H (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -196,10 +197,18 @@ Asked by the owner after the grid was complete. All in `curs/capitols.js`, `curs
 1. **No jump to the input bar at load.** The `classic` applet focused «Entrada…» and the browser scrolled down to it (5B opened 294 px down). `preventFocus: true` alone does not stop it; `_evitaFocusInicial()` removes any focus an applet takes before the student's first click, key, wheel or touch, and scrolls back to the top. Measured: `scrollY` 0 and focus on `<body>` after load on 1A, 5B and 9B.
 2. **Collapsible themes** in the challenge sidebar (`<details>`), closed except the current theme.
 3. **«Reptes» opens the last challenge visited** in that browser (`geocat_ultim_repte`), from every header and the landing page.
-4. **The GeoCat logo links to the landing page** everywhere.
+4. **The Ggcat logo links to the landing page** everywhere.
 5. **Glossary** 25 % wider (540 → 675 px) and its content font 25 % larger (title unchanged).
 6. **1A has no «← Capítols» link**; «Repte següent» stays on the right (`margin-left: auto`).
 7. **Nicer arrows** on previous/next: drawn by CSS (a disc with a cut-out arrow that slides on hover); the labels lost their `←`/`→`, in the challenges' JSON and in the chapters.
+
+
+### Block H — UI/UX, second round (done, 2026-11-12)
+
+1. **Header font sizes made equal, to the larger one**: the landing page's menu links were 0.68rem (10.9 px) and the course pages' 0.72rem (11.5 px); both are 0.72rem now, and so is the «Glossari» button. The logo was already 14.4 px on both.
+2. **Selected menu option**: no background any more, only a thick pure-black border (`2px solid #000`); unselected links carry a transparent 2 px border so nothing moves. Hover is a faint grey background.
+3. **Renamed GeoCat → Ggcat** in every page, script, style and document of this repository (not in the shared files `curs/progress.js`, `LICENSE`, `LLICENCIA.md`; not in the `localStorage` keys).
+4. **Landing page trimmed**: the four feature pills, the second sentence of the subtitle and the «0 Instal·lació» stat are gone; the subtitle reads «Aprèn geometria dinàmica amb GeoGebra i en català.»
 
 ---
 
