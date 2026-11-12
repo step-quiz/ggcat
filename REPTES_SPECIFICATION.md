@@ -104,6 +104,8 @@ Rules:
 - The **«Reptes»** link in every page header (chapters, challenges, course index, landing page) points to `repte-1a.html` in the HTML; at load it is rewritten to the **last challenge visited in that browser** (`localStorage['geocat_ultim_repte']` = cell id, saved by `renderReptesSidebar`; rewritten by `_enllacaUltimRepte()` in `curs/capitols.js` and by an inline script in `index.html`).
 - The **Ggcat logo** of every header is a link to the landing page (`../index.html` from `curs/`).
 - **Sidebar** (`renderReptesSidebar(currentId)`): one collapsible block per theme that has at least one existing cell (`<details class="sidebar-tema">`, summary `<t> · <theme title>`), with one entry per cell: `<t><L> · <title>`, preceded by ✓ when completed. Every theme is closed except the theme of the current cell; themes the student opened stay open when the sidebar is redrawn after «Comprova».
+- **Zones of a page** (since 2026-11-12, owner's choice among three mock-ups: large collapsible panels). At load, `_organitzaZones()` in `curs/capitols.js` regroups the page into `<details class="zona zona-…">` panels, each with a thick coloured band: a challenge becomes 🎯 **Objectiu** (the text under `<h2>Objectiu</h2>`), ✏️ **Exercici** (what follows `<h2>Widget</h2>`: the sentence and the applet) and 💡 **Pista** (the generator's `<details class="pista">`, closed); a chapter becomes 📘 **Teoria**, ✏️ **Exercici** (`.chapter-exercise`) and 📌 **Resum** (the section whose `<h2>` is «Resum»). Every zone starts open except the Pista. The HTML of the pages does not change; the `<h2>` Objectiu / Widget / Exercici / Resum are removed at load.
+- **Applet labels**: every applet carries a label above it and a matching border: read-only applets (`data-readonly="true"`) «👁 Exemple per mirar — pots moure'n els punts, però aquí no s'hi escriuen ordres» with a grey dashed border; the others «✍️ Et toca a tu — fes servir les eines o escriu ordres a «Entrada…»» with a thick blue border (`_etiquetaApplet()`). Points of a read-only applet can be dragged (checked on the live applet).
 - **Course index** (`curs/index.html`): a table with one row per theme and three columns A, B, C; a cell that does not exist yet is rendered empty and not linked.
 
 ### 4.4 Student progress and the legacy keys
@@ -171,6 +173,8 @@ Generator JSON for a challenge (`num` is replaced by `id`; `simulador` gains `to
   ] } ]
 }
 ```
+
+**Type scale.** Every text size comes from six variables declared in `curs/curs.css` and `style.css`: `--fs-xs` 12 px (small labels), `--fs-sm` 14 px (menus, sidebar, buttons), `--fs-md` 16 px (all running text, statements, glossary, code), `--fs-lg` 20 px (section and zone titles), `--fs-xl` 28 px (page title), `--fs-xxl` 40 px (landing name). Inline `code` takes the size of the text around it. No other font size may be introduced (measured on 2026-11-12: the student sees exactly these six).
 
 All text visible to the student is in **Catalan**. Validators are **never** in the HTML or in the JSON: they live in `curs/validators.js`.
 

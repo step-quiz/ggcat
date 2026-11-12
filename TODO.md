@@ -98,7 +98,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F, G, H (all done)**.
+Order: **0, A, B, C, D, E, F, G, H, I (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -210,11 +210,22 @@ Asked by the owner after the grid was complete. All in `curs/capitols.js`, `curs
 3. **Renamed GeoCat → Ggcat** in every page, script, style and document of this repository (not in the shared files `curs/progress.js`, `LICENSE`, `LLICENCIA.md`; not in the `localStorage` keys).
 4. **Landing page trimmed**: the four feature pills, the second sentence of the subtitle and the «0 Instal·lació» stat are gone; the subtitle reads «Aprèn geometria dinàmica amb GeoGebra i en català.»
 
+
+### Block I — UI/UX, third round: zones, applet labels, type scale (done, 2026-11-12)
+
+The owner looked at a chapter as a 14-year-old would. Decided through mock-ups and a multiple-choice dialog:
+
+1. **Zones**: large collapsible panels with a coloured band (chosen over boxed sections and tabs): chapters Teoria / Exercici / Resum, challenges Objectiu / Exercici / Pista; all open except the Pista. Built at load by `_organitzaZones()` in `curs/capitols.js`, so neither the hand-written chapters nor the generator's output changed (the generator now emits the hint as `<details class="pista">`, `PROJECTE.pista = 'classe'`). Inside a zone an applet is as wide as the zone.
+2. **Applet labels**: «👁 Exemple per mirar» (grey dashed border) or «✍️ Et toca a tu» (thick blue border), from `data-readonly`.
+3. **Type scale 12 · 14 · 16 · 20 · 28 · 40 px** (variables `--fs-*`; spec section 5). Before: 25 distinct sizes on the student's screen, from 10.4 to 38.4 px, and running text at 14 or 15.2 px depending on the paragraph. After: exactly the six sizes (measured over the landing page, the course index, chapter 3 and challenge 5B, glossary open). Running text is 16 px.
+4. **Bug fixed on the way**: Cloudflare Pages serves pages without `.html` (`/curs/repte-5b`), and `_refreshSidebar()` matched `repte-…\.html`, so the sidebar ✓ did not appear after «Comprova» on the published site until the page was reloaded. Both regexes now accept the URL with or without `.html`.
+
 ---
 
 ## 5. Notes for the assistant
 
-- **Still unchecked** (no block owns it): the chapters' prose beyond their GeoGebra commands; how the pages look at phone width with an applet inside.
+- **Still unchecked** (no block owns it): the chapters' prose beyond their GeoGebra commands (e.g. chapter 3 says «GeoGebra mostra l'equació … a la vista algebraica», but the algebra view is hidden in every applet).
+- **Open — phone:** on a phone (Playwright «iPhone 13»), GeoGebra's virtual keyboard opens by itself when a challenge loads and covers half of the screen. It already happened before blocks G–I. `showKeyboardOnFocus` (boolean or the string `'false'`) does not stop it; not investigated further.
 
 - **Tolerances** are in spec 7.2. In short: 0.15 for coordinates and lengths, 0.2 for images and irrational centres, 0.3 for areas, 1.5° for angles; `GV.eps` (0.001) is too strict for student constructions.
 - **Never test labels chosen by the student**: iterate with `getAllObjectNames(type)`. Labels of pre-built objects can be used and excluded.

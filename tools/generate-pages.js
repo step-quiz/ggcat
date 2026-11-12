@@ -52,7 +52,7 @@ const PROJECTE = {
   insigniaAmbClasse: false,     // true: class="badge--facil"; false: style="background…"
   // Pista dels reptes: 'classe' (<details class="pista">), 'estil-div' o 'estil-p'
   // (estils en línia, amb el text dins d'un <div> o d'un <p>).
-  pista: 'estil-div',
+  pista: 'classe',      // <details class="pista">: capitols.js el converteix en la zona «Pista»
   // aria-label de <nav class="chapter-nav">: un text, null (cap) o page => text
   navAria: page => (page.type === 'capitol' ? 'Navegació entre capítols' : null),
   capcalera: page => `<header class="curs-header">

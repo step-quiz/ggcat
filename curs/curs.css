@@ -4,6 +4,13 @@
 ════════════════════════════════════════════════════════ */
 
 :root {
+  /* Escala de lletra (12 · 14 · 16 · 20 · 28 · 40 px). Cap altra mida per al text. */
+  --fs-xs:  0.75rem;   /* 12 px: etiquetes petites (insígnies, rètols de secció) */
+  --fs-sm:  0.875rem;  /* 14 px: interfície (menús, barra lateral, botons) */
+  --fs-md:  1rem;      /* 16 px: text (paràgrafs, enunciats, glossari, codi) */
+  --fs-lg:  1.25rem;   /* 20 px: títols de secció i de zona */
+  --fs-xl:  1.75rem;   /* 28 px: títol de la pàgina */
+  --fs-xxl: 2.5rem;    /* 40 px: nom a la portada */
   --mono: 'Space Mono','Courier New',monospace;
   --bg:      #ffffff;
   --surface: #f5f5f5;
@@ -19,7 +26,7 @@ body {
   font-family: var(--mono);
   background: var(--bg);
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.7;
 }
 
@@ -46,7 +53,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
   color: inherit;
   text-decoration: none;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   display: flex;
   align-items: center;
   gap: 7px;
@@ -71,7 +78,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
   margin-left: 16px;
 }
 .curs-nav a {
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   padding: 2px 10px;
   border: 2px solid transparent;
   border-radius: 6px;
@@ -108,7 +115,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
 }
 
 .sidebar-section-title {
-  font-size: 0.65rem;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -124,7 +131,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.7rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--muted);
   padding: 7px 16px;
@@ -154,7 +161,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
 .sidebar-item a {
   display: block;
   padding: 5px 16px;
-  font-size: 0.75rem;
+  font-size: var(--fs-sm);
   color: var(--text);
   text-decoration: none;
   transition: background 0.12s;
@@ -186,7 +193,7 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
 .chapter-header { margin-bottom: 2rem; }
 .chapter-badge {
   display: inline-block;
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   padding: 3px 10px;
   border-radius: 999px;
   background: rgba(37,99,235,0.1);
@@ -196,14 +203,14 @@ a.curs-header-logo:visited, a.curs-header-logo:hover { color: inherit; text-deco
   margin-bottom: 8px;
 }
 .chapter-header h1 {
-  font-size: 1.6rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   line-height: 1.3;
 }
 
 .chapter-section { margin-bottom: 2rem; }
 .chapter-section h2 {
-  font-size: 1rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   margin-bottom: 0.7rem;
   color: var(--text);
@@ -215,7 +222,7 @@ code {
   background: rgba(37,99,235,0.06);
   padding: 1px 5px;
   border-radius: 3px;
-  font-size: 0.88em;
+  font-size: 1em;   /* la lletra ja és monoespaiada: el codi fa la mida del text del voltant */
 }
 
 pre.code-example {
@@ -223,11 +230,97 @@ pre.code-example {
   color: #e0e0e0;
   padding: 12px 16px;
   border-radius: 8px;
-  font-size: 0.82rem;
+  font-size: var(--fs-md);
   line-height: 1.7;
   overflow-x: auto;
   margin: 0.8rem 0;
 }
+
+/* ── Zones: Teoria · Exercici · Resum (capítols) i Objectiu · Exercici · Pista (reptes) ──
+   Cada zona és un desplegable gran amb una franja de color (capitols.js, _organitzaZones). */
+.zona {
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.zona > .zona-cap {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.zona > .zona-cap::-webkit-details-marker { display: none; }
+.zona > .zona-cap::before {
+  content: '';
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border-right: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+.zona[open] > .zona-cap::before { transform: rotate(45deg); }
+.zona[open] > .zona-cap { border-bottom: 4px solid currentColor; }
+.zona > .zona-cap:focus-visible { outline: 3px solid #000; outline-offset: -3px; }
+.zona-ajuda {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.75;
+}
+.zona-cos { padding: 1rem 1.5rem 0.5rem; }
+.zona-cos > *:not(.geogebra-wrap):not(.chapter-section) { max-width: 800px; }
+/* Dins una zona, l'applet ocupa l'amplada de la zona (fora, s'estén fins a la vora dreta de la pàgina) */
+.zona .geogebra-wrap { margin: 0.5rem 0 1rem; width: 100%; }
+.chapter-section > .zona { max-width: none; }
+.zona-cos > .chapter-section:last-child,
+.zona-cos > p:last-child { margin-bottom: 0.8rem; }
+
+.zona-teoria   { border-color: #93c5fd; }
+.zona-teoria   > .zona-cap { background: #eff6ff; color: #1e3a8a; }
+.zona-objectiu { border-color: #93c5fd; }
+.zona-objectiu > .zona-cap { background: #eff6ff; color: #1e3a8a; }
+.zona-exercici { border-color: #f59e0b; background: #fffbeb; }
+.zona-exercici > .zona-cap { background: #fef3c7; color: #92400e; }
+.zona-resum    { border-color: #86efac; }
+.zona-resum    > .zona-cap { background: #f0fdf4; color: #14532d; }
+.zona-pista    { border-color: #86efac; }
+.zona-pista    > .zona-cap { background: #f0fdf4; color: #14532d; }
+
+@media (max-width: 640px) {
+  .zona > .zona-cap { padding: 0.75rem 1rem; gap: 0.5rem; }
+  .zona-ajuda { display: none; }
+  .zona-cos { padding: 0.75rem 1rem 0.25rem; }
+}
+
+/* ── Etiqueta de cada applet: per mirar o per treballar-hi (capitols.js, _etiquetaApplet) ── */
+.ggb-etiqueta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: var(--fs-sm);
+  padding: 0.35rem 0.8rem;
+  border-radius: 8px 8px 0 0;
+  margin-top: 0.5rem;
+}
+.ggb-etiqueta-detall { font-weight: 400; }
+.ggb-etiqueta-mira     { background: #e5e7eb; color: #374151; }
+.ggb-etiqueta-treballa { background: var(--accent); color: #fff; }
+.ggb-mira     > .ggb-etiqueta + div { border: 2px dashed #9ca3af !important; border-top-left-radius: 0 !important; }
+.ggb-treballa > .ggb-etiqueta + div { border: 3px solid var(--accent) !important; border-top-left-radius: 0 !important; }
 
 /* Navegació entre capítols */
 .chapter-nav {
@@ -241,7 +334,7 @@ pre.code-example {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.78rem;
+  font-size: var(--fs-sm);
   color: var(--accent);
   text-decoration: none;
 }
@@ -303,7 +396,7 @@ pre.code-example {
 }
 
 .ggb-badge {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
   background: #e5e7eb;
@@ -316,7 +409,7 @@ pre.code-example {
 
 .ggb-btn {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   padding: 0.25rem 0.65rem;
   border-radius: 6px;
@@ -342,7 +435,7 @@ pre.code-example {
 
 /* Feedback de validació */
 .simulador-feedback {
-  font-size: 0.82rem;
+  font-size: var(--fs-md);
   padding: 0;
   margin-top: 6px;
   font-weight: 700;
@@ -363,7 +456,7 @@ pre.code-example {
   text-align: center;
   color: #991b1b;
   background: #fef2f2;
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
 }
 .ggb-error p { margin: 0; }
 .ggb-error .ggb-btn { margin-top: 0.6rem; }
@@ -391,11 +484,11 @@ pre.code-example {
   gap: 0.5rem;
   color: var(--accent, #2563eb);
   font-family: var(--mono);
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   font-weight: 700;
 }
 .ggb-reload-icon {
-  font-size: 2.4rem;
+  font-size: var(--fs-xxl);
   line-height: 1;
 }
 
@@ -409,7 +502,7 @@ pre.code-example {
   padding: 3rem 2rem 2rem;
 }
 .curs-index-hero h1 {
-  font-size: 1.8rem;
+  font-size: var(--fs-xl);
   font-weight: 800;
   margin-bottom: 0.8rem;
 }
@@ -417,7 +510,7 @@ pre.code-example {
   color: var(--muted);
   max-width: 500px;
   margin: 0 auto;
-  font-size: 0.85rem;
+  font-size: var(--fs-md);
 }
 
 .capitols-list {
@@ -445,11 +538,11 @@ pre.code-example {
 }
 .capitol-card-num {
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: var(--fs-lg);
   color: var(--accent);
   min-width: 28px;
 }
-.capitol-card-titol { font-size: 0.85rem; font-weight: 700; }
+.capitol-card-titol { font-size: var(--fs-md); font-weight: 700; }
 .capitol-card-arrow { margin-left: auto; color: var(--muted); }
 
 /* Índex del curs: graella de reptes (una fila per tema, columnes A, B, C) */
@@ -459,7 +552,7 @@ pre.code-example {
   padding: 0 1rem 3rem;
 }
 .reptes-graella-titol {
-  font-size: 1rem;
+  font-size: var(--fs-lg);
   margin: 0 0 0.8rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--border);
@@ -471,10 +564,10 @@ pre.code-example {
   border-collapse: separate;
   border-spacing: 6px;
   table-layout: fixed;
-  font-size: 0.75rem;
+  font-size: var(--fs-sm);
 }
 .reptes-graella thead th {
-  font-size: 0.68rem;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--muted);
   text-align: left;
@@ -527,7 +620,7 @@ pre.code-example {
   display: none;
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: var(--fs-lg);
   cursor: pointer;
   color: var(--text);
 }
@@ -568,7 +661,7 @@ pre.code-example {
 
 .glossari-curs-btn {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-sm);
   letter-spacing: 0.8px;
   color: var(--muted);
   background: none;
@@ -617,7 +710,7 @@ pre.code-example {
 }
 .glossari-title {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--fs-md);
   font-weight: 700;
   color: #1a1a1a;
   letter-spacing: 0.5px;
@@ -630,7 +723,7 @@ pre.code-example {
   width: 28px;
   height: 28px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   line-height: 1;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -646,7 +739,7 @@ pre.code-example {
 .glossari-section:last-child { margin-bottom: 0; }
 .glossari-section h3 {
   font-family: var(--mono);
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -656,7 +749,7 @@ pre.code-example {
 
 .glossari-hint {
   font-family: var(--mono);
-  font-size: 0.8125rem;
+  font-size: var(--fs-sm);
   color: #4b5563;
   margin: 0 0 8px;
   line-height: 1.5;
@@ -668,16 +761,16 @@ pre.code-example {
   grid-template-columns: auto 1fr;
   gap: 3px 14px;
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--fs-md);
   line-height: 1.7;
 }
 .glossari-grid > code { color: #2563eb; white-space: nowrap; background: none; padding: 0; }
 .glossari-grid > span { color: #4b5563; }
-.glossari-grid > span code { color: #2563eb; background: none; padding: 0; font-size: 0.95em; }
+.glossari-grid > span code { color: #2563eb; background: none; padding: 0; font-size: 1em; }
 
 .glossari-example {
   font-family: var(--mono);
-  font-size: 0.825rem;
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: #1a1a1a;
   background: #f5f5f5;
@@ -691,7 +784,7 @@ pre.code-example {
 
 .glossari-rules .glossari-rule {
   font-family: var(--mono);
-  font-size: 0.825rem;
+  font-size: var(--fs-md);
   color: #1a1a1a;
   line-height: 1.8;
 }
@@ -717,8 +810,8 @@ pre.code-example {
     touch-action: pan-y;
     padding: 14px 16px 24px;
   }
-  .glossari-grid { font-size: 0.79rem; gap: 2px 10px; }
-  .glossari-example { font-size: 0.775rem; padding: 6px 10px; }
+  .glossari-grid { font-size: var(--fs-sm); gap: 2px 10px; }
+  .glossari-example { font-size: var(--fs-sm); padding: 6px 10px; }
 }
 
 @media (max-width: 700px) {
@@ -743,7 +836,7 @@ body.light .sidebar-check { color: #16a34a; }
 
 .repte-badge {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: var(--fs-xs);
   padding: 2px 10px;
   border-radius: 999px;
   font-weight: 700;
@@ -760,7 +853,7 @@ details.pista {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px 14px;
-  font-size: 0.82rem;
+  font-size: var(--fs-md);
 }
 details.pista summary {
   cursor: pointer;
