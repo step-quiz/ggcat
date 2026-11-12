@@ -73,7 +73,7 @@ var REPTES_DATA = [
   { id: '2c',  tema: 2,  nivell: 'c', titol: 'Duplicació del quadrat',        arxiu: 'repte-2c.html',  goalId: 'repte-2c',  dificultat: 'dificil' },
   { id: '3a',  tema: 3,  nivell: 'a', titol: 'Circumferències concèntriques', arxiu: 'repte-3a.html',  goalId: 'repte-3a',  dificultat: 'facil' },
   { id: '3b',  tema: 3,  nivell: 'b', titol: 'Circumferència per dos punts',  arxiu: 'repte-3b.html',  goalId: 'repte-3b',  dificultat: 'mitja' },
-  { id: '3c',  tema: 3,  nivell: 'c', titol: 'Cercle circumscrit',            arxiu: 'repte-3c.html',  goalId: 'repte-3c',  dificultat: 'dificil' },
+  { id: '3c',  tema: 3,  nivell: 'c', titol: 'Circumferència circumscrita',   arxiu: 'repte-3c.html',  goalId: 'repte-3c',  dificultat: 'dificil' },
   { id: '4a',  tema: 4,  nivell: 'a', titol: 'Pentàgon regular',              arxiu: 'repte-4a.html',  goalId: 'repte-4a',  dificultat: 'facil' },
   { id: '4b',  tema: 4,  nivell: 'b', titol: 'Hexàgon inscrit',               arxiu: 'repte-4b.html',  goalId: 'repte-4b',  dificultat: 'mitja' },
   { id: '4c',  tema: 4,  nivell: 'c', titol: 'Octàgon dins d\'un quadrat',    arxiu: 'repte-4c.html',  goalId: 'repte-4c',  dificultat: 'dificil' },
@@ -82,7 +82,7 @@ var REPTES_DATA = [
   { id: '5c',  tema: 5,  nivell: 'c', titol: 'Tales i la hipotenusa',         arxiu: 'repte-5c.html',  goalId: 'repte-5c',  dificultat: 'dificil' },
   { id: '6a',  tema: 6,  nivell: 'a', titol: 'Bisectriu d\'un angle',         arxiu: 'repte-6a.html',  goalId: 'repte-6a',  dificultat: 'facil' },
   { id: '6b',  tema: 6,  nivell: 'b', titol: 'L\'incentre',                   arxiu: 'repte-6b.html',  goalId: 'repte-6b',  dificultat: 'mitja' },
-  { id: '6c',  tema: 6,  nivell: 'c', titol: 'Cercle inscrit',                arxiu: 'repte-6c.html',  goalId: 'repte-6c',  dificultat: 'dificil' },
+  { id: '6c',  tema: 6,  nivell: 'c', titol: 'Circumferència inscrita',       arxiu: 'repte-6c.html',  goalId: 'repte-6c',  dificultat: 'dificil' },
   { id: '7a',  tema: 7,  nivell: 'a', titol: 'Perpendicular i peu',           arxiu: 'repte-7a.html',  goalId: 'repte-7a',  dificultat: 'facil' },
   { id: '7b',  tema: 7,  nivell: 'b', titol: 'Paral·leles a distància 2',     arxiu: 'repte-7b.html',  goalId: 'repte-7b',  dificultat: 'mitja' },
   { id: '7c',  tema: 7,  nivell: 'c', titol: 'L\'ortocentre',                 arxiu: 'repte-7c.html',  goalId: 'repte-7c',  dificultat: 'dificil' },
@@ -235,8 +235,46 @@ var _ggbWidgetCount = 0;
 // qualsevol focus que agafi un applet es treu i la pàgina torna a dalt.
 var _alumneHaInteractuat = false;
 ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function(ev) {
-  document.addEventListener(ev, function() { _alumneHaInteractuat = true; }, true);
+  document.addEventListener(ev, function(e) { if (e.isTrusted) _alumneHaInteractuat = true; }, true);
 });
+
+// Teclat virtual de GeoGebra (tauletes i pantalles tàctils). En carregar, GeoGebra
+// obre sol el seu teclat i tapa un terç de la pantalla; cap paràmetre de l'applet no
+// ho evita. Si l'alumne encara no ha tocat res, es tanca amb el botó ✕ del mateix
+// teclat (GeoGebra respon als esdeveniments de punter i de ratolí, no a click()).
+// Quan l'alumne toca «Entrada…», el teclat torna a sortir.
+function _tancaTeclatGeoGebra(sempre) {
+  if (_alumneHaInteractuat && !sempre) return;
+  document.querySelectorAll('.TabbedKeyBoard').forEach(function(k) {
+    var r = k.getBoundingClientRect(), cs = getComputedStyle(k);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || r.height === 0 || r.top >= innerHeight) return;
+    var b = k.querySelector('.closeTabbedKeyboardButton');
+    if (!b) return;
+    ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click'].forEach(function(t) {
+      var Ctor = (t.indexOf('pointer') === 0 && typeof PointerEvent === 'function') ? PointerEvent : MouseEvent;
+      b.dispatchEvent(new Ctor(t, { bubbles: true, cancelable: true, view: window }));
+    });
+  });
+}
+function _vigilaTeclatGeoGebra(sempre) {
+  [300, 1000, 2000, 3500].forEach(function(ms) { setTimeout(function() { _tancaTeclatGeoGebra(sempre); }, ms); });
+}
+
+// Noms dels objectes. Amb només la vista gràfica (sense la columna d'àlgebra),
+// GeoGebra no mostra el nom dels punts, i els enunciats parlen d'A, B, C, f…
+// Es fan visibles els noms dels punts, rectes, semirectes, circumferències i
+// vectors: els que ja hi són en començar i els que crea l'alumne. Els costats dels
+// polígons (segments) es deixen sense nom, perquè no s'omplin de lletres.
+var _TIPUS_AMB_NOM = ['point', 'line', 'ray', 'circle', 'vector', 'ellipse', 'parabola', 'hyperbola', 'conic'];
+function _posaNom(api, nom) {
+  try { if (_TIPUS_AMB_NOM.indexOf(api.getObjectType(nom)) !== -1 && api.getVisible(nom)) api.setLabelVisible(nom, true); } catch (e) {}
+}
+function _posaNoms(api, id) {
+  (api.getAllObjectNames() || []).forEach(function(n) { _posaNom(api, n); });
+  var fn = id.replace(/-/g, '_') + '_nouObjecte';
+  window[fn] = function(nom) { _posaNom(api, nom); };
+  try { api.registerAddListener(fn); } catch (e) {}
+}
 
 function _evitaFocusInicial(wrapper) {
   wrapper.addEventListener('focusin', function(e) {
@@ -329,6 +367,44 @@ function _creaZona(tipus, nodes, oberta) {
   return d;
 }
 
+// Reptes: quan l'alumne baixa fins a l'applet i la zona «Objectiu» ja no es veu,
+// l'objectiu continua visible en una franja fixa sota la capçalera, de l'amplada de
+// la zona Exercici. Als portàtils de 768 px d'alçada, l'applet i «Comprova» no hi
+// caben amb l'objectiu a sobre; així l'alumne no l'ha de tornar a buscar.
+function _objectiuEnganxat(zObj, zEx) {
+  if (typeof IntersectionObserver === 'undefined') return;
+  var p = zObj.querySelector('.zona-cos p');
+  if (!p) return;
+  var bar = document.createElement('div');
+  bar.className = 'objectiu-fix';
+  bar.hidden = true;
+  bar.setAttribute('aria-hidden', 'true');      // és una repetició: els lectors de pantalla ja tenen la zona
+  bar.innerHTML = '<span class="objectiu-fix-cap">🎯 Objectiu</span><span class="objectiu-fix-text"></span>';
+  bar.querySelector('.objectiu-fix-text').innerHTML = p.innerHTML;
+  document.body.appendChild(bar);
+  var veigObjectiu = true, veigExercici = false;
+  function col() {
+    var r = zEx.getBoundingClientRect();
+    bar.style.left = r.left + 'px';
+    bar.style.width = r.width + 'px';
+  }
+  function actualitza() {
+    var mostra = !veigObjectiu && veigExercici;
+    if (mostra) col();
+    bar.hidden = !mostra;
+  }
+  var obs = new IntersectionObserver(function(entrades) {
+    entrades.forEach(function(e) {
+      if (e.target === zObj) veigObjectiu = e.isIntersecting || e.boundingClientRect.top > 0;
+      else veigExercici = e.isIntersecting;
+    });
+    actualitza();
+  }, { rootMargin: '-38px 0px 0px 0px' });    // la capçalera (38 px) tapa la part de dalt
+  obs.observe(zObj);
+  obs.observe(zEx);
+  window.addEventListener('resize', function() { if (!bar.hidden) col(); });
+}
+
 function _treuTitol(seccio) {
   var h2 = seccio.querySelector(':scope > h2');
   if (h2) h2.remove();
@@ -351,8 +427,9 @@ function _organitzaZones() {
         dins.push(n);
       }
     });
-    if (objectiu.length) _creaZona('objectiu', objectiu, true);
-    if (exercici.length) _creaZona('exercici', exercici, true);
+    var zObj = objectiu.length ? _creaZona('objectiu', objectiu, true) : null;
+    var zEx  = exercici.length ? _creaZona('exercici', exercici, true) : null;
+    if (zObj && zEx) _objectiuEnganxat(zObj, zEx);
     var pista = main.querySelector('details.pista');
     if (pista) {
       var cosPista = Array.prototype.slice.call(pista.childNodes).filter(function(n) { return n.tagName !== 'SUMMARY'; });
@@ -425,6 +502,8 @@ function renderSimuladors() {
       app:       div.getAttribute('data-app') || '',
       tools:     div.getAttribute('data-tools') || '',
       view:      div.getAttribute('data-view') || '',
+      // data-algebra="true": es veu la columna d'àlgebra (valors, coordenades, equacions)
+      algebra:   div.getAttribute('data-algebra') === 'true',
       height:    div.getAttribute('data-height') || '420',
       validator: validatorFn
     });
@@ -469,9 +548,12 @@ function renderSimuladors() {
             window.ggbApplet = api;
             var GVref = (typeof GV !== 'undefined') ? GV : {};
             setTimeout(function() {
-              var ok = false;
+              // El validador torna true (correcte) o un text que diu què falta.
+              var res = false;
               var validatorFn = cfg.validator;
-              try { ok = !!validatorFn(api, GVref); } catch(e) { console.warn('[Ggcat] validator error:', e); }
+              try { res = validatorFn(api, GVref); } catch(e) { console.warn('[Ggcat] validator error:', e); }
+              var ok = res === true;
+              var motiu = (!ok && typeof res === 'string' && res) ? res : 'Revisa la construcció.';
               window.ggbApplet = prev;
               badge.textContent = ok ? '✓ Correcte' : '✗ Incorrecte';
               badge.className   = 'ggb-badge ' + (ok ? 'ggb-ok' : 'ggb-ko');
@@ -482,7 +564,7 @@ function renderSimuladors() {
                   saveGoalCompleted(cfg.goalId);
                   _refreshSidebar();
                 } else {
-                  if (fb) { fb.className = 'simulador-feedback fb-ko'; fb.textContent = '✗ Encara no és correcte. Revisa la construcció.'; }
+                  if (fb) { fb.className = 'simulador-feedback fb-ko'; fb.textContent = '✗ Encara no és correcte. ' + motiu; }
                 }
               }
             }, 100);
@@ -500,6 +582,7 @@ function renderSimuladors() {
             if (lbl) try { api.setFixed(lbl, true, true); api.setColor(lbl, 60, 100, 220); } catch(e) {}
           });
           _aplicaVista(api, cfg);
+          _posaNoms(api, cfg.id);
           var badge = tb.querySelector('.ggb-badge');
           if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
         });
@@ -542,6 +625,10 @@ function renderSimuladors() {
 
   entries.forEach(function(cfg) {
     H = Math.round((parseInt(cfg.height, 10) || 420) * 1.1);
+    // Als portàtils de poca alçada (1366×768, 1280×720), l'applet i «Comprova» han
+    // de cabre sencers a la pantalla: com a molt l'alçada de la finestra − 230 px
+    // (capçalera, etiqueta, barra de «Comprova», objectiu enganxat), i mai menys de 340.
+    if (!cfg.readonly) H = Math.max(340, Math.min(H, window.innerHeight - 230));
 
     var wrapper = document.getElementById(cfg.id).parentElement;
     // Llegim l'amplada real del contenidor en el moment d'injectar,
@@ -577,17 +664,25 @@ function renderSimuladors() {
         // Excepció: als exercicis (goalId) amb l'app graphing. Allà la barra d'entrada
         // i les eines són dins el panell de l'esquerra, i amagar-lo deixaria l'alumne
         // sense manera de construir res.
-        if (!(cfg.app === 'graphing' && cfg.goalId && !cfg.readonly)) api.setPerspective('G');
+        // data-algebra: columna d'àlgebra a l'esquerra (A) i vista gràfica (G).
+        if (cfg.algebra) api.setPerspective('AG');
+        else if (!(cfg.app === 'graphing' && cfg.goalId && !cfg.readonly)) api.setPerspective('G');
 
         // Eixos i graella sempre visibles
         api.evalCommand('ShowAxes(true)');
         api.evalCommand('ShowGrid(true)');
 
-        // Comandes inicials
+        // Comandes inicials. Les que GeoGebra rebutja queden a wrapper._ordresRebutjades,
+        // que el mode debug comprova (curs/debug-tester.js, «Demostracions dels capítols»).
+        wrapper._ordresRebutjades = [];
         cfg.commands.forEach(function(cmd) {
-          if (cmd) try { api.evalCommand(cmd); } catch(e) {
+          if (!cmd) return;
+          var ok;
+          try { ok = api.evalCommand(cmd); } catch(e) {
+            ok = false;
             console.warn('[Ggcat] evalCommand error:', cmd, e);
           }
+          if (ok === false) wrapper._ordresRebutjades.push(cmd);
         });
 
         // Objectes fixos
@@ -600,6 +695,12 @@ function renderSimuladors() {
 
         // Vista inicial (data-view)
         _aplicaVista(api, cfg);
+
+        // Noms dels objectes, els inicials i els que crearà l'alumne
+        _posaNoms(api, cfg.id);
+
+        // Tauleta: el teclat de GeoGebra no s'ha d'obrir sol en carregar
+        _vigilaTeclatGeoGebra();
 
         // Badge
         var badge = wrapper.querySelector('.ggb-badge');
@@ -644,32 +745,6 @@ function renderSimuladors() {
 }
 
 
-
-// ── Listener de resultats (MANTINGUT per compatibilitat amb
-//    pàgines que encara puguin usar iframes) ──────────────────
-
-window.addEventListener('message', function(e) {
-  var sameOrigin = e.origin === window.location.origin
-                || e.origin === 'null'
-                || e.origin === '';
-  if (!sameOrigin || !e.data) return;
-
-  if (e.data.type === 'geocat-result') {
-    var goalId  = e.data.goalId;
-    var success = e.data.success;
-    var fb = goalId
-      ? document.querySelector('.simulador-feedback[data-goal-id="' + CSS.escape(goalId) + '"]')
-      : null;
-
-    if (success) {
-      if (fb) { fb.className = 'simulador-feedback fb-ok'; fb.textContent = '✓ Correcte! Construcció validada.'; }
-      saveGoalCompleted(goalId);
-      _refreshSidebar();
-    } else {
-      if (fb) { fb.className = 'simulador-feedback fb-ko'; fb.textContent = '✗ Encara no és correcte. Revisa la construcció.'; }
-    }
-  }
-});
 
 // ── Sidebar toggle (hamburger mòbil) ─────────────────────
 
@@ -731,15 +806,22 @@ function initGlossariCurs() {
     : '<div class="glossari-modal"><p>Glossari no disponible.</p></div>';
   document.body.appendChild(overlay);
 
-  btn.addEventListener('click', function() { overlay.classList.toggle('is-open'); });
-  overlay.querySelector('#glossari-close').addEventListener('click', function() {
+  // Totes les maneres de tancar-lo (✕, clic fora, Esc, el mateix botó) avisen amb
+  // l'esdeveniment «glossari-tancat»: la propera vegada s'obre a la llista.
+  function tanca() {
+    if (!overlay.classList.contains('is-open')) return;
     overlay.classList.remove('is-open');
+    overlay.dispatchEvent(new Event('glossari-tancat'));
+  }
+  btn.addEventListener('click', function() {
+    if (overlay.classList.contains('is-open')) tanca(); else overlay.classList.add('is-open');
   });
+  overlay.querySelector('#glossari-close').addEventListener('click', tanca);
   overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) overlay.classList.remove('is-open');
+    if (e.target === overlay) tanca();
   });
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') overlay.classList.remove('is-open');
+    if (e.key === 'Escape') tanca();
   });
 
   _preparaExemplesGlossari(overlay);
@@ -840,8 +922,8 @@ function _preparaExemplesGlossari(overlay) {
   codi.addEventListener('keydown', function(e) {          // Ctrl+Enter també executa
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); executa(); }
   });
-  // En tancar el glossari, la propera vegada torna a la llista
-  overlay.querySelector('#glossari-close').addEventListener('click', mostraLlista);
+  // En tancar el glossari (de qualsevol manera), la propera vegada torna a la llista
+  overlay.addEventListener('glossari-tancat', mostraLlista);
 
   // Per al provador: executa tots els exemples i torna les línies que fallen
   window.GLOSSARI_PROVA_TOTS = function(fet) {
@@ -911,6 +993,7 @@ function _executaExempleGlossari(api, linies, view) {
   linies.forEach(function(l, i) {
     var m = l.trim().match(/^([A-Za-zÀ-ÖØ-öø-ÿα-ω][A-Za-z0-9À-ÖØ-öø-ÿα-ω_']*)\s*(\([^)]*\))?\s*=/);
     if (!m || errors.indexOf(i + 1) !== -1) return;
+    if (/^[xyz]$/.test(m[1])) return;          // x=3, y=2x+1: equacions, no noms
     try { if (!api.exists(m[1])) errors.push(i + 1); } catch (e) {}
   });
   errors.sort(function(a, b) { return a - b; });
@@ -919,6 +1002,7 @@ function _executaExempleGlossari(api, linies, view) {
     try { if (api.isMoveable(n)) api.setVisible(n, true); } catch (e) {}
   });
   _aplicaVista(api, { view: view });
+  _vigilaTeclatGeoGebra(true);
   return errors;
 }
 

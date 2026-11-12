@@ -41,6 +41,8 @@ Object.keys(GLOSSARI_EXEMPLES).forEach(k => test('«' + k + '» és una paraula 
 
 // ── 2. Camps de cada exemple ──
 const ANGLES = new Set(GLOSSARI_ORDRES.map(p => p[1]).concat(['ShowAxes', 'ShowGrid']));
+// Funcions matemàtiques de GeoGebra, que es diuen igual en català i en anglès
+const MATES = new Set(['sin', 'cos', 'tan', 'sqrt', 'exp', 'ln', 'log', 'abs']);
 Object.entries(GLOSSARI_EXEMPLES).forEach(([k, ex]) => {
   test(k + ': ordres', Array.isArray(ex.codi) && ex.codi.length > 0 && ex.codi.every(l => typeof l === 'string' && l.trim()));
   test(k + ': prova-ho', typeof ex.prova === 'string' && ex.prova.length > 10);
@@ -54,7 +56,7 @@ Object.entries(GLOSSARI_EXEMPLES).forEach(([k, ex]) => {
     const t = tradueixOrdreGlossari(l);
     for (const m of t.matchAll(/([A-Za-zÀ-ÖØ-öø-ÿ·_][A-Za-z0-9À-ÖØ-öø-ÿ·_]*)\s*\(/g)) {
       const nom = m[1];
-      test(k + ': «' + nom + '(» es pot executar', ANGLES.has(nom) || funcions.has(nom) || nom === 'x' || nom === 'y', l);
+      test(k + ': «' + nom + '(» es pot executar', ANGLES.has(nom) || funcions.has(nom) || MATES.has(nom) || nom === 'x' || nom === 'y', l);
     }
     test(k + ': sense EixX/EixY sense traduir', !/Eix[XY]/.test(t), l);
   });

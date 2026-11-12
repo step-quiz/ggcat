@@ -9,7 +9,7 @@ The challenges form a **grid of 10 themes × 3 levels = 30 challenges**. This re
 Authority and precedence:
 
 1. **This file is the single source of truth for the challenge plan.** `GeoCat-30Reptes.docx` is the original prose draft of the grid; it is kept in the repository for reference only and is **obsolete**. Where they differ, this file wins (the known differences are listed in Appendix B).
-2. For anything **already implemented**, the repository rule applies: if code and document disagree, the document is the one to fix. All thirty cells are published: the A and B columns since 2026-11-11, the C column since 2026-11-12. Four of them (2A, 3A, 5B, 7A) continue legacy challenges: their text, data and validator body are reproduced here verbatim from the code.
+2. For anything **already implemented**, the repository rule applies: if code and document disagree, the document is the one to fix. All thirty cells are published: the A and B columns since 2026-11-11, the C column since 2026-11-12. Four of them (2A, 3A, 5B, 7A) continue legacy challenges: their text, data and pass condition are those of the legacy challenge (3A with the tolerance `GV.tol` since 2026-11-12).
 3. Every cell is now implemented, so for every cell this file must match the code. Section 7.4 states what has been verified.
 
 Owner decisions recorded on 2026-11-10:
@@ -31,10 +31,10 @@ Owner decisions recorded on 2026-11-10:
 |---|---|---|---|---|
 | 1 | El triangle | `1a` Triangle equilàter ✅ | `1b` Triangle 3-4-5 ✅ | `1c` Triangle medial ✅ |
 | 2 | El quadrat | `2a` Quadrat a l'origen ✅ | `2b` Quadrat per vèrtexs oposats ✅ | `2c` Duplicació del quadrat ✅ |
-| 3 | La circumferència | `3a` Circumferències concèntriques ✅ | `3b` Circumferència per dos punts ✅ | `3c` Cercle circumscrit ✅ |
+| 3 | La circumferència | `3a` Circumferències concèntriques ✅ | `3b` Circumferència per dos punts ✅ | `3c` Circumferència circumscrita ✅ |
 | 4 | Polígons regulars | `4a` Pentàgon regular ✅ | `4b` Hexàgon inscrit ✅ | `4c` Octàgon dins d'un quadrat ✅ |
 | 5 | Mediatriu i circumcentre | `5a` Mediatriu d'un segment ✅ | `5b` El circumcentre ✅ | `5c` Tales i la hipotenusa ✅ |
-| 6 | Bisectriu i incentre | `6a` Bisectriu d'un angle ✅ | `6b` L'incentre ✅ | `6c` Cercle inscrit ✅ |
+| 6 | Bisectriu i incentre | `6a` Bisectriu d'un angle ✅ | `6b` L'incentre ✅ | `6c` Circumferència inscrita ✅ |
 | 7 | Perpendiculars i paral·leles | `7a` Perpendicular i peu ✅ | `7b` Paral·leles a distància 2 ✅ | `7c` L'ortocentre ✅ |
 | 8 | Transformacions | `8a` Translació d'un triangle ✅ | `8b` Rotació de 60° ✅ | `8c` Reflexió amb lliscament ✅ |
 | 9 | Funcions i corbes | `9a` Arrels de la paràbola ✅ | `9b` Paràbola i recta ✅ | `9c` Sinus i cosinus ✅ |
@@ -255,13 +255,15 @@ The palette guides the student; it is not a security boundary. The student can a
 Validators are entries of the `VALIDATORS` map in `curs/validators.js`, keyed by `goalId`:
 
 ```js
-'repte-3b': function(api, GV) { /* return true (pass) or false (fail) */ },
+'repte-3b': function(api, GV) { /* return true (pass) or a reason (fail) */ },
 ```
 
 - `api` is the live applet; `GV` is the helper library of `curs/geovalidator.js`. While a validator runs, `window.ggbApplet === api`, so `GV` helpers read the right applet.
 - Validate the **final state** only. Never rely on labels the student chose: iterate with `getAllObjectNames(type)` and test properties. Labels of pre-built objects (`data-commands`) may be used and should be excluded when looking for the student's objects.
-- A validator must return `false` on the initial state (only `data-commands` executed).
-- Validators do not modify the construction. The single exception is `repte-10a`, which moves a slider and restores it.
+- A validator returns `true` when the construction is correct. Otherwise it returns a **reason**: one short Catalan sentence that says what is missing or wrong, which the page shows after «✗ Encara no és correcte.» (`curs/capitols.js`). Anything other than `true` counts as a fail, so a validator that still returned `false` would fail with the generic «Revisa la construcció.».
+- Check the conditions in the order the student builds the construction (first the given points, then the auxiliary objects, then the final object), so that the reason is the next thing to do. A reason never gives away a value the student is asked to find (a circumcentre, an intersection, an area to discover). Changing the order of the checks never changes the pass condition, which is their conjunction.
+- A validator must return a reason on the initial state (only `data-commands` executed).
+- Validators do not modify the construction. The exceptions are `repte-10a` and `cap-10-ex`, which move sliders and put them back (`cap-10-ex` through `GV.sliderMoves`).
 
 ### 7.2 Tolerances
 
@@ -275,11 +277,11 @@ Validators are entries of the `VALIDATORS` map in `curs/validators.js`, keyed by
 | Point on a line | `GV.pointOnLine`: `Distance(P,l)` < 0.01 (`IsOnPath` does not exist) |
 | `ArePerpendicular`, `AreParallel` | GeoGebra's own; compare the result with `=== 1` |
 
-`GV.eps` (0.001) and the existing strict helpers (`GV.coordsEqual`, `GV.distanceEqual`, …) are too tight for constructions made by clicking; do not use them in new validators.
+The strict legacy helpers (`GV.eps` = 0.001, `GV.coordsEqual`, `GV.distanceEqual`, `GV.isOnPath`, `GV.circlePassesThroughPoints`…) were too tight for constructions made by clicking, or wrong (`isOnPath` relied on a command that does not exist). They were removed on 2026-11-12, when no validator used them any more.
 
-### 7.3 `GV` extension used by the validators
+### 7.3 The `GV` helpers (`curs/geovalidator.js`)
 
-These members of the `GV` object are **in `curs/geovalidator.js` since 2026-11-10** (after `circlePassesThroughPoints`); the code below is a copy, and the file is the authority. The reference validators of section 9 depend on them, and so do the published chapter validators.
+`curs/geovalidator.js` holds only the tolerant helpers that the validators use (the strict legacy ones were removed on 2026-11-12, section 7.2). The code below is a copy of the whole file; the file is the authority.
 
 Use them instead of the raw API for three things, each of which was a bug in the published validators (`TODO.md`, check 0.4):
 
@@ -288,20 +290,36 @@ Use them instead of the raw API for three things, each of which was a bug in the
 - **Angle measures**: `GV.angleIs(a, deg)`, unless the validator lists the accepted orientations itself (as 9C does).
 
 ```js
-  // ── Tolerant helpers for the grid challenges (repte-<theme><level>) ──
-  // All of them read the applet through the global ggbApplet, like the
-  // helpers above. `exclude` is an optional array of labels to skip
-  // (normally the pre-built, fixed objects of the challenge).
-  //
-  // Three facts about the real applet, checked on 2026-11-10, shape them:
-  //   · getObjectType / getAllObjectNames use the SPECIFIC type: a circle is
-  //     'circle' (not 'conic'); Polygon(A,B,C) is 'triangle', a 4-gon
-  //     'quadrilateral', then 'pentagon', 'hexagon', and only the rest (and
-  //     the regular Polygon(A,B,n)) are 'polygon'.  → GV.names()
-  //   · IsOnPath is not a GeoGebra command, and getValue() of an unknown
-  //     expression returns 0, not NaN.  → GV.pointOnLine()
-  //   · Angles are oriented: the same three points clicked clockwise give
-  //     the reflex angle (2π − α).  → GV.angleIs()
+// ════════════════════════════════════════════════════════
+// geovalidator.js — Helpers for the validators (curs/validators.js)
+//
+// Global object: GV
+// Every helper reads the applet through the global ggbApplet: while a
+// validator runs, capitols.js sets window.ggbApplet to that exercise's
+// applet (the «✓ Comprova» button, which the debug tester also clicks).
+//
+// Rules for robust validation:
+//   1. Never check specific labels the student may not have used.
+//   2. Iterate over getAllObjectNames(type) and test properties.
+//   3. Compare numbers with a tolerance (GV.tol by default).
+//   4. Validate only the final state, never construction steps.
+//   5. Avoid trivial validators (e.g. "does any line exist?").
+//
+// `exclude` is an optional array of labels to skip (normally the pre-built,
+// fixed objects of the exercise).
+//
+// Three facts about the real applet, checked on 2026-11-10, shape the helpers:
+//   · getObjectType / getAllObjectNames use the SPECIFIC type: a circle is
+//     'circle' (not 'conic'); Polygon(A,B,C) is 'triangle', a 4-gon
+//     'quadrilateral', then 'pentagon', 'hexagon', and only the rest (and
+//     the regular Polygon(A,B,n)) are 'polygon'.  → GV.names()
+//   · IsOnPath is not a GeoGebra command, and getValue() of an unknown
+//     expression returns 0, not NaN.  → GV.pointOnLine()
+//   · Angles are oriented: the same three points clicked clockwise give
+//     the reflex angle (2π − α).  → GV.angleIs()
+// ════════════════════════════════════════════════════════
+
+const GV = {
 
   /** Default tolerance for coordinates, lengths and radii. */
   tol: 0.15,
@@ -311,6 +329,8 @@ Use them instead of the raw API for three things, each of which was a bug in the
     polygon: ['triangle', 'quadrilateral', 'pentagon', 'hexagon', 'polygon'],
     conic:   ['circle', 'ellipse', 'hyperbola', 'parabola', 'conic']
   },
+
+  // ── Object lists ──────────────────────────────────────
 
   /** Labels of every object of a type ([] instead of null/undefined).
    *  'polygon' and 'conic' are families: they gather every specific type. */
@@ -335,6 +355,38 @@ Use them instead of the raw API for three things, each of which was a bug in the
     }
     return out;
   },
+
+  /** True if some object of the specific type `type` satisfies fn(label).
+   *  An exception in fn counts as false. */
+  anyOfType: function(type, fn) {
+    var names = ggbApplet.getAllObjectNames(type) || [];
+    for (var i = 0; i < names.length; i++) {
+      try { if (fn(names[i])) return true; } catch (_) {}
+    }
+    return false;
+  },
+
+  /** Labels of the objects of the specific type `type` that satisfy fn(label). */
+  filterOfType: function(type, fn) {
+    var names = ggbApplet.getAllObjectNames(type) || [];
+    var result = [];
+    for (var i = 0; i < names.length; i++) {
+      try { if (fn(names[i])) result.push(names[i]); } catch (_) {}
+    }
+    return result;
+  },
+
+  /** True if some object has a type that contains `fragment`
+   *  (e.g. 'locus'); scans every object, not a getAllObjectNames filter. */
+  hasObjectOfType: function(fragment) {
+    return GV.allNames().some(function(nm) {
+      try {
+        return (ggbApplet.getObjectType(nm) || '').toLowerCase().indexOf(fragment) !== -1;
+      } catch (e) { return false; }
+    });
+  },
+
+  // ── Points, segments, polygons, circles ───────────────
 
   /** True if some point (not in `exclude`) lies within `tol` of (x, y). */
   hasPointAt: function(x, y, tol, exclude) {
@@ -410,6 +462,8 @@ Use them instead of the raw API for three things, each of which was a bug in the
     });
   },
 
+  // ── Angles, incidence, perpendicular bisectors ────────
+
   /** Value of an angle object in degrees, 0…360 (getValue returns radians). */
   degrees: function(angleLabel) {
     return ggbApplet.getValue(angleLabel) * 180 / Math.PI;
@@ -445,27 +499,77 @@ Use them instead of the raw API for three things, each of which was a bug in the
     } catch (e) { return false; }
   },
 
-  /** Labels of the sliders: numeric objects the student can move. */
-  sliders: function() {
-    return GV.names('numeric').filter(function(n) {
+  // ── Sliders ───────────────────────────────────────────
+
+  /** Labels of the sliders: numbers the student can move. With
+   *  `withAngles`, angle sliders too (an angle measured with Angle(A,B,C)
+   *  depends on its points and cannot be moved). */
+  sliders: function(withAngles) {
+    var cands = GV.names('numeric').concat(withAngles ? GV.names('angle') : []);
+    return cands.filter(function(n) {
       try { return ggbApplet.isMoveable(n); } catch (e) { return false; }
     });
   },
 
-  /** True if some object has a type that contains `fragment`
-   *  (e.g. 'locus'); scans every object, not a getAllObjectNames filter. */
-  hasObjectOfType: function(fragment) {
-    return GV.allNames().some(function(nm) {
-      try {
-        return (ggbApplet.getObjectType(nm) || '').toLowerCase().indexOf(fragment) !== -1;
-      } catch (e) { return false; }
+  /** What a polygon or a conic looks like, as a list to compare with
+   *  GV.sameState(): for a polygon, its area and its first two vertices
+   *  (so that a translation or a rotation shows); for a conic, its centre
+   *  and radius. Both add the object's value as text (the equation of a
+   *  conic), when the applet gives it. */
+  figureState: function(nm) {
+    var isPolygon = GV.FAMILIES.polygon.indexOf(ggbApplet.getObjectType(nm)) !== -1;
+    var exprs = isPolygon
+      ? [nm, 'x(Vertex(' + nm + ',1))', 'y(Vertex(' + nm + ',1))',
+             'x(Vertex(' + nm + ',2))', 'y(Vertex(' + nm + ',2))']
+      : ['x(Center(' + nm + '))', 'y(Center(' + nm + '))', 'Radius(' + nm + ')'];
+    var state = exprs.map(function(e) {
+      try { return ggbApplet.getValue(e); } catch (er) { return NaN; }
+    });
+    try { state.push(String(ggbApplet.getValueString(nm))); } catch (er) {}
+    return state;
+  },
+
+  /** True if two GV.figureState() lists are equal (numbers within 1e-6;
+   *  two undefined numbers are equal). */
+  sameState: function(a, b) {
+    if (a.length !== b.length) return false;
+    return a.every(function(v, i) {
+      var w = b[i];
+      if (typeof v === 'number' && typeof w === 'number') {
+        if (!isFinite(v) || !isFinite(w)) return !isFinite(v) && !isFinite(w);
+        return Math.abs(v - w) < 1e-6;
+      }
+      return v === w;
     });
   },
+
+  /** True if moving slider `s` changes at least one of `figures` (labels
+   *  of polygons or conics). It tries a few values around the current one
+   *  (setValue keeps a slider inside its interval, so one direction may not
+   *  move it) and always puts the slider back where it was. This is the
+   *  only helper that changes the construction. */
+  sliderMoves: function(s, figures) {
+    var original = ggbApplet.getValue(s);
+    var before = figures.map(GV.figureState);
+    var moved = false;
+    try {
+      [1, -1, 0.5, -0.5, 0.1, -0.1].some(function(d) {
+        ggbApplet.setValue(s, original + d);
+        if (Math.abs(ggbApplet.getValue(s) - original) < 1e-9) return false;   // stuck at an end
+        moved = figures.some(function(f, i) { return !GV.sameState(before[i], GV.figureState(f)); });
+        return moved;
+      });
+    } catch (e) {}
+    try { ggbApplet.setValue(s, original); } catch (e) {}
+    return moved;
+  },
+
+};
 ```
 
 ### 7.4 What has been verified, and what has not
 
-Every reference validator of section 9 is now published and passes the end-to-end tester on the live applet (40/40 on 2026-11-12: 30 cells and 10 chapter exercises); the only change it forced was moving 9C from `graphing` to `classic` (see 9C). On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0): three API assumptions turned out to be false (the ❌ rows below). They are now corrected in the published validators (end-to-end: 20/20), in the `GV` extension of section 7.3 and in the reference validators of section 9, which go through `GV.names`, `GV.circles`, `GV.pointOnLine` and `GV.isPerpBisector`.
+Every reference validator of section 9 is now published and passes the end-to-end tester on the live applet (50/50 on 2026-11-12, after the reasons of section 7.1 were added: 30 cells, 10 chapter exercises and the demo check of the 10 chapters); the only change it forced was moving 9C from `graphing` to `classic` (see 9C). On 2026-11-10 the *published* validators were (end-to-end tester, `TODO.md` block 0): three API assumptions turned out to be false (the ❌ rows below). They are now corrected in the published validators (end-to-end: 20/20), in the `GV` extension of section 7.3 and in the reference validators of section 9, which go through `GV.names`, `GV.circles`, `GV.pointOnLine` and `GV.isPerpBisector`.
 
 Two kinds of checks were done earlier on 2026-11-10:
 
@@ -492,6 +596,9 @@ API usage by evidence level:
 | `getObjectType` of a locus contains `locus` | ✅ confirmed on the live applet (`Locus(M,Q)` → `locus`) | 10b, 10c |
 | `setValue(slider, v)` updates dependent objects synchronously | ✅ confirmed on the live applet (`Circle(D,k)`: radius 1 → 3 right after `setValue('k',3)`) | 10a |
 | `Polygon(A, B, n)` is accepted as regular polygon by `evalCommand` | used by the e2e tester (`cap-7-ex`) | test solutions |
+| `getValue('x(Vertex(p,i))')` on a polygon, `getValueString(conic)` (the equation as text) | ✅ confirmed on the live applet (2026-11-12): a triangle moved by a slider changes its first two vertices, an ellipse its equation | `cap-10-ex` (`GV.figureState`) |
+| `isMoveable(angle)` for an angle slider (`Slider(0°, 360°, 1°)`); false for an angle measured with `Angle` | ✅ confirmed on the live applet (2026-11-12) | `cap-10-ex` (`GV.sliders(true)`) |
+| `exists(label)` | ✅ used by the demo check of the debug tester, which reported a missing object in a deliberately broken copy of a chapter (2026-11-12) | chapter demos |
 
 "Used by published validators" means the expression is in code that is live on the site; the proof that it works is the end-to-end tester (`curs/index.html?debug=1`), which must be run in a browser.
 
@@ -501,7 +608,7 @@ No row is unverified any more. What remains unproven is each reference validator
 
 A cell is not done until all three exist and pass:
 
-1. **`test-validators.js`** (Node, mock API): three scenes per cell — correct solution → `true`, initial scene (`INITIAL`) → `false`, wrong solution → `false` — plus other correct routes and typical errors where useful. Scenes use the real object types. Extend the mock if a new validator needs an expression it lacks.
+1. **`test-validators.js`** (Node, mock API): three scenes per cell — correct solution → `true`, initial scene (`INITIAL`) → a reason, wrong solution → a reason — plus other correct routes and typical errors where useful. A reason must be a Catalan sentence that starts with a capital letter and ends with a full stop (`esMotiu`); the test prints every reason, which is the way to proofread them all. Scenes use the real object types. Extend the mock if a new validator needs an expression it lacks.
 2. **`curs/debug-tester.js`** (browser, real applet): one `TEST_SOLUTIONS['repte-<id>']` entry with `correct` and `wrong` command lists. Section 9 provides them for every new cell; they use English command names, which work regardless of the applet language. All 30 pass on the live applet (2026-11-12).
 3. **`node tools/generate-pages.js --comprova`**: the page is reproduced exactly by its JSON.
 
@@ -536,15 +643,19 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a point at (2, 2√3) or (2, −2√3) (2√3 ≈ 3.464);
 - at least 3 segments of length 4.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-1a': function(api, GV) {
   var h = Math.sqrt(12);                       // 2√3 ≈ 3.464
-  if (GV.names('polygon').length < 1) return false;
-  return GV.hasPointAt(0, 0) && GV.hasPointAt(4, 0) &&
-         (GV.hasPointAt(2, h) || GV.hasPointAt(2, -h)) &&
-         GV.countSegments(4) >= 3;
+  if (!GV.hasPointAt(0, 0)) return 'Falta un vèrtex a l\'origen, (0, 0).';
+  if (!GV.hasPointAt(4, 0)) return 'Falta un vèrtex a (4, 0).';
+  if (!GV.hasPointAt(2, h) && !GV.hasPointAt(2, -h))
+    return 'Cal un tercer vèrtex a distància 4 de (0, 0) i de (4, 0): l\'eina «Polígon regular» el posa sola.';
+  if (GV.names('polygon').length < 1)
+    return 'Tens els tres vèrtexs, però falta el triangle: uneix-los amb l\'eina «Polígon».';
+  if (GV.countSegments(4) < 3) return 'Els tres costats del triangle han de fer 4.';
+  return true;
 },
 ```
 
@@ -582,13 +693,17 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points at (0, 0), (4, 0) and (0, 3);
 - at least one segment of length 5.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-1b': function(api, GV) {
-  if (GV.names('polygon').length < 1) return false;
-  return GV.hasPointAt(0, 0) && GV.hasPointAt(4, 0) && GV.hasPointAt(0, 3) &&
-         GV.countSegments(5) >= 1;
+  if (!GV.hasPointAt(0, 0)) return 'Falta el vèrtex A = (0, 0).';
+  if (!GV.hasPointAt(4, 0)) return 'Falta el vèrtex B = (4, 0).';
+  if (!GV.hasPointAt(0, 3)) return 'Falta el vèrtex C = (0, 3).';
+  if (GV.names('polygon').length < 1)
+    return 'Tens els tres vèrtexs, però falta el triangle: uneix-los amb l\'eina «Polígon».';
+  if (GV.countSegments(5) < 1) return 'Cap costat no fa 5: la hipotenusa és el costat que va de B a C.';
+  return true;
 },
 ```
 
@@ -637,15 +752,20 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than A, B, C) at the three midpoints (4, 0), (5, 3) and (1, 3);
 - a polygon other than `t` with area 6 ± 0.3 (Area(t) = 24).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-1c': function(api, GV) {
   var given = ['A', 'B', 'C'];
-  return GV.hasPointAt(4, 0, GV.tol, given) &&
-         GV.hasPointAt(5, 3, GV.tol, given) &&
-         GV.hasPointAt(1, 3, GV.tol, given) &&
-         GV.polygonsWithArea(6, 0.3, ['t']).length >= 1;
+  var mitjos = [[4, 0], [5, 3], [1, 3]].filter(function(p) {
+    return GV.hasPointAt(p[0], p[1], GV.tol, given);
+  }).length;
+  if (mitjos === 0)
+    return 'Falten els punts mitjos dels tres costats: fes-los amb l\'eina «Punt mitjà o centre».';
+  if (mitjos < 3) return 'Has marcat ' + mitjos + ' dels 3 punts mitjos dels costats.';
+  if (GV.polygonsWithArea(6, 0.3, ['t']).length < 1)
+    return 'Tens els tres punts mitjos; falta el triangle medial: uneix-los amb l\'eina «Polígon».';
+  return true;
 },
 ```
 
@@ -672,7 +792,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 2A — `repte-2a` · Quadrat a l'origen
 
 - **Level:** A — Fàcil (`dificultat: 'facil'`)
-- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-5` with the same text, data and validator body
+- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-5` with the same text, data and pass condition
 - **Origin:** published challenge `repte-5`
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** *(empty)*
@@ -688,27 +808,16 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points at (0, 0) and (3, 0);
 - at least 4 segments of length 3.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`) — the body of the legacy validator, unchanged:
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-2a': function(api, GV) {
-  var tol  = 0.15;
-  var pts  = api.getAllObjectNames('point')   || [];
-  var segs = api.getAllObjectNames('segment') || [];
-  var hasOrigin = pts.some(function(p) {
-    return Math.abs(api.getXcoord(p)) < tol && Math.abs(api.getYcoord(p)) < tol;
-  });
-  var has30 = pts.some(function(p) {
-    return Math.abs(api.getXcoord(p) - 3) < tol && Math.abs(api.getYcoord(p)) < tol;
-  });
-  var sides3 = 0;
-  segs.forEach(function(s) {
-    try {
-      var len = api.getValue('Length(' + s + ')');
-      if (isFinite(len) && Math.abs(len - 3) < tol) sides3++;
-    } catch(e) {}
-  });
-  return hasOrigin && has30 && sides3 >= 4;
+  if (!GV.hasPointAt(0, 0)) return 'Falta un vèrtex a l\'origen, (0, 0).';
+  if (!GV.hasPointAt(3, 0)) return 'Falta un vèrtex a (3, 0).';
+  var costats = GV.countSegments(3);
+  if (costats === 0) return 'Falta el quadrat: fes-lo amb l\'eina «Polígon regular», amb 4 vèrtexs.';
+  if (costats < 4) return 'Un quadrat té 4 costats de longitud 3, i ara n\'hi ha ' + costats + '.';
+  return true;
 },
 ```
 
@@ -743,14 +852,19 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than A, C) at (5, 0) and (0, 5): two opposite vertices determine the square;
 - a polygon with area 25 ± 0.3.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-2b': function(api, GV) {
   var given = ['A', 'C'];
-  return GV.hasPointAt(5, 0, GV.tol, given) &&
-         GV.hasPointAt(0, 5, GV.tol, given) &&
-         GV.polygonsWithArea(25, 0.3).length >= 1;
+  var vertexs = [[5, 0], [0, 5]].filter(function(p) {
+    return GV.hasPointAt(p[0], p[1], GV.tol, given);
+  }).length;
+  if (vertexs === 0) return 'Falten els altres dos vèrtexs del quadrat.';
+  if (vertexs === 1) return 'Has trobat un dels dos vèrtexs que falten; falta l\'altre.';
+  if (GV.polygonsWithArea(25, 0.3).length < 1)
+    return 'Tens els quatre vèrtexs; falta el quadrat: uneix-los amb l\'eina «Polígon», un darrere l\'altre.';
+  return true;
 },
 ```
 
@@ -796,12 +910,17 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a polygon other than `q` with area 8 ± 0.3;
 - at least 4 segments of length 2√2 ≈ 2.828 (a quadrilateral with four sides s and area s² is a square).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-2c': function(api, GV) {
-  return GV.polygonsWithArea(8, 0.3, ['q']).length >= 1 &&
-         GV.countSegments(Math.sqrt(8)) >= 4;
+  var nous = GV.names('polygon').filter(function(p) { return p !== 'q'; });
+  if (nous.length === 0) return 'Falta el quadrat nou, d\'àrea 8.';
+  if (GV.polygonsWithArea(8, 0.3, ['q']).length < 1)
+    return 'El polígon nou ha de tenir àrea 8, el doble que ABCD.';
+  if (GV.countSegments(Math.sqrt(8)) < 4)
+    return 'El polígon nou té àrea 8, però no és un quadrat: els quatre costats han de ser iguals.';
+  return true;
 },
 ```
 
@@ -828,7 +947,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 3A — `repte-3a` · Circumferències concèntriques
 
 - **Level:** A — Fàcil (`dificultat: 'facil'`)
-- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-3` with the same text, data and validator body
+- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-3` with the same text, data and pass condition
 - **Origin:** published challenge `repte-3`
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** *(empty)*
@@ -845,26 +964,24 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a circle centred at the origin with radius 2;
 - a circle centred at the origin with radius 4.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`) — the body of the legacy validator, unchanged:
+Both with the tolerance `GV.tol` since 2026-11-12. The legacy body allowed 0.02 for the centre and 0.01 for the radius (`GV.eps * 20`, `GV.eps * 10`), far tighter than any other cell.
+
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-3a': function(api, GV) {
-  var found2 = false, found4 = false;
-  var n = api.getObjectNumber ? api.getObjectNumber() : 0;
-  for (var i = 0; i < n; i++) {
-    var nm = api.getObjectName(i);
-    if (!nm) continue;
-    try {
-      var cx = api.getValue('x(Center(' + nm + '))');
-      var cy = api.getValue('y(Center(' + nm + '))');
-      var r  = api.getValue('Radius('   + nm + ')');
-      if (!isFinite(cx) || !isFinite(cy) || !isFinite(r) || r <= 0) continue;
-      if (Math.abs(cx) > GV.eps * 20 || Math.abs(cy) > GV.eps * 20) continue;
-      if (Math.abs(r - 2) < GV.eps * 10) found2 = true;
-      if (Math.abs(r - 4) < GV.eps * 10) found4 = true;
-    } catch(e) {}
-  }
-  return found2 && found4;
+  var totes = GV.circles();
+  if (totes.length === 0) return 'Falten les dues circumferències de centre (0, 0).';
+  var origen = totes.filter(function(c) {
+    return Math.abs(c.cx) < GV.tol && Math.abs(c.cy) < GV.tol;
+  });
+  if (origen.length === 0) return 'Les circumferències han de tenir el centre a l\'origen, (0, 0).';
+  var r2 = origen.some(function(c) { return Math.abs(c.r - 2) < GV.tol; });
+  var r4 = origen.some(function(c) { return Math.abs(c.r - 4) < GV.tol; });
+  if (!r2 && !r4) return 'Les circumferències de centre (0, 0) han de tenir radi 2 i radi 4.';
+  if (!r2) return 'Tens la de radi 4; falta la circumferència de radi 2.';
+  if (!r4) return 'Tens la de radi 2; falta la circumferència de radi 4.';
+  return true;
 },
 ```
 
@@ -898,14 +1015,22 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 - some circle whose centre has x = 0 ± 0.15 and that passes through A and B (radius = √(9 + cy²) ± 0.15).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-3b': function(api, GV) {
-  return GV.circles().some(function(c) {
-    return Math.abs(c.cx) < GV.tol &&
-           GV.circleThrough(c, [[-3, 0], [3, 0]]);
+  var totes = GV.circles();
+  if (totes.length === 0) return 'Falta la circumferència que passa per A i per B.';
+  var ok = totes.some(function(c) {
+    return Math.abs(c.cx) < GV.tol && GV.circleThrough(c, [[-3, 0], [3, 0]]);
   });
+  if (ok) return true;
+  var perUn = totes.some(function(c) {
+    return GV.circleThrough(c, [[-3, 0]]) || GV.circleThrough(c, [[3, 0]]);
+  });
+  return perUn
+    ? 'La circumferència passa per un dels dos punts, però no per l\'altre: el centre ha de ser sobre l\'eix Y.'
+    : 'La circumferència ha de passar per A i per B, amb el centre sobre l\'eix Y.';
 },
 ```
 
@@ -927,7 +1052,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 - There are infinitely many solutions, one per centre (0, cy); the centre at the origin (radius 3) is accepted.
 
-#### 3C — `repte-3c` · Cercle circumscrit
+#### 3C — `repte-3c` · Circumferència circumscrita
 
 - **Level:** C — Difícil (`dificultat: 'dificil'`)
 - **Status:** **published** (2026-11-12)
@@ -954,13 +1079,18 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a point (other than A, B, C) at the circumcentre (0, 7/8) = (0, 0.875);
 - a circle that passes within 0.15 of the three vertices (circumradius 25/8 = 3.125).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-3c': function(api, GV) {
   var V = [[0, 4], [-3, 0], [3, 0]];
-  if (!GV.hasPointAt(0, 7 / 8, GV.tol, ['A', 'B', 'C'])) return false;
-  return GV.circles().some(function(c) { return GV.circleThrough(c, V); });
+  if (!GV.hasPointAt(0, 7 / 8, GV.tol, ['A', 'B', 'C']))
+    return 'Falta el circumcentre: marca el punt on es tallen dues mediatrius ' +
+           '(o el centre de la circumferència, amb «Punt mitjà o centre»).';
+  if (GV.circles().some(function(c) { return GV.circleThrough(c, V); })) return true;
+  return GV.circles().length
+    ? 'La circumferència ha de passar pels tres vèrtexs, A, B i C.'
+    : 'Tens el circumcentre; falta la circumferència circumscrita, la que passa pels tres vèrtexs.';
 },
 ```
 
@@ -972,7 +1102,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 ```js
 'repte-3c': {
-  label: 'Repte 3C — Cercle circumscrit',
+  label: 'Repte 3C — Circumferència circumscrita',
   correct: ['m=PerpendicularBisector(A,B)', 'n=PerpendicularBisector(B,C)', 'O=Intersect(m,n)', 'd=Circle(O,A)'],
   wrong:   ['O=(0,0)', 'd=Circle(O,B)']   // circle through B and C only, centre at the origin
 },
@@ -1008,14 +1138,18 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least 5 segments of length 2;
 - a polygon with area 6.882 ± 0.3 (regular pentagon of side 2: √(5(5 + 2√5)) ≈ 6.882; a square gives 4, a hexagon 10.39).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-4a': function(api, GV) {
-  var area = Math.sqrt(5 * (5 + 2 * Math.sqrt(5)));   // side 2 → ≈ 6.882
-  return GV.hasPointAt(0, 0) && GV.hasPointAt(2, 0) &&
-         GV.countSegments(2) >= 5 &&
-         GV.polygonsWithArea(area, 0.3).length >= 1;
+  var area = Math.sqrt(5 * (5 + 2 * Math.sqrt(5)));   // costat 2 → ≈ 6.882
+  if (!GV.hasPointAt(0, 0)) return 'Falta un vèrtex a l\'origen, (0, 0).';
+  if (!GV.hasPointAt(2, 0)) return 'Falta un vèrtex a (2, 0).';
+  if (GV.names('polygon').length === 0)
+    return 'Falta el pentàgon: fes-lo amb l\'eina «Polígon regular», amb 5 vèrtexs.';
+  if (GV.countSegments(2) < 5 || GV.polygonsWithArea(area, 0.3).length < 1)
+    return 'El polígon no és un pentàgon regular de costat 2: ha de tenir 5 costats iguals i 5 angles iguals.';
+  return true;
 },
 ```
 
@@ -1057,15 +1191,21 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least 6 points (other than O) at distance 3 ± 0.15 from the origin;
 - a polygon with area 27√3/2 ≈ 23.383 ± 0.5 (among the hexagons inscribed in a circle the regular one has the largest area, so the area test rejects irregular ones).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-4b': function(api, GV) {
   var onCircle = GV.pointCoords(['O']).filter(function(p) {
     return Math.abs(Math.sqrt(p[0] * p[0] + p[1] * p[1]) - 3) < GV.tol;
   }).length;
-  return onCircle >= 6 &&
-         GV.polygonsWithArea(13.5 * Math.sqrt(3), 0.5).length >= 1;
+  if (onCircle === 0) return 'Falta l\'hexàgon: els sis vèrtexs han de ser sobre la circumferència c.';
+  if (onCircle < 6)
+    return 'Els sis vèrtexs de l\'hexàgon han de ser sobre la circumferència c, i ara n\'hi ha ' + onCircle + '.';
+  if (GV.polygonsWithArea(13.5 * Math.sqrt(3), 0.5).length < 1)   // 27√3/2 ≈ 23.383
+    return GV.names('polygon').length
+      ? 'El polígon no és un hexàgon regular: els sis costats han de ser iguals.'
+      : 'Tens sis punts sobre c; falta l\'hexàgon: uneix-los amb l\'eina «Polígon», un darrere l\'altre.';
+  return true;
 },
 ```
 
@@ -1110,18 +1250,26 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than P, Q, R, S) at the 8 vertices (±k, ±2) and (±2, ±k), with k = 2√2 − 2 ≈ 0.828;
 - a polygon other than `q` with area 32(√2 − 1) ≈ 13.255 ± 0.4.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-4c': function(api, GV) {
   var k = 2 * Math.SQRT2 - 2;                 // ≈ 0.828
   var given = ['P', 'Q', 'R', 'S'];
   var targets = [[k, -2], [2, -k], [2, k], [k, 2], [-k, 2], [-2, k], [-2, -k], [-k, -2]];
-  var allThere = targets.every(function(t) {
+  var trobats = targets.filter(function(t) {
     return GV.hasPointAt(t[0], t[1], GV.tol, given);
-  });
-  return allThere &&
-         GV.polygonsWithArea(32 * (Math.SQRT2 - 1), 0.4, ['q']).length >= 1;
+  }).length;
+  if (trobats === 0)
+    return GV.pointCoords(given).length >= 8
+      ? 'Els vèrtexs no fan un octàgon regular: els vuit costats han de ser iguals, ' +
+        'els que són sobre el quadrat i els que tallen les cantonades.'
+      : 'Cal un octàgon regular amb els vuit vèrtexs sobre els costats del quadrat, ' +
+        'dos a cada costat, i els vuit costats iguals.';
+  if (trobats < 8) return 'Dels 8 vèrtexs de l\'octàgon regular, n\'hi ha ' + trobats + ' de ben posats.';
+  if (GV.polygonsWithArea(32 * (Math.SQRT2 - 1), 0.4, ['q']).length < 1)
+    return 'Tens els vuit vèrtexs; falta l\'octàgon: uneix-los amb l\'eina «Polígon», un darrere l\'altre.';
+  return true;
 },
 ```
 
@@ -1174,14 +1322,19 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a line that is the perpendicular bisector of AB (through `Midpoint(A,B)` and perpendicular to AB);
 - a point (other than A, B) at (1, 0).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-5a': function(api, GV) {
   var hasBisector = GV.anyOfType('line', function(l) {
     return GV.isPerpBisector(l, 'A', 'B');
   });
-  return hasBisector && GV.hasPointAt(1, 0, GV.tol, ['A', 'B']);
+  if (!hasBisector)
+    return GV.names('line').length
+      ? 'La recta no és la mediatriu de AB: ha de ser perpendicular a AB i passar pel seu punt mig.'
+      : 'Falta la mediatriu del segment AB: fes-la amb l\'eina «Mediatriu».';
+  if (!GV.hasPointAt(1, 0, GV.tol, ['A', 'B'])) return 'Tens la mediatriu; falta marcar el punt mig de AB.';
+  return true;
 },
 ```
 
@@ -1202,7 +1355,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 5B — `repte-5b` · El circumcentre
 
 - **Level:** B — Mitjà (`dificultat: 'mitja'`)
-- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-9` with the same text, data and validator body
+- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-9` with the same text, data and pass condition
 - **Origin:** published challenge `repte-9`
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
@@ -1225,19 +1378,21 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 - a point (other than A, B, C) equidistant from the three vertices within 0.2, i.e. at the circumcentre (3, 1.7).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`) — the body of the legacy validator, unchanged:
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-5b': function(api, GV) {
-  var pts = api.getAllObjectNames('point') || [];
-  return pts.some(function(p) {
-    if (p === 'A' || p === 'B' || p === 'C') return false;
+  var pts = GV.names('point').filter(function(p) { return ['A', 'B', 'C'].indexOf(p) === -1; });
+  if (pts.length === 0) return 'Falta el circumcentre: el punt on es tallen les mediatrius.';
+  var ok = pts.some(function(p) {
     var x  = api.getXcoord(p), y = api.getYcoord(p);
     var dA = Math.sqrt(x * x + y * y);
     var dB = Math.sqrt((x - 6) * (x - 6) + y * y);
     var dC = Math.sqrt((x - 2) * (x - 2) + (y - 5) * (y - 5));
     return Math.abs(dA - dB) < 0.2 && Math.abs(dB - dC) < 0.2;
   });
+  return ok || 'Cap dels punts que has marcat no és a la mateixa distància dels tres vèrtexs: ' +
+               'el circumcentre és on es tallen les mediatrius.';
 },
 ```
 
@@ -1275,7 +1430,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a point (other than A, B, C) at (3, 2), the midpoint of the hypotenuse AB;
 - a circle centred at (3, 2) ± 0.15 through the three vertices (radius √13 ≈ 3.606).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-5c': function(api, GV) {
@@ -1283,12 +1438,18 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
   var bisectors = GV.filterOfType('line', function(l) {
     return sides.some(function(s) { return GV.isPerpBisector(l, s[0], s[1]); });
   }).length;
-  if (bisectors < 2) return false;
-  if (!GV.hasPointAt(3, 2, GV.tol, ['A', 'B', 'C'])) return false;
-  return GV.circles().some(function(c) {
+  if (bisectors === 0) return 'Falten les mediatrius de dos costats del triangle.';
+  if (bisectors === 1) return 'Tens una mediatriu; en falta una altra, d\'un altre costat.';
+  if (!GV.hasPointAt(3, 2, GV.tol, ['A', 'B', 'C']))
+    return 'Falta el circumcentre: marca el punt on es tallen les dues mediatrius.';
+  var ok = GV.circles().some(function(c) {
     return Math.abs(c.cx - 3) < GV.tol && Math.abs(c.cy - 2) < GV.tol &&
            GV.circleThrough(c, [[6, 0], [0, 4], [0, 0]]);
   });
+  if (ok) return true;
+  return GV.circles().length
+    ? 'La circumferència ha de tenir el centre al circumcentre i passar pels tres vèrtexs.'
+    : 'Falta la circumferència circumscrita: centre al circumcentre i passant pels tres vèrtexs.';
 },
 ```
 
@@ -1338,13 +1499,16 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 - a line through O and through `Midpoint(A,B)`. Since |OA| = |OB| = 4, the triangle OAB is isosceles and the bisector of the angle at O is the line through O and the midpoint of AB (slope tan 22.5° ≈ 0.414).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-6a': function(api, GV) {
-  return GV.anyOfType('line', function(l) {
-    return GV.pointOnLine('O', l) && GV.pointOnLine('Midpoint(A,B)', l);
-  });
+  var rectes = GV.names('line');
+  if (rectes.length === 0) return 'Falta la bisectriu: fes-la amb l\'eina «Bisectriu», fent clic a A, O i B.';
+  var perO = rectes.filter(function(l) { return GV.pointOnLine('O', l); });
+  if (perO.length === 0) return 'La bisectriu ha de passar pel vèrtex de l\'angle, O.';
+  var ok = perO.some(function(l) { return GV.pointOnLine('Midpoint(A,B)', l); });
+  return ok || 'La recta passa per O, però no parteix l\'angle en dos angles iguals de 22,5°.';
 },
 ```
 
@@ -1393,15 +1557,22 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least 2 lines exist;
 - a point (other than A, B, C) at the incentre ≈ (3.449, 2.132), tolerance 0.2. The incentre is computed in the validator as (a·A + b·B + c·C)/(a + b + c) with a = |BC| = √61, b = |CA| = √45, c = |AB| = 8.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-6b': function(api, GV) {
   var a = Math.sqrt(61), b = Math.sqrt(45), c = 8;   // |BC|, |CA|, |AB|
   var ix = (b * 8 + c * 3) / (a + b + c);            // ≈ 3.449
   var iy = (c * 6) / (a + b + c);                    // ≈ 2.132
-  return GV.names('line').length >= 2 &&
-         GV.hasPointAt(ix, iy, 0.2, ['A', 'B', 'C']);
+  var given = ['A', 'B', 'C'];
+  var rectes = GV.names('line').length;
+  if (rectes === 0) return 'Falten les bisectrius de dos angles del triangle: eina «Bisectriu».';
+  if (rectes === 1) return 'Tens una recta; falta la bisectriu d\'un altre angle.';
+  if (GV.hasPointAt(ix, iy, 0.2, given)) return true;
+  return GV.pointCoords(given).length
+    ? 'Cap punt no és a l\'incentre: comprova que les dues rectes siguin bisectrius d\'angles ' +
+      'del triangle (no mediatrius ni altures) i marca on es tallen.'
+    : 'Falta l\'incentre: marca el punt on es tallen les dues bisectrius.';
 },
 ```
 
@@ -1419,7 +1590,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 },
 ```
 
-#### 6C — `repte-6c` · Cercle inscrit
+#### 6C — `repte-6c` · Circumferència inscrita
 
 - **Level:** C — Difícil (`dificultat: 'dificil'`)
 - **Status:** **published** (2026-11-12)
@@ -1446,15 +1617,21 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a point (other than A, B, C) at the incentre (3, 2);
 - a circle with centre (3, 2) ± 0.15 and radius 2 ± 0.15.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-6c': function(api, GV) {
-  if (!GV.hasPointAt(3, 2, GV.tol, ['A', 'B', 'C'])) return false;
-  return GV.circles().some(function(c) {
+  if (!GV.hasPointAt(3, 2, GV.tol, ['A', 'B', 'C']))
+    return 'Falta l\'incentre: marca el punt on es tallen les bisectrius ' +
+           '(o el centre de la circumferència inscrita, amb «Punt mitjà o centre»).';
+  var ok = GV.circles().some(function(c) {
     return Math.abs(c.cx - 3) < GV.tol && Math.abs(c.cy - 2) < GV.tol &&
            Math.abs(c.r - 2) < GV.tol;
   });
+  if (ok) return true;
+  return GV.circles().length
+    ? 'La circumferència ha de tenir el centre a l\'incentre i tocar els tres costats sense tallar-los.'
+    : 'Tens l\'incentre; falta la circumferència inscrita, la que toca els tres costats.';
 },
 ```
 
@@ -1466,7 +1643,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 
 ```js
 'repte-6c': {
-  label: 'Repte 6C — Cercle inscrit',
+  label: 'Repte 6C — Circumferència inscrita',
   correct: ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'h=PerpendicularLine(I,Line(A,B))', 'T=Intersect(h,Line(A,B))', 'd=Circle(I,T)'],
   wrong:   ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'd=Circle(I,A)']   // circle centred at the incentre but through a vertex (radius √13)
 },
@@ -1485,7 +1662,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 #### 7A — `repte-7a` · Perpendicular i peu
 
 - **Level:** A — Fàcil (`dificultat: 'facil'`)
-- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-8` with the same text, data and validator body
+- **Status:** **published** (2026-11-11); continues the legacy challenge `repte-8` with the same text, data and pass condition
 - **Origin:** published challenge `repte-8`
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `f,P`
@@ -1507,22 +1684,27 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - some line other than `f` exists;
 - a point (other than P) at the foot of the perpendicular, (64/17, 16/17) ≈ (3.765, 0.941), tolerance 0.2.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`) — the body of the legacy validator, unchanged:
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-7a': function(api, GV) {
   var footX = 64 / 17;
   var footY = 16 / 17;
   var tol   = 0.2;
-  var hasPerp = GV.anyOfType('line', function(l) { return l !== 'f'; });
-  if (!hasPerp) return false;
-  var pts    = api.getAllObjectNames('point') || [];
-  var hasFoot = pts.some(function(p) {
+  var noves = GV.names('line').filter(function(l) { return l !== 'f'; });
+  if (noves.length === 0) return 'Falta la recta perpendicular a f que passa per P: eina «Recta perpendicular».';
+  var hasFoot = GV.names('point').some(function(p) {
     if (p === 'P') return false;
     return Math.abs(api.getXcoord(p) - footX) < tol &&
            Math.abs(api.getYcoord(p) - footY) < tol;
   });
-  return hasFoot;
+  if (hasFoot) return true;
+  var perp = noves.some(function(l) {
+    return api.getValue('ArePerpendicular(f,' + l + ')') === 1 && GV.pointOnLine('P', l);
+  });
+  return perp
+    ? 'Tens la perpendicular; falta marcar el peu: el punt on talla f (eina «Intersecció»).'
+    : 'La recta nova ha de ser perpendicular a f i passar per P; després, marca el punt on talla f.';
 },
 ```
 
@@ -1556,18 +1738,25 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a line other than `f`, parallel to `f`, passing within 0.15 of (−1.2, 1.6);
 - a line other than `f`, parallel to `f`, passing within 0.15 of (1.2, −1.6).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-7b': function(api, GV) {
+  function parallel(l) {
+    return l !== 'f' && api.getValue('AreParallel(f,' + l + ')') === 1;
+  }
   function parallelThrough(x, y) {
     return GV.anyOfType('line', function(l) {
-      if (l === 'f') return false;
-      if (api.getValue('AreParallel(f,' + l + ')') !== 1) return false;
-      return GV.pointOnLine('(' + x + ',' + y + ')', l, GV.tol);
+      return parallel(l) && GV.pointOnLine('(' + x + ',' + y + ')', l, GV.tol);
     });
   }
-  return parallelThrough(-1.2, 1.6) && parallelThrough(1.2, -1.6);   // O ± 2·(−3/5, 4/5)
+  var una = parallelThrough(-1.2, 1.6), altra = parallelThrough(1.2, -1.6);   // O ± 2·(−3/5, 4/5)
+  if (una && altra) return true;
+  if (una || altra) return 'Tens una paral·lela a distància 2; falta la de l\'altra banda de f.';
+  if (GV.anyOfType('line', parallel)) return 'Les paral·leles han d\'estar a distància 2 de f, una a cada banda.';
+  return GV.names('line').length > 1
+    ? 'Les rectes noves han de ser paral·leles a f.'
+    : 'Falten les dues paral·leles a f, a distància 2, una a cada banda.';
 },
 ```
 
@@ -1617,7 +1806,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least 2 lines that are altitudes (perpendicular to a side and through the opposite vertex);
 - a point (other than A, B, C) at the orthocentre (3, 2.5), tolerance 0.2.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-7c': function(api, GV) {
@@ -1628,7 +1817,14 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
              GV.pointOnLine(s[2], l);
     });
   }).length;
-  return altitudes >= 2 && GV.hasPointAt(3, 2.5, 0.2, ['A', 'B', 'C']);
+  if (altitudes === 0)
+    return GV.names('line').length
+      ? 'Les rectes no són altures: cada altura passa per un vèrtex i és perpendicular al costat oposat.'
+      : 'Falten les altures: en calen dues (eina «Recta perpendicular», per un vèrtex i el costat oposat).';
+  if (altitudes === 1) return 'Tens una altura; en falta una altra.';
+  if (!GV.hasPointAt(3, 2.5, 0.2, ['A', 'B', 'C']))
+    return 'Falta l\'ortocentre: marca el punt on es tallen les dues altures.';
+  return true;
 },
 ```
 
@@ -1680,14 +1876,21 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than A, B, C) at the images A' = (4, 2), B' = (7, 2), C' = (5, 5), tolerance 0.2;
 - a polygon other than `t` with area 4.5 ± 0.3.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-8a': function(api, GV) {
   var given = ['A', 'B', 'C'];
   var images = [[4, 2], [7, 2], [5, 5]];
-  var allThere = images.every(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); });
-  return allThere && GV.polygonsWithArea(4.5, 0.3, ['t']).length >= 1;
+  var trobats = images.filter(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); }).length;
+  if (trobats === 0)
+    return GV.names('polygon').filter(function(p) { return p !== 't'; }).length
+      ? 'El triangle nou no és la imatge de t per la translació de vector v.'
+      : 'Falta la imatge del triangle: eina «Translació segons un vector», clic al triangle i després al vector v.';
+  if (trobats < 3) return 'Dels 3 vèrtexs de la imatge, n\'hi ha ' + trobats + ' de ben posats.';
+  if (GV.polygonsWithArea(4.5, 0.3, ['t']).length < 1)
+    return 'Tens els tres vèrtexs de la imatge; falta el triangle: uneix-los amb l\'eina «Polígon».';
+  return true;
 },
 ```
 
@@ -1733,7 +1936,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than O, A, B, C) at the images A' = (1, √3) ≈ (1, 1.732), B' = (2.5, 2.5√3) ≈ (2.5, 4.330), C' = (2.5 − √3, 2.5√3 + 1) ≈ (0.768, 5.330), tolerance 0.2;
 - a polygon other than `t` with area 3 ± 0.3.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-8b': function(api, GV) {
@@ -1742,8 +1945,17 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
   var images = [[2, 0], [5, 0], [5, 2]].map(function(p) {
     return [p[0] * co - p[1] * si, p[0] * si + p[1] * co];
   });
-  var allThere = images.every(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); });
-  return allThere && GV.polygonsWithArea(3, 0.3, ['t']).length >= 1;
+  var trobats = images.filter(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); }).length;
+  if (trobats === 0)
+    return GV.names('polygon').filter(function(p) { return p !== 't'; }).length
+      ? 'El triangle nou no és la imatge de t pel gir de 60° en sentit antihorari al voltant de O: ' +
+        'revisa l\'angle, el sentit i el centre.'
+      : 'Falta la imatge del triangle: eina «Rotació al voltant d\'un punt», clic al triangle, ' +
+        'després a O, i 60° en sentit antihorari.';
+  if (trobats < 3) return 'Dels 3 vèrtexs de la imatge, n\'hi ha ' + trobats + ' de ben posats.';
+  if (GV.polygonsWithArea(3, 0.3, ['t']).length < 1)
+    return 'Tens els tres vèrtexs de la imatge; falta el triangle: uneix-los amb l\'eina «Polígon».';
+  return true;
 },
 ```
 
@@ -1795,15 +2007,21 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - points (other than A, B, C) at the second glide image (5, 4), (7, 4), (7, 6) = t + (4, 4), tolerance 0.2;
 - at least 2 polygons other than `t` with area 2 ± 0.3.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-8c': function(api, GV) {
   var given = ['A', 'B', 'C'];
-  var targets = [[2, 3], [2, 5], [4, 5],      // after one glide reflection
-                 [5, 4], [7, 4], [7, 6]];     // after two: t translated by (4, 4)
-  var allThere = targets.every(function(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); });
-  return allThere && GV.polygonsWithArea(2, 0.3, ['t']).length >= 2;
+  function hiEs(p) { return GV.hasPointAt(p[0], p[1], 0.2, given); }
+  var primera = [[2, 3], [2, 5], [4, 5]].every(hiEs);      // after one glide reflection
+  var segona  = [[5, 4], [7, 4], [7, 6]].every(hiEs);      // after two: t translated by (4, 4)
+  if (!primera)
+    return 'Falta la primera reflexió amb lliscament: reflecteix t respecte de f i trasllada el resultat amb v.';
+  if (!segona)
+    return 'Tens la primera reflexió amb lliscament; falta aplicar-la una altra vegada al triangle que has obtingut.';
+  if (GV.polygonsWithArea(2, 0.3, ['t']).length < 2)
+    return 'Tens els vèrtexs, però falten els triangles: aplica les transformacions al polígon, no als punts.';
+  return true;
 },
 ```
 
@@ -1850,7 +2068,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - a function with f(0) = −4, f(1) = −3 and f(2) = 0 (± 0.15);
 - points at (2, 0) and (−2, 0).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-9a': function(api, GV) {
@@ -1859,7 +2077,14 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
            Math.abs(api.getValue(fn + '(1)') + 3) < GV.tol &&
            Math.abs(api.getValue(fn + '(2)'))     < GV.tol;
   });
-  return hasF && GV.hasPointAt(2, 0) && GV.hasPointAt(-2, 0);
+  if (!hasF)
+    return GV.names('function').length
+      ? 'La funció no és f(x) = x² − 4: revisa-la (s\'escriu f(x)=x^2-4).'
+      : 'Falta la funció: escriu f(x)=x^2-4 a la barra d\'entrada.';
+  var arrels = (GV.hasPointAt(2, 0) ? 1 : 0) + (GV.hasPointAt(-2, 0) ? 1 : 0);
+  if (arrels === 0) return 'Falten les dues arrels: els punts on la paràbola talla l\'eix X.';
+  if (arrels === 1) return 'Has marcat una de les dues arrels; falta l\'altra.';
+  return true;
 },
 ```
 
@@ -1897,7 +2122,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - either a function with g(0) = 2 and g(1) = 3, or any object of type `line` (a student may type `y = x + 2`);
 - points at (2, 4) and (−1, 1).
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-9b': function(api, GV) {
@@ -1906,12 +2131,17 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
            Math.abs(api.getValue(fn + '(1)')  - 1) < GV.tol &&
            Math.abs(api.getValue(fn + '(2)')  - 4) < GV.tol;
   });
-  var hasLine = GV.names('line').length >= 1 ||
+  var hasLine = GV.names('line').length >= 1 ||           // y = x + 2 escrit com a recta
     GV.anyOfType('function', function(fn) {
       return Math.abs(api.getValue(fn + '(0)') - 2) < GV.tol &&
              Math.abs(api.getValue(fn + '(1)') - 3) < GV.tol;
     });
-  return hasParabola && hasLine && GV.hasPointAt(2, 4) && GV.hasPointAt(-1, 1);
+  if (!hasParabola) return 'Falta la paràbola: escriu f(x)=x^2 a la barra d\'entrada.';
+  if (!hasLine) return 'Falta la recta: escriu g(x)=x+2 a la barra d\'entrada.';
+  var talls = (GV.hasPointAt(2, 4) ? 1 : 0) + (GV.hasPointAt(-1, 1) ? 1 : 0);
+  if (talls === 0) return 'Falten els dos punts on es tallen la paràbola i la recta.';
+  if (talls === 1) return 'Has marcat un dels dos punts de tall; falta l\'altre.';
+  return true;
 },
 ```
 
@@ -1949,7 +2179,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least 2 distinct points (x more than 0.5 apart) with |sin x − cos x| < 0.15 and |y − sin x| < 0.15;
 - an angle object measuring 70.53° or one of its companions 109.47°, 250.53°, 289.47° (± 1.5°). At x = π/4 the tangent slopes are ±√2/2, so the angle between the tangents is 2·arctan(√2/2) ≈ 70.53°; which of the four values GeoGebra reports depends on the orientation of the two lines.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-9c': function(api, GV) {
@@ -1960,7 +2190,8 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
              Math.abs(api.getValue(fn + '(' + H + ')') - atH) < GV.tol;
     });
   }
-  if (!hasFn(0, 1) || !hasFn(1, 0)) return false;
+  if (!hasFn(0, 1)) return 'Falta la funció f(x) = sin(x): escriu-la a la barra d\'entrada.';
+  if (!hasFn(1, 0)) return 'Falta la funció g(x) = cos(x): escriu-la a la barra d\'entrada.';
 
   var xs = [];                                 // x of distinct intersection points
   GV.pointCoords().forEach(function(p) {
@@ -1969,14 +2200,19 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
     var isNew = xs.every(function(x) { return Math.abs(x - p[0]) > 0.5; });
     if (onBoth && isNew) xs.push(p[0]);
   });
-  if (xs.length < 2) return false;
+  if (xs.length === 0) return 'Falten els punts de tall de les dues gràfiques: en cal marcar dos.';
+  if (xs.length === 1) return 'Has marcat un punt de tall; en falta un altre.';
 
   var theta = 2 * Math.atan(Math.SQRT1_2) * 180 / Math.PI;   // ≈ 70.53°
   var accepted = [theta, 180 - theta, 180 + theta, 360 - theta];
-  return GV.anyOfType('angle', function(a) {
+  var ok = GV.anyOfType('angle', function(a) {
     var deg = GV.degrees(a);
     return accepted.some(function(t) { return Math.abs(deg - t) < 1.5; });
   });
+  if (ok) return true;
+  return GV.names('angle').length
+    ? 'L\'angle que has mesurat no és el que formen les dues rectes tangents en un punt de tall.'
+    : 'Falta mesurar l\'angle entre les dues rectes tangents en un punt de tall (eines «Tangents» i «Angle»).';
 },
 ```
 
@@ -2023,11 +2259,13 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - at least one polygon and one slider exist;
 - dynamic test: for some slider, setting it to 3, 5 and 8 makes the largest polygon area strictly grow (by more than 5 % each step). A regular n-gon grows with n both for a fixed side and for a fixed circumradius. The slider is restored to its original value afterwards.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-10a': function(api, GV) {
-  if (GV.names('polygon').length < 1) return false;
+  if (GV.sliders().length === 0)
+    return 'Falta el lliscador n: crea\'l amb l\'eina «Punt lliscant», de 3 a 12, d\'un en un.';
+  if (GV.names('polygon').length < 1) return 'Tens el lliscador; falta el polígon regular de n costats.';
 
   function largestArea() {
     var best = 0;
@@ -2038,16 +2276,18 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
     return best;
   }
 
-  return GV.sliders().some(function(s) {
+  var ok = GV.sliders().some(function(s) {
     var original = api.getValue(s);
-    var ok = false;
+    var creix = false;
     try {
       var areas = [3, 5, 8].map(function(n) { api.setValue(s, n); return largestArea(); });
-      ok = areas[0] > 0 && areas[1] > areas[0] * 1.05 && areas[2] > areas[1] * 1.05;
+      creix = areas[0] > 0 && areas[1] > areas[0] * 1.05 && areas[2] > areas[1] * 1.05;
     } catch (e) {}
     try { api.setValue(s, original); } catch (e) {}
-    return ok;
+    return creix;
   });
+  return ok || 'Has creat el lliscador i el polígon, però el polígon no depèn del lliscador: ' +
+               'quan el mous, el nombre de costats no canvia. Fes-lo amb Polígon(A, B, n).';
 },
 ```
 
@@ -2094,19 +2334,26 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - an object of type locus exists;
 - there are two points P and M (other than O, Q) such that P is at distance 3 ± 0.15 from the origin and M is within 0.15 of the midpoint of P and Q.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-10b': function(api, GV) {
-  if (!GV.hasObjectOfType('locus')) return false;
   var pts = GV.pointCoords(['O', 'Q']);
-  return pts.some(function(P) {
-    if (Math.abs(Math.sqrt(P[0] * P[0] + P[1] * P[1]) - 3) > GV.tol) return false;
+  var sobreC = pts.filter(function(P) {
+    return Math.abs(Math.sqrt(P[0] * P[0] + P[1] * P[1]) - 3) < GV.tol;
+  });
+  if (sobreC.length === 0)
+    return 'Falta el punt P sobre la circumferència c: eina «Punt en un objecte», clic sobre c.';
+  var ambM = sobreC.some(function(P) {
     var mx = (P[0] + 6) / 2, my = (P[1] + 2) / 2;
     return pts.some(function(M) {
       return M !== P && Math.abs(M[0] - mx) < GV.tol && Math.abs(M[1] - my) < GV.tol;
     });
   });
+  if (!ambM) return 'Tens P sobre c; falta el punt mig M del segment PQ.';
+  if (!GV.hasObjectOfType('locus'))
+    return 'Tens P i M; falta el lloc geomètric de M quan P es mou: eina «Lloc geomètric», clic a M i després a P.';
+  return true;
 },
 ```
 
@@ -2155,17 +2402,22 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - an object of type locus exists;
 - a point (other than the foci) whose distances to (−3, 0) and (3, 0) add up to 10 ± 0.15.
 
-**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`):
+**Reference validator** (entry of `VALIDATORS` in `curs/validators.js`, copied from the file, which is the authority; every failing path returns the reason shown to the student):
 
 ```js
 'repte-10c': function(api, GV) {
-  if (GV.sliders().length < 1) return false;
-  if (!GV.hasObjectOfType('locus')) return false;
-  return GV.pointCoords(['F_1', 'F_2']).some(function(M) {
+  if (GV.sliders().length < 1)
+    return 'Falta un lliscador (eina «Punt lliscant»): farà de distància de M a F₁.';
+  var ok = GV.pointCoords(['F_1', 'F_2']).some(function(M) {
     var d1 = Math.sqrt((M[0] + 3) * (M[0] + 3) + M[1] * M[1]);
     var d2 = Math.sqrt((M[0] - 3) * (M[0] - 3) + M[1] * M[1]);
     return Math.abs(d1 + d2 - 10) < GV.tol;
   });
+  if (!ok) return 'Falta un punt M amb MF₁ + MF₂ = 10.';
+  if (!GV.hasObjectOfType('locus'))
+    return 'Tens el punt M; falta el lloc geomètric de M quan es mou el lliscador: ' +
+           'eina «Lloc geomètric», clic a M i després al lliscador.';
+  return true;
 },
 ```
 

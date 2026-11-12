@@ -40,7 +40,7 @@
       <header class="chapter-header">
         <span class="chapter-badge">Capítol 3</span>
         <h1>Circumferències</h1>
-        <p class="chapter-lead">Una circumferència és el conjunt de tots els punts del pla equidistants d'un punt fix anomenat <strong>centre</strong>. La distància constant s'anomena <strong>radi</strong>. GeoGebra permet crear circumferències de dues maneres: donant el centre i el radi, o donant tres punts per on ha de passar.</p>
+        <p class="chapter-lead">Una circumferència és el conjunt de tots els punts del pla equidistants d'un punt fix anomenat <strong>centre</strong>. La distància constant s'anomena <strong>radi</strong>. GeoGebra permet crear circumferències de tres maneres: amb el centre i el radi, amb el centre i un punt per on passa, o amb tres punts per on passa.</p>
       </header>
 
 
@@ -48,7 +48,7 @@
            SECCIÓ 1 — Circle(Centre, radi)
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Cercle per centre i radi: <code>Circumferència(A,r)</code></h2>
+        <h2>Circumferència per centre i radi: <code>Circumferència(A,r)</code></h2>
 
         <p>La forma més directa és indicar el centre i el radi. El radi pot ser un nombre o el nom d'un segment (en aquest cas, el radi serà igual a la longitud d'aquell segment):</p>
 
@@ -61,10 +61,12 @@ Circumferència(A,3)</pre>
              data-commands="A=(2,1)
 c=Circle(A,3)"
              data-readonly="true"
+             data-algebra="true"
+             data-view="-2 6 -3 5"
              data-height="380">
         </div>
 
-        <p>GeoGebra mostra l'equació de la circumferència a la vista algebraica. Pots arrossegar el centre A i veuràs com la circumferència es mou mantenint el radi constant.</p>
+        <p>A la columna de l'esquerra (la <strong>vista algebraica</strong>) hi ha l'equació de la circumferència. Pots arrossegar el centre A i veuràs com la circumferència es mou mantenint el radi constant.</p>
       </section>
 
 
@@ -72,7 +74,7 @@ c=Circle(A,3)"
            SECCIÓ 2 — Circle(Centre, PuntRadial)
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Cercle per centre i punt de la circumferència: <code>Circumferència(A,B)</code></h2>
+        <h2>Circumferència per centre i un punt: <code>Circumferència(A,B)</code></h2>
 
         <p>Pots definir el radi implícitament donant un segon punt que ha de pertànyer a la circumferència. El radi serà la distància entre els dos punts:</p>
 
@@ -93,10 +95,10 @@ c=Circle(A,B)"
 
 
       <!-- ─────────────────────────────────────────
-           SECCIÓ 3 — Cercle per tres punts
+           SECCIÓ 3 — Circumferència per tres punts
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Cercle per tres punts: <code>Circumferència(A,B,C)</code></h2>
+        <h2>Circumferència per tres punts: <code>Circumferència(A,B,C)</code></h2>
 
         <p>Tres punts no col·lineals determinen una única circumferència. GeoGebra la calcula automàticament:</p>
 
@@ -114,7 +116,7 @@ c=Circle(A,B,C)"
              data-height="380">
         </div>
 
-        <p>La circumferència que passa pels tres vèrtexs d'un triangle s'anomena <strong>circumscrita</strong> al triangle. El seu centre és l'intersecció de les mediatrius dels costats.</p>
+        <p>La circumferència que passa pels tres vèrtexs d'un triangle s'anomena <strong>circumscrita</strong> al triangle. El seu centre és la intersecció de les mediatrius dels costats.</p>
       </section>
 
 
@@ -124,7 +126,7 @@ c=Circle(A,B,C)"
       <section class="chapter-section">
         <h2>Radi i diàmetre</h2>
 
-        <p>GeoGebra pot calcular el radi d'una circumferència amb la comanda <code>Radi(c)</code>. El diàmetre és el doble del radi. Observa:</p>
+        <p>GeoGebra pot calcular el radi d'una circumferència amb l'ordre <code>Radi(c)</code>. El diàmetre és el doble del radi. Observa:</p>
 
         <div class="geogebra"
              data-commands="A=(1,2)
@@ -132,10 +134,11 @@ c=Circle(A,2.5)
 r=Radius(c)"
              data-view="-2 4 -1 5"
              data-readonly="true"
+             data-algebra="true"
              data-height="340">
         </div>
 
-        <p>La variable <strong>r</strong> emmagatzema el valor numèric del radi. Pots fer-la servir en expressions: per exemple, <code>2*r</code> et dóna el diàmetre.</p>
+        <p>La variable <strong>r</strong> emmagatzema el valor numèric del radi. Pots fer-la servir en expressions: per exemple, <code>2*r</code> et dona el diàmetre.</p>
       </section>
 
 
@@ -158,7 +161,7 @@ r=Radius(c)"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Tres formes de crear una circumferència: <code>Circumferència(A, r)</code> amb centre i radi numèric; <code>Circumferència(A, B)</code> amb centre i un punt de la circumferència; <code>Circumferència(A, B, C)</code> per tres punts. La comanda <code>Radi(c)</code> retorna el radi com a valor numèric.</p>
+        <p>Tres formes de crear una circumferència: <code>Circumferència(A, r)</code> amb centre i radi numèric; <code>Circumferència(A, B)</code> amb centre i un punt de la circumferència; <code>Circumferència(A, B, C)</code> per tres punts. L'ordre <code>Radi(c)</code> retorna el radi com a valor numèric.</p>
       </section>
 
 

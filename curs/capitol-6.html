@@ -40,7 +40,7 @@
       <header class="chapter-header">
         <span class="chapter-badge">Capítol 6</span>
         <h1>Construccions clàssiques II</h1>
-        <p class="chapter-lead">Continuem amb les grans construccions de la geometria euclidiana: la <strong>recta paral·lela</strong>, el <strong>cercle inscrit</strong> i el <strong>cercle circumscrit</strong> d'un triangle. Cada una d'elles encapsula propietats profundes de la geometria.</p>
+        <p class="chapter-lead">Continuem amb les grans construccions de la geometria euclidiana: la <strong>recta paral·lela</strong>, la <strong>circumferència inscrita</strong> i la <strong>circumferència circumscrita</strong> d'un triangle. Cadascuna encapsula propietats profundes de la geometria.</p>
       </header>
 
 
@@ -50,7 +50,7 @@
       <section class="chapter-section">
         <h2>Recta paral·lela: <code>Recta(A,f)</code></h2>
 
-        <p>Dues rectes són <strong>paral·leles</strong> si mai es tallen (a la geometria euclidiana). La comanda <code>Recta(A,f)</code>, amb un punt i una recta, crea la recta que passa per A i és paral·lela a f:</p>
+        <p>Dues rectes són <strong>paral·leles</strong> si mai es tallen (a la geometria euclidiana). L'ordre <code>Recta(A,f)</code>, amb un punt i una recta, crea la recta que passa per A i és paral·lela a f:</p>
 
         <pre class="code-example">f=Recta((0,0),(4,2))
 P=(1,3)
@@ -59,22 +59,22 @@ Recta(P,f)</pre>
         <div class="geogebra"
              data-commands="f=Line((0,0),(4,2))
 P=(1,3)
-g=Parallel(f,P)"
+g=Line(P,f)"
              data-readonly="true"
              data-height="380">
         </div>
 
-        <p>Les dues rectes mai s'intersecten. Si arrossegues P, la recta g es desplaça mantenint sempre la mateixa direcció que f. La distància entre elles canvia, però la paral·lelisme es conserva.</p>
+        <p>Les dues rectes no es tallen mai. Si arrossegues P, la recta g es desplaça mantenint sempre la mateixa direcció que f. La distància entre elles canvia, però el paral·lelisme es conserva.</p>
       </section>
 
 
       <!-- ─────────────────────────────────────────
-           SECCIÓ 2 — Cercle circumscrit
+           SECCIÓ 2 — Circumferència circumscrita
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Cercle circumscrit: <code>Circumferència(A,B,C)</code></h2>
+        <h2>Circumferència circumscrita: <code>Circumferència(A,B,C)</code></h2>
 
-        <p>El <strong>cercle circumscrit</strong> d'un polígon (generalment un triangle) és la circumferència que passa per tots els seus vèrtexs. El seu centre és la intersecció de les mediatrius:</p>
+        <p>La <strong>circumferència circumscrita</strong> a un polígon (generalment un triangle) és la que passa per tots els seus vèrtexs. El seu centre és la intersecció de les mediatrius:</p>
 
         <pre class="code-example">A=(0,4)
 B=(-3,0)
@@ -92,17 +92,17 @@ cc=Circle(A,B,C)"
              data-height="400">
         </div>
 
-        <p>La circumferència toca els tres vèrtexs del triangle exactament. El radi del cercle circumscrit s'anomena <em>circumradi</em>.</p>
+        <p>La circumferència passa exactament pels tres vèrtexs del triangle. El seu radi s'anomena <em>circumradi</em>.</p>
       </section>
 
 
       <!-- ─────────────────────────────────────────
-           SECCIÓ 3 — Cercle inscrit
+           SECCIÓ 3 — Circumferència inscrita
            ───────────────────────────────────────── -->
       <section class="chapter-section">
-        <h2>Cercle inscrit: <code>CircumferènciaInscrita(A,B,C)</code></h2>
+        <h2>Circumferència inscrita: <code>CircumferènciaInscrita(A,B,C)</code></h2>
 
-        <p>El <strong>cercle inscrit</strong> és la circumferència més gran que cap dins del triangle i és tangent als tres costats. El seu centre és la intersecció de les bisectrius dels angles:</p>
+        <p>La <strong>circumferència inscrita</strong> és la més gran que cap dins del triangle: és tangent als tres costats. El seu centre és la intersecció de les bisectrius dels angles:</p>
 
         <div class="geogebra"
              data-commands="A=(0,5)
@@ -115,7 +115,7 @@ ci=Incircle(A,B,C)"
              data-height="400">
         </div>
 
-        <p>El cercle inscrit toca els tres costats del triangle (és tangent a ells). El seu centre s'anomena <em>incentre</em>. Arrossega els vèrtexs i observa com s'adapta a la nova forma del triangle.</p>
+        <p>La circumferència inscrita toca els tres costats del triangle (n'és tangent). El seu centre s'anomena <em>incentre</em>. Arrossega els vèrtexs i observa com s'adapta a la nova forma del triangle.</p>
       </section>
 
 
@@ -125,7 +125,7 @@ ci=Incircle(A,B,C)"
       <section class="chapter-section">
         <h2>Circumscrit vs. inscrit</h2>
 
-        <p>Observa els dos cercles alhora — el circumscrit sempre és més gran que l'inscrit per a qualsevol triangle:</p>
+        <p>Observa les dues circumferències alhora: la circumscrita sempre és més gran que la inscrita, sigui quin sigui el triangle.</p>
 
         <div class="geogebra"
              data-commands="A=(0,5)
@@ -163,7 +163,7 @@ P=(0,3)"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Tres construccions importants: <code>Recta(A,f)</code> crea la recta per A paral·lela a f; <code>Circumferència(A,B,C)</code> dona la circumferència que passa pels tres vèrtexs del triangle; <code>CircumferènciaInscrita(A,B,C)</code> dona la circumferència tangent als costats del triangle. El cercle inscrit toca els costats; el circumscrit toca els vèrtexs.</p>
+        <p>Tres construccions importants: <code>Recta(A,f)</code> crea la recta per A paral·lela a f; <code>Circumferència(A,B,C)</code> dona la circumferència que passa pels tres vèrtexs del triangle; <code>CircumferènciaInscrita(A,B,C)</code> dona la circumferència tangent als costats del triangle. La circumferència inscrita toca els costats; la circumscrita passa pels vèrtexs.</p>
       </section>
 
 

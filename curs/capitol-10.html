@@ -50,12 +50,12 @@
       <section class="chapter-section">
         <h2>Crear un lliscador: <code>PuntLliscant(min,max,pas)</code></h2>
 
-        <p>La comanda <code>PuntLliscant(min,max,pas)</code> crea un control numèric interactiu. El paràmetre resultant pot usar-se en qualsevol expressió:</p>
+        <p>L'ordre <code>PuntLliscant(min,max,pas)</code> crea un control numèric interactiu. El paràmetre resultant pot usar-se en qualsevol expressió:</p>
 
         <pre class="code-example">a = PuntLliscant(1, 5, 0.1)
 b = PuntLliscant(0, 10, 0.5)</pre>
 
-        <p>Un cercle amb radi controlat per un lliscador — arrossega el lliscador per canviar el radi:</p>
+        <p>Una circumferència amb el radi controlat per un lliscador: arrossega el lliscador per canviar el radi.</p>
 
         <div class="geogebra"
              data-commands="r=Slider(1,5,0.1)
@@ -64,7 +64,7 @@ c=Circle(O,r)"
              data-height="380">
         </div>
 
-        <p>El lliscador <strong>r</strong> apareix com a control a la cantonada superior esquerra. Cada vegada que el mous, el cercle s'actualitza instantàniament.</p>
+        <p>El lliscador <strong>r</strong> apareix com a control a la cantonada superior esquerra. Cada vegada que el mous, la circumferència s'actualitza a l'instant.</p>
       </section>
 
 
@@ -100,7 +100,7 @@ f(x)=a*x^2+b"
       <section class="chapter-section">
         <h2>Lloc geomètric: <code>LlocGeomètric(B,A)</code></h2>
 
-        <p>La comanda <code>LlocGeomètric(B,A)</code> dibuixa el camí que segueix el punt B quan el punt A es mou per un objecte. És ideal per descobrir corbes geomètriques:</p>
+        <p>L'ordre <code>LlocGeomètric(B,A)</code> dibuixa el camí que segueix el punt B quan el punt A es mou per un objecte. És ideal per descobrir corbes geomètriques:</p>
 
         <pre class="code-example">c = Circumferència((0,0), 3)
 A = Punt(c)
@@ -121,9 +121,33 @@ loc=Locus(M,A)"
              data-height="400">
         </div>
 
-        <p>Arrossega el punt A per la circumferència i veuràs que M traça una circumferència més petita. La comanda <code>LlocGeomètric</code> fa aquest traçat automàticament.</p>
+        <p>Arrossega el punt A per la circumferència i veuràs que M traça una circumferència més petita. L'ordre <code>LlocGeomètric</code> fa aquest traçat automàticament.</p>
       </section>
 
+
+      <!-- ─────────────────────────────────────────
+           SECCIÓ 3b — Lloc geomètric amb un lliscador
+           ───────────────────────────────────────── -->
+      <section class="chapter-section">
+        <h2>Lloc geomètric amb un lliscador: <code>LlocGeomètric(P,a)</code></h2>
+
+        <p>El que es mou no ha de ser per força un punt sobre un objecte: també pot ser un lliscador. Si la posició del punt P depèn d'un lliscador a, <code>LlocGeomètric(P,a)</code> dibuixa tots els llocs per on passa P quan a recorre tots els seus valors:</p>
+
+        <pre class="code-example">a=PuntLliscant(-4,4,0.1)
+P=(a, a^2/4)
+LlocGeomètric(P,a)</pre>
+
+        <div class="geogebra"
+             data-commands="a=Slider(-4,4,0.1)
+P=(a,a^2/4)
+loc=Locus(P,a)"
+             data-readonly="true"
+             data-view="-5 5 -1 5"
+             data-height="360">
+        </div>
+
+        <p>Arrossega el lliscador a: el punt P es mou sobre la corba que ha dibuixat el lloc geomètric, una paràbola.</p>
+      </section>
 
       <!-- ─────────────────────────────────────────
            SECCIÓ 4 — Animació
