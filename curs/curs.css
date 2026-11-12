@@ -42,6 +42,8 @@ body {
 }
 
 .curs-header-logo {
+  color: inherit;
+  text-decoration: none;
   font-weight: 800;
   font-size: 0.9rem;
   display: flex;
@@ -113,13 +115,38 @@ body {
 
 .sidebar-list { list-style: none; }
 
-/* Reptes: títol de cada tema de la graella */
+/* Reptes: cada tema de la graella és un desplegable (<details>), plegat
+   tret del tema del repte que s'està mirant */
 .sidebar-tema-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--muted);
-  padding: 8px 16px 2px;
+  padding: 7px 16px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: background 0.12s, color 0.12s;
 }
+.sidebar-tema-title::-webkit-details-marker { display: none; }
+.sidebar-tema-title::before {
+  content: '';
+  flex: none;
+  width: 0.45em;
+  height: 0.45em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  margin-right: 2px;
+  transition: transform 0.15s ease;
+}
+.sidebar-tema[open] > .sidebar-tema-title::before { transform: rotate(45deg); }
+.sidebar-tema-title:hover { background: rgba(37,99,235,0.06); color: var(--text); }
+.sidebar-tema-title:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sidebar-tema > .sidebar-list { padding-bottom: 4px; }
+.sidebar-tema > .sidebar-list .sidebar-item a { padding-left: 30px; }
 
 .sidebar-item a {
   display: block;
@@ -208,11 +235,42 @@ pre.code-example {
   border-top: 1px solid var(--border);
 }
 .chapter-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   font-size: 0.78rem;
   color: var(--accent);
   text-decoration: none;
 }
-.chapter-nav a:hover { text-decoration: underline; }
+.chapter-nav a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* Sense enllaç «anterior» (repte 1A), el «següent» es queda a la dreta */
+.chapter-nav .btn-nav--next { margin-left: auto; }
+
+/* Fletxes: un disc del color de l'enllaç amb una fletxa buidada (màscara SVG,
+   així agafa el color del text i funciona amb qualsevol tema). En passar-hi
+   el ratolí, el disc es desplaça cap a on porta l'enllaç. */
+.btn-nav--prev::before,
+.btn-nav--next::after {
+  content: '';
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  background-color: currentColor;
+  -webkit-mask: var(--fletxa) center / contain no-repeat;
+          mask: var(--fletxa) center / contain no-repeat;
+  transition: transform 0.18s ease;
+}
+.btn-nav--next::after {
+  --fletxa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='m'%3E%3Ccircle cx='12' cy='12' r='12' fill='white'/%3E%3Cpath d='M7 12h9.5M12.5 7.5 17 12l-4.5 4.5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='12' cy='12' r='12' mask='url(%23m)'/%3E%3C/svg%3E");
+}
+.btn-nav--prev::before {
+  --fletxa: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='m'%3E%3Ccircle cx='12' cy='12' r='12' fill='white'/%3E%3Cpath d='M17 12H7.5M11.5 7.5 7 12l4.5 4.5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='12' cy='12' r='12' mask='url(%23m)'/%3E%3C/svg%3E");
+}
+.btn-nav--next:hover::after { transform: translateX(4px); }
+.btn-nav--prev:hover::before { transform: translateX(-4px); }
+@media (prefers-reduced-motion: reduce) {
+  .btn-nav--prev::before, .btn-nav--next::after { transition: none; }
+}
 
 
 /* ══════════════════════════════════════════════════════
@@ -539,7 +597,7 @@ pre.code-example {
   background: #ffffff;
   border: 1px solid #d0d0d0;
   border-radius: 8px;
-  width: min(540px, 92vw);
+  width: min(675px, 92vw);
   max-height: 82vh;
   display: flex;
   flex-direction: column;
@@ -585,7 +643,7 @@ pre.code-example {
 .glossari-section:last-child { margin-bottom: 0; }
 .glossari-section h3 {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -595,7 +653,7 @@ pre.code-example {
 
 .glossari-hint {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.8125rem;
   color: #4b5563;
   margin: 0 0 8px;
   line-height: 1.5;
@@ -607,7 +665,7 @@ pre.code-example {
   grid-template-columns: auto 1fr;
   gap: 3px 14px;
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.85rem;
   line-height: 1.7;
 }
 .glossari-grid > code { color: #2563eb; white-space: nowrap; background: none; padding: 0; }
@@ -616,7 +674,7 @@ pre.code-example {
 
 .glossari-example {
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.825rem;
   line-height: 1.6;
   color: #1a1a1a;
   background: #f5f5f5;
@@ -630,7 +688,7 @@ pre.code-example {
 
 .glossari-rules .glossari-rule {
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.825rem;
   color: #1a1a1a;
   line-height: 1.8;
 }
@@ -656,8 +714,8 @@ pre.code-example {
     touch-action: pan-y;
     padding: 14px 16px 24px;
   }
-  .glossari-grid { font-size: 0.63rem; gap: 2px 10px; }
-  .glossari-example { font-size: 0.62rem; padding: 6px 10px; }
+  .glossari-grid { font-size: 0.79rem; gap: 2px 10px; }
+  .glossari-example { font-size: 0.775rem; padding: 6px 10px; }
 }
 
 @media (max-width: 700px) {

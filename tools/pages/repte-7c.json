@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-7b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-8a.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Amb l'eina «Recta perpendicular», fes clic al vèrtex C i al costat AB; després, al vèrtex A i al costat BC. Marca el punt de tall amb «Intersecció»: és l'ortocentre, (3, 2.5). Amb la barra d'entrada: <code>h=Perpendicular(C, c)</code>, <code>k=Perpendicular(A, a)</code> i <code>H=Intersecció(h, k)</code> (<code>c</code> és el costat AB i <code>a</code>, el costat BC). La tercera altura hi passa també.</p>",
   "sections": [

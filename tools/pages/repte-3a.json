@@ -5,11 +5,11 @@
   "difficulty": "facil",
   "prev": {
     "url": "repte-2c.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-3b.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Escriu <code>Circumferència((0,0), 2)</code> i després <code>Circumferència((0,0), 4)</code>. Ambdues tenen el centre a l'origen però radis diferents.</p>",
   "sections": [

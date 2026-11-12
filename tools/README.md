@@ -42,8 +42,8 @@ Cada pàgina és un `tools/pages/{nom}.json` amb aquesta estructura:
   "titol": "Circumferència per dos punts",   // títol visible
   "difficulty": "facil" | "mitja" | "dificil",   // només reptes
   "lead":  "<p>Text d'introducció…</p>",              // només capítols (opcional)
-  "prev":  { "url": "repte-3a.html", "label": "← Repte anterior" },  // opcional
-  "next":  { "url": "repte-3c.html", "label": "Repte següent →" },    // opcional
+  "prev":  { "url": "repte-3a.html", "label": "Repte anterior" },    // opcional (el 1A no en té)
+  "next":  { "url": "repte-3c.html", "label": "Repte següent" },     // opcional; sense fletxes: les dibuixa el CSS
   "hint":  "<p>Pista HTML opcional…</p>",             // només reptes (opcional)
   "sections": [
     // Forma simple: una secció amb un h2 i body

@@ -5,11 +5,11 @@
   "difficulty": "facil",
   "prev": {
     "url": "repte-4c.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-5b.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Amb l'eina «Mediatriu», fes clic al segment (o als dos extrems): <code>Mediatriu(A, B)</code>. Amb l'eina «Punt mitjà o centre», torna a fer clic al segment: <code>PuntMitjà(A, B)</code>. El punt mig és (1, 0), i la mediatriu hi passa.</p>",
   "sections": [

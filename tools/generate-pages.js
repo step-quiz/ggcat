@@ -57,10 +57,10 @@ const PROJECTE = {
   navAria: page => (page.type === 'capitol' ? 'Navegació entre capítols' : null),
   capcalera: page => `<header class="curs-header">
   <button id="sidebar-toggle" aria-label="Mostra/amaga els ${page.type === 'capitol' ? 'capítols' : 'reptes'}" aria-expanded="false">☰</button>
-  <span class="curs-header-logo">
+  <a class="curs-header-logo" href="../index.html" title="Inici de GeoCat">
     <span class="logo-icon"></span>
     GeoCat
-  </span>
+  </a>
   <nav class="curs-nav">
     <a href="capitol-1.html"${page.type === 'capitol' ? ' class="active"' : ''}>Capítols</a>
     <a href="${PROJECTE.primerRepte}"${page.type === 'capitol' ? '' : ' class="active"'}>Reptes</a>

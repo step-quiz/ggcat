@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-5b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-6a.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Construeix dues mediatrius amb l'eina «Mediatriu» i marca'n el punt de tall amb «Intersecció». Dibuixa la circumferència amb centre en aquest punt que passa per A. Amb la barra d'entrada: <code>m=Mediatriu(A, C)</code>, <code>n=Mediatriu(B, C)</code>, <code>O=Intersecció(m, n)</code> i <code>Circumferència(O, A)</code>. Fixa't que el centre és (3, 2): el punt mig de la hipotenusa AB. Passa a tots els triangles rectangles: la hipotenusa és un diàmetre de la circumferència circumscrita.</p>",
   "sections": [

@@ -86,6 +86,8 @@ perdria l'endemà. Canvia'ls a step-quiz-commons.
 ## Progrés de l'alumne
 
 Es guarda localment al navegador (`localStorage`, clau `geocat_progress`). Cap dada s'envia a cap servidor.
+A més, el navegador recorda l'últim repte visitat (clau `geocat_ultim_repte`): l'enllaç «Reptes» de la
+capçalera i de la portada hi porta directament.
 
 <!-- atribucio-centre:inici -->
 

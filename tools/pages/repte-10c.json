@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-10b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "index.html",
-    "label": "Inici →"
+    "label": "Inici"
   },
   "hint": "<p>Crea un lliscador <code>a</code> que vagi de 2 a 8 i posa'l a 5. Dibuixa la circumferència de centre F₁ i radi <code>a</code>, i la de centre F₂ i radi <code>10 - a</code> (eina «Circumferència: Centre i Radi»). Marca un dels punts on es tallen, M: la suma de distàncies als focus és a + (10 − a) = 10. Amb l'eina «Lloc geomètric», fes clic a M i després al lliscador. Amb la barra d'entrada: <code>a=PuntLliscant(2, 8, 0.1)</code>, <code>a=5</code>, <code>c=Circumferència(F_1, a)</code>, <code>d=Circumferència(F_2, 10 - a)</code>, <code>M=Intersecció(c, d, 1)</code> i <code>LlocGeomètric(M, a)</code>. Surt mitja el·lipse; l'altre punt de tall dibuixa l'altra meitat.</p>",
   "sections": [

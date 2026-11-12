@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-8b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-9a.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Fes quatre passos: reflecteix t respecte de f («Simetria axial»), trasllada el resultat amb v («Translació segons un vector»), torna a reflectir respecte de f i torna a traslladar amb v. Amb la barra d'entrada: <code>r=Simetria(t, f)</code>, <code>g=Translació(r, v)</code>, <code>s=Simetria(g, f)</code> i <code>Translació(s, v)</code>. El triangle final és el triangle t desplaçat 4 unitats a la dreta i 4 amunt: aplicar dues vegades una reflexió amb lliscament equival a una translació de vector 2v.</p>",
   "sections": [

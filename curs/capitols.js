@@ -153,19 +153,30 @@ function renderSidebar(currentNum) {
 // ── Sidebar: reptes ──────────────────────────────────────
 
 // currentId: identificador de la casella («3b»), o res si no n'hi ha cap d'activa.
-// Un bloc per tema (només els temes que tenen algun repte), amb una entrada
-// per casella: «3B · Títol».
+// Un desplegable per tema (només els temes que tenen algun repte), amb una
+// entrada per casella: «3B · Títol». Tots plegats, tret del tema del repte
+// actual. Si la barra es torna a pintar (després de «Comprova»), els temes que
+// l'alumne hagi obert continuen oberts.
 
 function renderReptesSidebar(currentId) {
   var nav = document.getElementById('sidebar-nav');
   if (!nav) return;
   var progress = getProgress();
 
+  var actual = REPTES_DATA.filter(function(r) { return r.id === currentId; })[0];
+  if (actual) _desaUltimRepte(actual.id);
+  var oberts = {};
+  nav.querySelectorAll('details.sidebar-tema[open]').forEach(function(d) {
+    oberts[d.getAttribute('data-tema')] = true;
+  });
+
   var html = '<div class="sidebar-section-title">Reptes</div>';
   TEMES_DATA.forEach(function(tema) {
     var reptes = REPTES_DATA.filter(function(r) { return r.tema === tema.num; });
     if (!reptes.length) return;
-    html += '<div class="sidebar-tema-title">' + tema.num + ' · ' + tema.titol + '</div>';
+    var obert = (actual && actual.tema === tema.num) || oberts[tema.num];
+    html += '<details class="sidebar-tema" data-tema="' + tema.num + '"' + (obert ? ' open' : '') + '>';
+    html += '<summary class="sidebar-tema-title">' + tema.num + ' · ' + tema.titol + '</summary>';
     html += '<ul class="sidebar-list">';
     reptes.forEach(function(r) {
       var isActive = r.id === currentId;
@@ -176,10 +187,35 @@ function renderReptesSidebar(currentId) {
           check + r.id.toUpperCase() + ' · ' + r.titol +
         '</a></li>';
     });
-    html += '</ul>';
+    html += '</ul></details>';
   });
   nav.innerHTML = html;
 }
+
+// ── Últim repte visitat ──────────────────────────────────
+// Cada pàgina de repte desa el seu identificador a localStorage (només en
+// aquest navegador). L'enllaç «Reptes» de la capçalera porta a aquell repte
+// en lloc del 1A. La portada (index.html) llegeix la mateixa clau.
+var _CLAU_ULTIM_REPTE = 'geocat_ultim_repte';
+
+function _desaUltimRepte(id) {
+  try { localStorage.setItem(_CLAU_ULTIM_REPTE, id); } catch (e) {}
+}
+
+function _ultimRepte() {
+  var id = null;
+  try { id = localStorage.getItem(_CLAU_ULTIM_REPTE); } catch (e) {}
+  return REPTES_DATA.filter(function(r) { return r.id === id; })[0] || null;
+}
+
+function _enllacaUltimRepte() {
+  var r = _ultimRepte();
+  if (!r) return;
+  document.querySelectorAll('.curs-nav a[href="repte-1a.html"]').forEach(function(a) {
+    a.setAttribute('href', r.arxiu);
+  });
+}
+_enllacaUltimRepte();
 
 
 
@@ -191,6 +227,24 @@ function renderReptesSidebar(currentId) {
 // s'executa. Sense càrrega dinàmica, sense cues, sense IntersectionObserver.
 
 var _ggbWidgetCount = 0;
+
+// Focus inicial. En carregar, l'applet classic posa el cursor a la barra
+// d'entrada («Entrada…») i el navegador baixa la pàgina fins allà: l'alumne no
+// veu l'enunciat. El paràmetre preventFocus no ho evita. Per això, mentre
+// l'alumne no hagi fet res a la pàgina (clic, tecla, roda, tocar la pantalla),
+// qualsevol focus que agafi un applet es treu i la pàgina torna a dalt.
+var _alumneHaInteractuat = false;
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function(ev) {
+  document.addEventListener(ev, function() { _alumneHaInteractuat = true; }, true);
+});
+
+function _evitaFocusInicial(wrapper) {
+  wrapper.addEventListener('focusin', function(e) {
+    if (_alumneHaInteractuat) return;
+    if (e.target && e.target.blur) e.target.blur();
+    window.scrollTo(0, 0);
+  });
+}
 
 // GeoGebra no disponible. deployggb.js i l'applet es carreguen de geogebra.org:
 // sense connexió (o si el servidor no respon) el widget es quedaria per sempre a
@@ -369,6 +423,7 @@ function renderSimuladors() {
 
     wrapper._ggbId  = cfg.id;
     wrapper._ggbCfg = cfg;
+    _evitaFocusInicial(wrapper);
     cfg.div.replaceWith(wrapper);
   });
 
@@ -411,6 +466,9 @@ function renderSimuladors() {
       enableLabelDrags:    !cfg.readonly,
       enableShiftDragZoom: true,
       showKeyboardOnFocus: false,
+      // Que l'applet no agafi el focus en carregar: si no, el cursor va a la barra
+      // d'entrada i el navegador baixa la pàgina fins allà.
+      preventFocus:        true,
       language:            'ca',
       id:                  cfg.id,
       appletOnLoad: function(api) {

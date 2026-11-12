@@ -156,7 +156,7 @@
      CAPÇALERA
      ══════════════════════════════════════════════════════ -->
 <header class="topbar">
-  <div class="logo">
+  <a class="logo" href="index.html" title="Inici de GeoCat">
     <span class="logo-icon">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1.4em" height="1.4em" style="vertical-align:middle">
         <circle cx="50" cy="22" r="10" fill="#2563eb"/>
@@ -166,7 +166,7 @@
       </svg>
     </span>
     <span>GeoCat</span>
-  </div>
+  </a>
 
   <nav class="topbar-nav">
     <a href="curs/capitol-1.html" class="topbar-nav-link">Capítols</a>
@@ -239,6 +239,18 @@
 <!-- ══════════════════════════════════════════════════════
      Scripts
      ══════════════════════════════════════════════════════ -->
+<script>
+  // ── «Reptes» porta a l'últim repte visitat en aquest navegador ──
+  // (la clau la desa curs/capitols.js a cada pàgina de repte)
+  (function() {
+    var id = null;
+    try { id = localStorage.getItem('geocat_ultim_repte'); } catch (_) {}
+    if (!id || !/^(10|[1-9])[abc]$/.test(id)) return;
+    document.querySelectorAll('.topbar-nav a[href="curs/repte-1a.html"]').forEach(function(a) {
+      a.setAttribute('href', 'curs/repte-' + id + '.html');
+    });
+  })();
+</script>
 <script>
   // ── Botó de tema ──────────────────────────────────────
   (function() {

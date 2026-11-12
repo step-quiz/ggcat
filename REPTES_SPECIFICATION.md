@@ -100,9 +100,10 @@ Rules:
 ### 4.3 Navigation
 
 - **Previous / next** links follow the order of `REPTES_DATA`: the adjacent *existing* cells. While the grid is incomplete, adding a cell changes the links of its two neighbours, which must be regenerated.
-- First existing cell: previous → `capitol-1.html`, label `← Capítols`. Last existing cell: next → `index.html`, label `Inici →`. Otherwise the labels are `← Repte anterior` and `Repte següent →`.
-- The **«Reptes»** link in every page header (chapters, challenges, landing page) points to the first cell, `repte-1a.html`.
-- **Sidebar** (`renderReptesSidebar(currentId)`): one block per theme that has at least one existing cell, titled `<t> · <theme title>`, with one entry per cell: `<t><L> · <title>`, preceded by ✓ when completed.
+- First cell (1A): **no previous link** (owner's decision, 2026-11-12; the JSON has no `prev`). Last cell: next → `index.html`, label `Inici`. Otherwise the labels are `Repte anterior` and `Repte següent`. Labels carry **no arrow characters**: `curs/curs.css` draws the arrows (`.btn-nav--prev::before`, `.btn-nav--next::after`, a disc with a cut-out arrow, as a CSS mask so it takes the link colour). The chapters' `.chapter-nav` uses the same classes and the same rule.
+- The **«Reptes»** link in every page header (chapters, challenges, course index, landing page) points to `repte-1a.html` in the HTML; at load it is rewritten to the **last challenge visited in that browser** (`localStorage['geocat_ultim_repte']` = cell id, saved by `renderReptesSidebar`; rewritten by `_enllacaUltimRepte()` in `curs/capitols.js` and by an inline script in `index.html`).
+- The **GeoCat logo** of every header is a link to the landing page (`../index.html` from `curs/`).
+- **Sidebar** (`renderReptesSidebar(currentId)`): one collapsible block per theme that has at least one existing cell (`<details class="sidebar-tema">`, summary `<t> · <theme title>`), with one entry per cell: `<t><L> · <title>`, preceded by ✓ when completed. Every theme is closed except the theme of the current cell; themes the student opened stay open when the sidebar is redrawn after «Comprova».
 - **Course index** (`curs/index.html`): a table with one row per theme and three columns A, B, C; a cell that does not exist yet is rendered empty and not linked.
 
 ### 4.4 Student progress and the legacy keys
@@ -158,8 +159,8 @@ Generator JSON for a challenge (`num` is replaced by `id`; `simulador` gains `to
   "id": "3b",
   "titol": "Circumferència per dos punts",
   "difficulty": "mitja",
-  "prev": { "url": "repte-3a.html", "label": "← Repte anterior" },
-  "next": { "url": "repte-3c.html", "label": "Repte següent →" },
+  "prev": { "url": "repte-3a.html", "label": "Repte anterior" },
+  "next": { "url": "repte-3c.html", "label": "Repte següent" },
   "hint": "<p>…</p>",
   "sections": [ { "parts": [
     { "h2": "Objectiu", "body": "<p>…</p>" },
