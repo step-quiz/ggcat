@@ -40,6 +40,7 @@ const PROJECTE = {
   // Scripts del final, en ordre: un nom de fitxer, o { inline: page => codi }.
   scripts: [
     'glossari-data.js',
+    'glossari-exemples.js',
     'geovalidator.js',
     'validators.js',
     'progress.js',

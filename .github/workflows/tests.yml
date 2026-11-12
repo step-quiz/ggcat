@@ -35,3 +35,6 @@ jobs:
 
       - name: Lògica del provador end-to-end
         run: node test-debug-tester-logic.js
+
+      - name: Exemples del glossari
+        run: node test-glossari.js
