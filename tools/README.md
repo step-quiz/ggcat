@@ -1,10 +1,10 @@
-# GeoCat — Eines de desenvolupament (`tools/`)
+# Ggcat — Eines de desenvolupament (`tools/`)
 
 ## `generate-pages.js` — Generador de pàgines del curs
 
 Eina per generar HTML de capítols i reptes a partir de descripcions JSON a `tools/pages/*.json`. Permet editar en un sol lloc l'esquelet comú i canviar-lo per totes les pàgines alhora.
 
-L'esquelet és el de les pàgines actuals de GeoCat: la capçalera (`<header class="curs-header">`)
+L'esquelet és el de les pàgines actuals de Ggcat: la capçalera (`<header class="curs-header">`)
 i la barra lateral escrites a la pàgina, GeoGebra (`deployggb.js`) al `<head>`, i al final
 `glossari-data.js`, `geovalidator.js`, `validators.js`, `progress.js`, `capitols.js` i el
 `<script>` que pinta la barra lateral i els applets. El mateix generador és a PyCat i JSCat; només
@@ -87,7 +87,7 @@ després de «Reinicia». Als capítols, que no es generen, s'escriu a mà com a
 (`curs/capitols.js`). Vegeu `REPTES_SPECIFICATION.md`.
 
 Un repte també pot portar `"num"` (un número) en lloc de `"id"`: és com funciona el generador a PyCat i
-JSCat. La còpia de GeoCat és la que entén `"id"`, `"tools"` i `"view"`.
+JSCat. La còpia de Ggcat és la que entén `"id"`, `"tools"` i `"view"`.
 
 `prev` i `next` segueixen l'ordre de `REPTES_DATA`: quan s'afegeix un repte, cal canviar-los també als JSON
 dels dos veïns i tornar-los a generar.

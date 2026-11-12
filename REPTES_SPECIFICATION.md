@@ -1,8 +1,8 @@
-# GeoCat — Challenge Specification: the 10 × 3 grid
+# Ggcat — Challenge Specification: the 10 × 3 grid
 
 ## 1. Purpose and authority of this document
 
-This is the **technical specification of the GeoCat challenges** (`curs/repte-*.html`), written for an AI implementor that starts cold with the repository loaded. Work order and task status live in `TODO.md`; this file defines *what* each challenge is.
+This is the **technical specification of the Ggcat challenges** (`curs/repte-*.html`), written for an AI implementor that starts cold with the repository loaded. Work order and task status live in `TODO.md`; this file defines *what* each challenge is.
 
 The challenges form a **grid of 10 themes × 3 levels = 30 challenges**. This replaces the previous plan (a flat list of 30 challenges numbered 1–30, split 10 Fàcil + 10 Mitjà + 10 Difícil), which is no longer valid.
 
@@ -102,7 +102,7 @@ Rules:
 - **Previous / next** links follow the order of `REPTES_DATA`: the adjacent *existing* cells. While the grid is incomplete, adding a cell changes the links of its two neighbours, which must be regenerated.
 - First cell (1A): **no previous link** (owner's decision, 2026-11-12; the JSON has no `prev`). Last cell: next → `index.html`, label `Inici`. Otherwise the labels are `Repte anterior` and `Repte següent`. Labels carry **no arrow characters**: `curs/curs.css` draws the arrows (`.btn-nav--prev::before`, `.btn-nav--next::after`, a disc with a cut-out arrow, as a CSS mask so it takes the link colour). The chapters' `.chapter-nav` uses the same classes and the same rule.
 - The **«Reptes»** link in every page header (chapters, challenges, course index, landing page) points to `repte-1a.html` in the HTML; at load it is rewritten to the **last challenge visited in that browser** (`localStorage['geocat_ultim_repte']` = cell id, saved by `renderReptesSidebar`; rewritten by `_enllacaUltimRepte()` in `curs/capitols.js` and by an inline script in `index.html`).
-- The **GeoCat logo** of every header is a link to the landing page (`../index.html` from `curs/`).
+- The **Ggcat logo** of every header is a link to the landing page (`../index.html` from `curs/`).
 - **Sidebar** (`renderReptesSidebar(currentId)`): one collapsible block per theme that has at least one existing cell (`<details class="sidebar-tema">`, summary `<t> · <theme title>`), with one entry per cell: `<t><L> · <title>`, preceded by ✓ when completed. Every theme is closed except the theme of the current cell; themes the student opened stay open when the sidebar is redrawn after «Comprova».
 - **Course index** (`curs/index.html`): a table with one row per theme and three columns A, B, C; a cell that does not exist yet is rendered empty and not linked.
 
@@ -127,7 +127,7 @@ Every challenge is `curs/repte-<id>.html`, generated from `tools/pages/repte-<id
 
 | Slot | Where | Value |
 |---|---|---|
-| `<title>` | `<head>` | `Repte 3B — <title> \| GeoCat` |
+| `<title>` | `<head>` | `Repte 3B — <title> \| Ggcat` |
 | Header title | `.curs-header-title` | `Repte 3B — <title>` |
 | Badge | `.chapter-badge` | `⚡ Repte 3B — Mitjà`, colours below |
 | `<h1>` | `.chapter-header` | `<title>` |

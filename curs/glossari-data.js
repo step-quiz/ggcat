@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════
-// curs/glossari-data.js — Contingut HTML del glossari GeoCat
+// curs/glossari-data.js — Contingut HTML del glossari Ggcat
 //
 // ESCALAR: afegeix seccions aquí quan es cobreixin nous
 // conceptes als capítols.

@@ -15,9 +15,9 @@
 //   node tools/generate-pages.js --out /tmp/        # canvia el directori de sortida
 //   node tools/generate-pages.js --input other/     # canvia el directori d'entrada
 //
-// El mateix fitxer és a PyCat, JSCat i GeoCat: només hi canvia el bloc PROJECTE
-// (i, a GeoCat, el que genera el simulador, que és un applet de GeoGebra).
-// Des de l'11/11/2026 la còpia de GeoCat va per davant de les altres: un repte
+// El mateix fitxer és a PyCat, JSCat i Ggcat: només hi canvia el bloc PROJECTE
+// (i, a Ggcat, el que genera el simulador, que és un applet de GeoGebra).
+// Des de l'11/11/2026 la còpia de Ggcat va per davant de les altres: un repte
 // es pot identificar amb "id" (tema + nivell: "3b" → repte-3b.html, «Repte 3B»)
 // en lloc de "num". Amb "num" tot funciona com abans, de manera que aquest
 // fitxer es pot copiar als altres cursos canviant-hi només el bloc PROJECTE.
@@ -29,7 +29,7 @@ const path = require('path');
 
 // ── Què té de propi aquest curs ─────────────────────────
 const PROJECTE = {
-  nom: 'GeoCat',
+  nom: 'Ggcat',
   // 'injectat': <body data-pagina data-num> i només el <main>; capitols.js hi
   //             afegeix la capçalera i la barra lateral (initCursPage).
   // 'complet':  la pàgina porta escrites la capçalera i la barra lateral.
@@ -57,9 +57,9 @@ const PROJECTE = {
   navAria: page => (page.type === 'capitol' ? 'Navegació entre capítols' : null),
   capcalera: page => `<header class="curs-header">
   <button id="sidebar-toggle" aria-label="Mostra/amaga els ${page.type === 'capitol' ? 'capítols' : 'reptes'}" aria-expanded="false">☰</button>
-  <a class="curs-header-logo" href="../index.html" title="Inici de GeoCat">
+  <a class="curs-header-logo" href="../index.html" title="Inici de Ggcat">
     <span class="logo-icon"></span>
-    GeoCat
+    Ggcat
   </a>
   <nav class="curs-nav">
     <a href="capitol-1.html"${page.type === 'capitol' ? ' class="active"' : ''}>Capítols</a>
@@ -144,7 +144,7 @@ function escAttrSingle(s) {
 const DIFFICULTY_BADGE = {
   facil:     { color: '#d1fae5', fg: '#065f46', label: 'Fàcil' },
   intermedi: { color: '#fef3c7', fg: '#92400e', label: 'Intermedi' },
-  mitja:     { color: '#fef3c7', fg: '#92400e', label: 'Mitjà' },      // GeoCat
+  mitja:     { color: '#fef3c7', fg: '#92400e', label: 'Mitjà' },      // Ggcat
   dificil:   { color: '#fee2e2', fg: '#991b1b', label: 'Difícil' },
 };
 

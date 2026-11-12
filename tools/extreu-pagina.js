@@ -11,7 +11,7 @@
 // «node tools/generate-pages.js --comprova» diu si el JSON reprodueix exactament
 // la pàgina. Només entén els reptes (estructura regular: capçalera, seccions amb
 // <h2>, simulador, pista i navegació); els capítols s'han de passar a mà.
-// El mateix fitxer és a PyCat, JSCat i GeoCat.
+// El mateix fitxer és a PyCat, JSCat i Ggcat.
 // ════════════════════════════════════════════════════════
 
 const fs = require('fs');

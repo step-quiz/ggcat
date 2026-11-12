@@ -1,10 +1,12 @@
-# GeoCat — Handout for a cold-start Claude session
+# Ggcat — Handout for a cold-start Claude session
 
 > Written 2026-11-11 at the end of a long session; updated after blocks C (2026-11-11), D, E and F (2026-11-12). Audience: a Claude instance that picks the project up with no memory of that session. Talk to the owner (David) in **Catalan**; write MD files for AI readers in English.
 
 ## 1. What this is
 
-GeoCat (`step-quiz/ggcat`) is a static course (HTML + CSS + JS, no build, no server) that teaches GeoGebra in Catalan to secondary students: 10 guided chapters and a grid of challenges, each validated by a «Comprova» button against the live GeoGebra applet (loaded from `www.geogebra.org`). Published by Cloudflare Pages on every commit to `main`.
+The site was renamed **GeoCat → Ggcat** on 2026-11-12. The `localStorage` keys keep the `geocat` prefix on purpose (renaming them would wipe students' progress); the repository is `step-quiz/ggcat`.
+
+Ggcat (`step-quiz/ggcat`) is a static course (HTML + CSS + JS, no build, no server) that teaches GeoGebra in Catalan to secondary students: 10 guided chapters and a grid of challenges, each validated by a «Comprova» button against the live GeoGebra applet (loaded from `www.geogebra.org`). Published by Cloudflare Pages on every commit to `main`.
 
 Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the authority on *what is next*), `REPTES_SPECIFICATION.md` (the 30 challenges — the authority on *what each one is*), `tools/README.md` (page generator), `README.md`.
 
@@ -14,10 +16,10 @@ Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the auth
 |---|---|
 | Chapters `curs/capitol-1…10.html` | 10/10, hand-written HTML, each with a validated exercise `cap-N-ex` |
 | Challenges | **30/30** live: the grid is complete. Grid = 10 themes × 3 levels (A/B/C); id `3b` → `curs/repte-3b.html`, goalId `repte-3b` |
-| Blocks of `TODO.md` | All done (0, A–G; G = first UI/UX round asked by the owner). Nothing planned; `TODO.md` section 5 lists what was never checked |
+| Blocks of `TODO.md` | All done (0, A–H; G and H = UI/UX rounds asked by the owner). Nothing planned; `TODO.md` section 5 lists what was never checked |
 | Tests | `--comprova` 30 pages · `test-validators.js` 161/161 · `test-debug-tester-logic.js` 200/200 · end-to-end on the real applet 40/40 · 30/30 hints typed |
 
-Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. #6 blocks E (`data-view`) and F (notice when GeoGebra is unreachable) — merged. #7 Cloudflare incident note (section 7) — merged; merging it redeployed the site. #8 is block G (UI/UX).
+Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. #6 blocks E (`data-view`) and F (notice when GeoGebra is unreachable) — merged. #7 Cloudflare incident note (section 7) — merged; merging it redeployed the site. #8 block G (UI/UX, first round) — merged. #9 is block H (second round: header sizes, selected option, rename, landing page).
 
 ## 3. How the owner wants to work
 
@@ -63,5 +65,5 @@ Of the 19 cells built from the spec, 18 reference validators passed the real app
 - GeoGebra unreachable: `_mostraErrorGeoGebra()` in `curs/capitols.js` (block F). Test it with Playwright's `page.route(/geogebra\.org/, r => r.abort())`.
 - `graphing` rejects some geometry commands (`Tangent`, `Angle` with lines); prefer `classic` for any cell that needs them.
 - 9A: settled. `Intersecció(f, EixX)` typed with CDP key events gives ✓; the hint's `Arrel(f)` also works.
-- The generator (`tools/generate-pages.js`) is shared with the sibling courses PyCat and JSCat; GeoCat's copy is ahead (grid ids, `tools`, `view`) and still accepts numeric `num`.
+- The generator (`tools/generate-pages.js`) is shared with the sibling courses PyCat and JSCat; Ggcat's copy is ahead (grid ids, `tools`, `view`) and still accepts numeric `num`.
 - Chapter prose was only audited for command names, not for content.
