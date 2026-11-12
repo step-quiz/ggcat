@@ -80,8 +80,9 @@ const PROJECTE = {
   //   fixed    → etiquetes dels objectes que no es poden moure (separades per comes)
   //   app      → 'graphing' per als reptes de funcions (si no hi és: classic)
   //   tools    → paleta d'eines (customToolBar): «0 | 1 | 51»
+  //   view     → regió que ha de quedar visible al principi: «xmin xmax ymin ymax»
   classeSimulador: 'geogebra',
-  atributsSimulador: ['commands', 'fixed', 'app', 'tools', 'goal-id', 'height'],
+  atributsSimulador: ['commands', 'fixed', 'app', 'tools', 'view', 'goal-id', 'height'],
   alcadaSimulador: 440,         // data-height si el JSON no en diu cap
 };
 

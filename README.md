@@ -13,7 +13,8 @@ Obre `index.html` al navegador. Des d'allà pots accedir a:
 - **Reptes** (`curs/repte-1a.html` ... ) — Exercicis amb validació automàtica ✓/✗, ordenats en una graella de
   10 temes × 3 nivells (A fàcil, B mitjà, C difícil). El repte 3B és `curs/repte-3b.html`.
 
-Cal connexió a internet per carregar GeoGebra des del CDN (`geogebra.org`).
+Cal connexió a internet per carregar GeoGebra des del CDN (`geogebra.org`). Si no s'hi pot connectar, cada
+widget ho diu (amb un botó per tornar a carregar la pàgina) en lloc de quedar-se a «carregant…».
 
 ## Estructura
 

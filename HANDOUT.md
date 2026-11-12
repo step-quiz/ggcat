@@ -1,6 +1,6 @@
 # GeoCat — Handout for a cold-start Claude session
 
-> Written 2026-11-11 at the end of a long session; updated after block C (2026-11-11) and block D (2026-11-12). Audience: a Claude instance that picks the project up with no memory of that session. Talk to the owner (David) in **Catalan**; write MD files for AI readers in English.
+> Written 2026-11-11 at the end of a long session; updated after blocks C (2026-11-11), D, E and F (2026-11-12). Audience: a Claude instance that picks the project up with no memory of that session. Talk to the owner (David) in **Catalan**; write MD files for AI readers in English.
 
 ## 1. What this is
 
@@ -14,10 +14,10 @@ Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the auth
 |---|---|
 | Chapters `curs/capitol-1…10.html` | 10/10, hand-written HTML, each with a validated exercise `cap-N-ex` |
 | Challenges | **30/30** live: the grid is complete. Grid = 10 themes × 3 levels (A/B/C); id `3b` → `curs/repte-3b.html`, goalId `repte-3b` |
-| Blocks of `TODO.md` | 0, A, B, C, D done. **Open: E** (verification debts) and **F** (banner when the GeoGebra CDN is down) |
+| Blocks of `TODO.md` | All done (0, A–F). Nothing planned; `TODO.md` section 5 lists what was never checked |
 | Tests | `--comprova` 30 pages · `test-validators.js` 161/161 · `test-debug-tester-logic.js` 200/200 · end-to-end on the real applet 40/40 · 30/30 hints typed |
 
-Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 holds blocks C and D (all 19 new cells): check on GitHub whether it is merged (if `main` has no `curs/repte-10c.html`, it is not).
+Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. The next PR holds blocks E (`data-view`) and F (notice when GeoGebra is unreachable): if `main` has no `_aplicaVista` in `curs/capitols.js`, it is not merged.
 
 ## 3. How the owner wants to work
 
@@ -57,8 +57,9 @@ Of the 19 cells built from the spec, 18 reference validators passed the real app
 
 ## 7. Open items worth knowing
 
-- 5B: vertex C = (2, 5) is outside the initial view (inherited).
+- Initial view: GeoGebra's default shows only y ∈ [−3.9, 3.9]. Give a new applet a `view` (JSON) / `data-view` (hand-written HTML) whenever its construction or its solution leaves that box; `TODO.md` block E has the probe.
+- GeoGebra unreachable: `_mostraErrorGeoGebra()` in `curs/capitols.js` (block F). Test it with Playwright's `page.route(/geogebra\.org/, r => r.abort())`.
 - `graphing` rejects some geometry commands (`Tangent`, `Angle` with lines); prefer `classic` for any cell that needs them.
 - 9A: settled. `Intersecció(f, EixX)` typed with CDP key events gives ✓; the hint's `Arrel(f)` also works.
-- The generator (`tools/generate-pages.js`) is shared with the sibling courses PyCat and JSCat; GeoCat's copy is ahead (grid ids, `tools`) and still accepts numeric `num`.
+- The generator (`tools/generate-pages.js`) is shared with the sibling courses PyCat and JSCat; GeoCat's copy is ahead (grid ids, `tools`, `view`) and still accepts numeric `num`.
 - Chapter prose was only audited for command names, not for content.

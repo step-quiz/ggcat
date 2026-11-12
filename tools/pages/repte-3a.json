@@ -25,6 +25,7 @@
             "commands": "",
             "fixed": "",
             "tools": "0 | 1 | 34 10",
+            "view": "-5 5 -5 5",
             "goalId": "repte-3a",
             "height": 440
           },
