@@ -45,31 +45,31 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of 2026-11-11. **Blocks 0, A and B are done**: the site runs the grid ids and offers 11 challenges (the ten A cells and 5B). The legacy pages `repte-1` … `repte-10` are gone. The next block is C.
+As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid ids and offers all 30 challenges. The legacy pages `repte-1` … `repte-10` are gone. What is left is blocks E (debts) and F (CDN-down banner).
 
 | Area | State |
 |---|---|
-| Data and UI (`curs/capitols.js`) | ✅ `TEMES_DATA`, `REPTES_DATA` (grid shape, 11 entries), sidebar grouped by theme, migration of the four legacy progress keys |
-| `curs/validators.js` | ✅ 10 chapter exercises + 11 cells; all pass the end-to-end tester |
+| Data and UI (`curs/capitols.js`) | ✅ `TEMES_DATA`, `REPTES_DATA` (grid shape, 30 entries), sidebar grouped by theme, migration of the four legacy progress keys |
+| `curs/validators.js` | ✅ 10 chapter exercises + 30 cells; all pass the end-to-end tester |
 | `curs/geovalidator.js` | ✅ includes the `GV` extension of spec 7.3 |
 | Course index (`curs/index.html`) | ✅ chapter list + theme × level table of the challenges (empty cells are dashed boxes) |
-| Landing page (`index.html`) | ✅; the stat reads `11/30` |
+| Landing page (`index.html`) | ✅; the stat reads `30` |
 | Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`). Command names in their text and in the glossary verified against the live applet (2026-11-11) |
-| Challenges | **11/30** live under their final id, each generated from `tools/pages/repte-<id>.json` |
+| Challenges | **30/30** live under their final id, each generated from `tools/pages/repte-<id>.json` |
 | Generator (`tools/generate-pages.js`, `tools/extreu-pagina.js`) | ✅ grid ids (`"id": "3b"`) and `simulador.tools` → `data-tools`; numeric `num` still works. Chapter pages are hand-written HTML. This copy is now ahead of the one in PyCat and JSCat (the owner knows). |
 | Tool palettes | ✅ every challenge page has its `data-tools` |
 | Input bar | Shown in every non-read-only applet since 2026-11-10 (check 0.1). |
 
-Test results on 2026-11-11:
+Test results on 2026-11-12:
 
 | Command | Result |
 |---|---|
-| `node tools/generate-pages.js --comprova` | 11 pages checked, all match |
-| `node test-validators.js` | 81/81 (11 cells and 10 chapter exercises) |
-| `node test-debug-tester-logic.js` | 105/105 |
+| `node tools/generate-pages.js --comprova` | 30 pages checked, all match |
+| `node test-validators.js` | 161/161 (30 cells and 10 chapter exercises) |
+| `node test-debug-tester-logic.js` | 200/200 |
 | `node --check` on every `.js` | all pass |
-| End-to-end (`curs/index.html?debug=1`, real GeoGebra, headless Chromium) | **21/21 green** |
-| Hints typed by hand (the Catalan commands of each hint typed into the input bar, then «Comprova») | **11/11 ✓** |
+| End-to-end (`curs/index.html?debug=1`, real GeoGebra, headless Chromium) | **40/40 green** |
+| Hints typed by hand (the Catalan commands of each hint typed into the input bar, then «Comprova») | **30/30 ✓** |
 | Progress migration (a browser holding `repte-3` and `repte-9`) | ✓ appears on 3A and 5B |
 
 ### Grid status
@@ -78,24 +78,24 @@ Test results on 2026-11-11:
 
 | Theme | A | B | C |
 |---|---|---|---|
-| 1 El triangle | ✅ 1a | ⬜ 1b | ⬜ 1c |
-| 2 El quadrat | ✅ 2a | ⬜ 2b | ⬜ 2c |
-| 3 La circumferència | ✅ 3a | ⬜ 3b | ⬜ 3c |
-| 4 Polígons regulars | ✅ 4a | ⬜ 4b | ⬜ 4c |
-| 5 Mediatriu i circumcentre | ✅ 5a | ✅ 5b | ⬜ 5c |
-| 6 Bisectriu i incentre | ✅ 6a | ⬜ 6b | ⬜ 6c |
-| 7 Perpendiculars i paral·leles | ✅ 7a | ⬜ 7b | ⬜ 7c |
-| 8 Transformacions | ✅ 8a | ⬜ 8b | ⬜ 8c |
-| 9 Funcions i corbes | ✅ 9a | ⬜ 9b | ⬜ 9c |
-| 10 Lliscadors i lloc geomètric | ✅ 10a | ⬜ 10b | ⬜ 10c |
+| 1 El triangle | ✅ 1a | ✅ 1b | ✅ 1c |
+| 2 El quadrat | ✅ 2a | ✅ 2b | ✅ 2c |
+| 3 La circumferència | ✅ 3a | ✅ 3b | ✅ 3c |
+| 4 Polígons regulars | ✅ 4a | ✅ 4b | ✅ 4c |
+| 5 Mediatriu i circumcentre | ✅ 5a | ✅ 5b | ✅ 5c |
+| 6 Bisectriu i incentre | ✅ 6a | ✅ 6b | ✅ 6c |
+| 7 Perpendiculars i paral·leles | ✅ 7a | ✅ 7b | ✅ 7c |
+| 8 Transformacions | ✅ 8a | ✅ 8b | ✅ 8c |
+| 9 Funcions i corbes | ✅ 9a | ✅ 9b | ✅ 9c |
+| 10 Lliscadors i lloc geomètric | ✅ 10a | ✅ 10b | ✅ 10c |
 
-Totals: 11 ✅, 19 ⬜. Keep this table up to date as cells land.
+Totals: 30 ✅. The grid is complete.
 
 ---
 
 ## 4. Work blocks
 
-Order: **0, A, B (done) → C → D**. Blocks E and F can be done at any time.
+Order: **0, A, B, C, D (all done)**. Blocks E and F can be done at any time.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -143,26 +143,35 @@ Delivered in one pull request (the legacy files were deleted in the same commit,
 - **Retired**: the pages, validators, scenes and JSON of `repte-1`, `-2`, `-4`, `-6`, `-7`, `-10`.
 - **What the browser taught** (all recorded in the spec):
   - Catalan command names in the hints of 1A, 2A, 4A, 5A and 10A were wrong and GeoGebra rejected them. The real ones are `Polígon` (also for regular polygons), `PuntMitjà`, `PuntLliscant`. Tables of tool and command names: spec section 6.
-  - In the `graphing` app the input is a formula editor: after an exponent the student must press → (the 9A hint says so), and accented names could not be tested with a simulated keyboard, so 9A offers `Arrel(f)`.
+  - In the `graphing` app the input is a formula editor: after an exponent the student must press → (the 9A hint says so), and accented names could not be tested with a simulated keyboard, so 9A offers `Arrel(f)` (that limit was the test's, not GeoGebra's: see block C).
   - `repte-10a` moves the slider and restores it: works on the live applet.
 
-### Block C — The nine remaining B cells (→ 20/30)
+### Block C — The nine remaining B cells (done, 2026-11-11 → 20/30)
 
-`1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`. Per-cell checklist: spec section 10. Each added cell changes the previous/next links of its neighbours. Type each hint into the input bar once (spec section 10, step 7): five of the first eleven hints failed that test.
+`1b`, `2b`, `3b`, `4b`, `6b`, `7b`, `8b`, `9b`, `10b`, built from the spec in one pull request: JSON → page, validator (the reference one of spec section 9; 7B now calls `GV.pointOnLine` instead of a raw `Distance`, same condition), `REPTES_DATA`, `prev`/`next` of every neighbour, test scenes (correct, initial, wrong and a typical error for each; another correct route for 3B and 9B), `TEST_SOLUTIONS`.
 
-No cell of this block has an unverified API dependency left (`7b` and `10b` were confirmed on 2026-11-10).
+What the browser confirmed (headless Chromium, live applet):
 
-### Block D — The ten C cells (→ 30/30)
+- All nine reference validators and test solutions pass unchanged (end-to-end 30/30).
+- Every hint, typed in Catalan into the input bar, leads to ✓. The hints now give the input-bar commands after the tool route (the spec's hints of 1B, 2B, 3B, 4B, 6B, 7B, 10B gave none). `Rotació(A, 60°, O)` with the degree sign is accepted. For 6B and 7B the hint names the objects (`m=Bisectriu(…)`, `P=Intersecció(p, k, 1)`) so that the next command can refer to them.
+- **Accented names do work in the `graphing` formula editor.** Playwright's `keyboard.type` drops non-ASCII characters there; sending them as CDP key events (`Input.dispatchKeyEvent` with `text`) types them, and `Intersecció(f,g)` (9B) and `Intersecció(f,EixX)` (9A) both give ✓. So the open question about 9A is settled: its hint (`Arrel(f)`) is right, and the accented alternative works too.
+- Labels GeoGebra chooses in Catalan: `Polígon(A,B,C)` typed is called `tri1`, a 4-gon `q1`, a regular polygon `pol1`, a locus `Lloc1`; `Intersecció(f,g)` in `graphing` yields `A` and `B`. No validator depends on them.
 
-`1c`, `2c`, `3c`, `4c`, `5c`, `6c`, `7c`, `8c`, `9c`, `10c`.
+### Block D — The ten C cells (done, 2026-11-12 → 30/30)
 
-When the last cell lands, the landing stat becomes `30`.
+`1c` … `10c`, built from the spec like block C, and the landing stat is now `30`.
+
+What the browser confirmed (headless Chromium, live applet):
+
+- Nine reference validators and test solutions pass unchanged. **9C did not**: in the `graphing` app GeoGebra rejects `Tangent` and `Angle` (`evalCommand` returns false for `Tangent(P,f)`, `Tangent(pi/4,g)`, `Angle(l,k)` with two lines, and `Tangent` to a circle). 9C now runs in `classic` (no `data-app`), where they work; validator and pass condition are unchanged. End-to-end: 40/40.
+- Every hint, typed in Catalan, leads to ✓. Hints that differ from the spec's first draft: the input-bar commands were added to all but 2C; 4C offers a shortcut (circles centred at P and Q through the centre give the two vertices on side PQ, then `Polígon(E, F, 8)`); 9C no longer promises 70.53° or 109.47°, because GeoGebra shows 289.47° with the hint's own commands (the validator accepts all four values); 10C asks to set the slider to 5 first (`a=5`), because `PuntLliscant(2, 8, 0.1)` starts at 2, where the two circles are only tangent.
+- Facts learnt: `Intersecció(circle, segment)` returns only the point on the segment, as one labelled point; the sides of `Polygon(P,Q,R,S)` named `q` are `p`, `q_1`, `r`, `s` (the side QR cannot be `q`); assigning `a=5` to a slider keeps it a slider.
 
 ### Block E — Verification debts
 
 - [x] Every row of spec 7.4 is confirmed or refuted against the live applet (2026-11-10). What is still unproven is each reference validator of section 9 as a whole: the end-to-end tester proves it when the cell is implemented.
 - [x] `getValue(polygonLabel)` is the area: confirmed on 2026-11-10 against the live applet (`t=Polygon((0,0),(6,0),(3,4))` → 12).
-- [x] **Catalan names in hints.** Read from the live applet on 2026-11-11 (spec section 6) and applied to every hint of the spec; the 11 published hints were typed and pass. The 19 remaining hints still have to be typed once each.
+- [x] **Catalan names in hints.** Read from the live applet on 2026-11-11 (spec section 6) and applied to every hint of the spec; the 11 published hints were typed and pass. All 30 hints have been typed and pass (the last ten on 2026-11-12).
 - [x] **Catalan command names in the chapters and the glossary** — fixed on 2026-11-11. Every command of `curs/capitol-N.html` and `curs/glossari-data.js` was typed into the live applet: `PuntMig` → `PuntMitjà`, `Cercle` → `Circumferència`, `Raig` → `Semirecta`, `Paral·lela(f,A)` → `Recta(A,f)`, `CercleCircumscrit(p)` → `Circumferència(A,B,C)`, `CercleInscrit(p)` → `CircumferènciaInscrita(A,B,C)`, `PolígonRegular` → `Polígon`, `Rotació(obj,A,α)` → `Rotació(obj,α,A)`, `Reflexió` → `Simetria`, `Homotècia(obj,O,k)` → `Homotècia(obj,k,O)`, `Lliscador` → `PuntLliscant`, `Lloc` → `LlocGeomètric`, `f(x,a,b)` → `Funció(f,a,b)`, `eixX` → `EixX`, `Punt(x,y)` (does not exist) → `(x,y)`. Also: chapter 4 `a=Àrea(p)` → `S=Àrea(p)` (`a` is a side of the triangle) and chapter 10 said the midpoint locus is an ellipse (it is a circle). The 95 lines of the chapters' code examples are all accepted by the applet. Not checked: the chapters' prose beyond the commands.
 - [ ] **5B: vertex C = (2, 5) is outside the initial view** (the applet shows y up to about 4). Inherited from `repte-9`; the student can drag the view. Either set the view in `data-commands` or leave it.
 - [ ] Known limits of the validators, accepted as they are: "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.

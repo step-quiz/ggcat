@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "7b",
+  "titol": "Paral·leles a distància 2",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-7a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-7c.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Amb l'eina «Recta perpendicular», traça la perpendicular a f que passa per O. Amb «Circumferència: Centre i Radi», dibuixa la circumferència de centre O i radi 2, i marca amb «Intersecció» els dos punts on talla la perpendicular: són a distància 2 de f, un a cada banda. Amb l'eina «Recta paral·lela», fes passar per cadascun una paral·lela a f. Amb la barra d'entrada: <code>p=Perpendicular(O, f)</code>, <code>k=Circumferència(O, 2)</code>, <code>P=Intersecció(p, k, 1)</code>, <code>Q=Intersecció(p, k, 2)</code>, <code>Recta(P, f)</code> i <code>Recta(Q, f)</code>.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>La recta <strong>f</strong>, que passa per l'origen O, ja està construïda. Construeix <strong>dues rectes paral·leles a f a distància 2</strong>, una a cada banda.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "O=(0,0)\nf=Line(O,(4,3))",
+            "fixed": "O,f",
+            "tools": "0 | 1 5 | 2 15 | 3 4 | 34",
+            "goalId": "repte-7b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

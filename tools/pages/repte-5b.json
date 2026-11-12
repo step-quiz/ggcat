@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-6a.html",
+    "url": "repte-5c.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Construeix les mediatrius: <code>Mediatriu(A,B)</code>, <code>Mediatriu(B,C)</code> i <code>Mediatriu(A,C)</code>. Les tres rectes es tallen en un únic punt. Marca'l amb <code>Intersecció(m1, m2)</code>. Aquest punt és equidistant dels tres vèrtexs.</p>",

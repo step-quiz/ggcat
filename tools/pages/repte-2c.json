@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "2c",
+  "titol": "Duplicació del quadrat",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-2b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-3a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Doblar el costat no serveix: l'àrea es multiplicaria per 4. La idea, que ja explica Plató al diàleg <em>Menó</em>, és fer servir la <strong>diagonal</strong> del quadrat com a costat del nou. Amb l'eina «Polígon regular», fes clic a A, després a C i indica 4 vèrtexs (<code>Polígon(A, C, 4)</code>). La diagonal fa 2√2, i (2√2)² = 8.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El quadrat ABCD de costat 2 (àrea 4) ja està construït. Construeix un altre <strong>quadrat que tingui exactament el doble d'àrea</strong> (àrea 8).</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nB=(2,0)\nC=(2,2)\nD=(0,2)\nq=Polygon(A,B,C,D)",
+            "fixed": "A,B,C,D,q",
+            "tools": "0 | 1 19 5 | 15 4 8 | 51 16 | 38 49",
+            "goalId": "repte-2c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

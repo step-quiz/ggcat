@@ -8,7 +8,7 @@
     "label": "← Capítols"
   },
   "next": {
-    "url": "repte-2a.html",
+    "url": "repte-1b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Crea els punts <code>A=(0,0)</code> i <code>B=(4,0)</code>. Amb l'eina «Polígon regular», fes clic a A, després a B i indica 3 vèrtexs. Amb la barra d'entrada: <code>Polígon(A, B, 3)</code>.</p>",

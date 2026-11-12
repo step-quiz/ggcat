@@ -4,11 +4,11 @@
   "titol": "Quadrat a l'origen",
   "difficulty": "facil",
   "prev": {
-    "url": "repte-1a.html",
+    "url": "repte-1c.html",
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-3a.html",
+    "url": "repte-2b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Crea <code>A=(0,0)</code> i <code>B=(3,0)</code>. Escriu <code>Polígon(A, B, 4)</code> per crear un quadrat de costat 3 sobre el segment AB.</p>",

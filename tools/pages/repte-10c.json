@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "10c",
+  "titol": "L'el·lipse com a lloc geomètric",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-10b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "index.html",
+    "label": "Inici →"
+  },
+  "hint": "<p>Crea un lliscador <code>a</code> que vagi de 2 a 8 i posa'l a 5. Dibuixa la circumferència de centre F₁ i radi <code>a</code>, i la de centre F₂ i radi <code>10 - a</code> (eina «Circumferència: Centre i Radi»). Marca un dels punts on es tallen, M: la suma de distàncies als focus és a + (10 − a) = 10. Amb l'eina «Lloc geomètric», fes clic a M i després al lliscador. Amb la barra d'entrada: <code>a=PuntLliscant(2, 8, 0.1)</code>, <code>a=5</code>, <code>c=Circumferència(F_1, a)</code>, <code>d=Circumferència(F_2, 10 - a)</code>, <code>M=Intersecció(c, d, 1)</code> i <code>LlocGeomètric(M, a)</code>. Surt mitja el·lipse; l'altre punt de tall dibuixa l'altra meitat.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Els focus <strong>F₁ = (−3, 0)</strong> i <strong>F₂ = (3, 0)</strong> ja estan construïts. Una el·lipse és el conjunt dels punts M en què la suma de distàncies als dos focus és constant. Dibuixa, com a <strong>lloc geomètric</strong>, l'el·lipse dels punts amb <strong>MF₁ + MF₂ = 10</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "F_1=(-3,0)\nF_2=(3,0)",
+            "fixed": "F_1,F_2",
+            "tools": "0 | 1 19 5 501 | 25 | 47 | 10 34 | 38",
+            "goalId": "repte-10c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

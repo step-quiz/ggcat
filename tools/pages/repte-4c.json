@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "4c",
+  "titol": "Octàgon dins d'un quadrat",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-4b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-5a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Cal retallar les quatre cantonades. Dibuixa una circumferència amb centre a cada cantonada que passi pel centre del quadrat, (0, 0). Cada circumferència talla dos costats; els vuit punts de tall són els vèrtexs de l'octàgon. Marca'ls amb «Intersecció» i uneix-los, per ordre, amb «Polígon». Drecera: n'hi ha prou amb els dos vèrtexs del costat de baix, PQ; amb «Polígon regular», fes-hi clic d'esquerra a dreta i indica 8 vèrtexs. Amb la barra d'entrada: <code>c1=Circumferència(P, (0,0))</code>, <code>c2=Circumferència(Q, (0,0))</code>, <code>E=Intersecció(c2, p)</code>, <code>F=Intersecció(c1, p)</code> i <code>Polígon(E, F, 8)</code> (<code>p</code> és el costat PQ).</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El quadrat de costat 4 centrat a l'origen ja està construït. Construeix un <strong>octàgon regular inscrit al quadrat</strong>: els vuit vèrtexs han de ser sobre els costats del quadrat, dos a cada costat.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "P=(-2,-2)\nQ=(2,-2)\nR=(2,2)\nS=(-2,2)\nq=Polygon(P,Q,R,S)",
+            "fixed": "P,Q,R,S,q",
+            "tools": "0 | 1 5 501 | 10 11 34 | 51 16 | 30 32",
+            "goalId": "repte-4c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

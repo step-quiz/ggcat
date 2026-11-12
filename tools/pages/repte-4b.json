@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "4b",
+  "titol": "Hexàgon inscrit",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-4a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-4c.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>En un hexàgon regular inscrit, el costat fa el mateix que el radi. Posa un punt A sobre la circumferència, per exemple (3, 0). Dibuixa la circumferència de centre A que passa per O i marca on talla c: és el vèrtex següent, B. Amb «Polígon regular», fes clic a A i a B i indica 6 vèrtexs. Si l'hexàgon surt cap a fora, fes clic primer a B i després a A. Amb la barra d'entrada: <code>A=(3,0)</code>, <code>B=Rotació(A, 60°, O)</code> i <code>Polígon(A, B, 6)</code>.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>La circumferència <strong>c</strong>, de centre l'origen O i radi 3, ja està construïda. Construeix un <strong>hexàgon regular inscrit</strong>: els sis vèrtexs han de ser sobre la circumferència.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "O=(0,0)\nc=Circle(O,3)",
+            "fixed": "O,c",
+            "tools": "0 | 1 5 501 | 10 34 | 51",
+            "goalId": "repte-4b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

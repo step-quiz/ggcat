@@ -1,0 +1,37 @@
+{
+  "type": "repte",
+  "id": "9b",
+  "titol": "Paràbola i recta",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-9a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-9c.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Escriu <code>f(x) = x^2</code> a la barra d'entrada (després de l'exponent, prem la tecla → per sortir-ne) i després <code>g(x) = x + 2</code>. Amb l'eina «Intersecció» de la pestanya «Eines», fes clic a les dues gràfiques, o escriu <code>Intersecció(f, g)</code>. Amb àlgebra: x² = x + 2 → x² − x − 2 = 0 → (x − 2)(x + 1) = 0. Els punts són (2, 4) i (−1, 1).</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Defineix la funció <strong>f(x) = x²</strong> i la recta <strong>g(x) = x + 2</strong>. Marca els <strong>dos punts on es tallen</strong> les dues gràfiques.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "app": "graphing",
+            "tools": "0 | 1 | 5 501 | 36 38",
+            "goalId": "repte-9b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

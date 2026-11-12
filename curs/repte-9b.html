@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repte 9B — Paràbola i recta | GeoCat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="curs.css">
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+
+<header class="curs-header">
+  <button id="sidebar-toggle" aria-label="Mostra/amaga els reptes" aria-expanded="false">☰</button>
+  <span class="curs-header-logo">
+    <span class="logo-icon"></span>
+    GeoCat
+  </span>
+  <nav class="curs-nav">
+    <a href="capitol-1.html">Capítols</a>
+    <a href="repte-1a.html" class="active">Reptes</a>
+  </nav>
+  <span class="curs-header-title">Repte 9B — Paràbola i recta</span>
+  <div class="curs-header-actions"></div>
+</header>
+
+<div class="curs-layout">
+  <div id="sidebar-overlay" aria-hidden="true"></div>
+  <nav id="sidebar" class="curs-sidebar" aria-label="Reptes del curs">
+    <div id="sidebar-nav"></div>
+  </nav>
+
+  <main class="curs-content">
+
+    <header class="chapter-header">
+      <span class="chapter-badge" style="background: #fef3c7; color: #92400e;">⚡ Repte 9B — Mitjà</span>
+      <h1>Paràbola i recta</h1>
+    </header>
+
+    <section class="chapter-section">
+      <h2>Objectiu</h2>
+<p>Defineix la funció <strong>f(x) = x²</strong> i la recta <strong>g(x) = x + 2</strong>. Marca els <strong>dos punts on es tallen</strong> les dues gràfiques.</p>
+
+      <h2>Widget</h2>
+<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+
+      <div class="geogebra"
+           data-commands=""
+           data-fixed=""
+           data-app="graphing"
+           data-tools="0 | 1 | 5 501 | 36 38"
+           data-goal-id="repte-9b"
+           data-height="440">
+      </div>
+    </section>
+
+    <details style="margin-top: 1.5rem;">
+      <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
+      <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
+        <p>Escriu <code>f(x) = x^2</code> a la barra d'entrada (després de l'exponent, prem la tecla → per sortir-ne) i després <code>g(x) = x + 2</code>. Amb l'eina «Intersecció» de la pestanya «Eines», fes clic a les dues gràfiques, o escriu <code>Intersecció(f, g)</code>. Amb àlgebra: x² = x + 2 → x² − x − 2 = 0 → (x − 2)(x + 1) = 0. Els punts són (2, 4) i (−1, 1).</p>
+      </div>
+    </details>
+
+    <nav class="chapter-nav">
+      <a href="repte-9a.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-9c.html" class="btn-nav btn-nav--next">Repte següent →</a>
+    </nav>
+
+  </main>
+</div>
+
+<script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
+<script src="progress.js"></script>
+<script src="capitols.js"></script>
+<script>
+  injectCursLogo();
+  renderReptesSidebar('9b');
+  renderSimuladors();
+  initSidebarToggle();
+</script>
+
+</body>
+</html>

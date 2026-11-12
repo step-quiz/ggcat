@@ -92,7 +92,7 @@ dels dos veïns i tornar-los a generar.
 - `tools/pages/repte-5a.json` — repte amb construcció inicial i objectes fixos.
 - `tools/pages/repte-9a.json` — repte amb l'app `graphing`.
 
-Hi ha un JSON per a cada repte publicat (11). Els que falten estan especificats a
+Hi ha un JSON per a cada repte (30), tots publicats. Què fa cada repte és a
 `REPTES_SPECIFICATION.md`.
 
 ### Verificació

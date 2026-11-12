@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "1b",
+  "titol": "Triangle 3-4-5",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-1a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-1c.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Crea els tres punts i uneix-los amb l'eina «Polígon» (fes clic a A, B, C i torna a A). Amb la barra d'entrada: <code>A=(0,0)</code>, <code>B=(4,0)</code>, <code>C=(0,3)</code> i <code>Polígon(A, B, C)</code>. Amb l'eina «Longitud, perímetre o distància», fes clic a cada costat: obtindràs 4, 3 i 5. Comprova-ho: 3² + 4² = 9 + 16 = 25 = 5².</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Crea el triangle rectangle de vèrtexs <strong>A = (0, 0)</strong>, <strong>B = (4, 0)</strong> i <strong>C = (0, 3)</strong> (un polígon tancat). Mesura la longitud dels tres costats: la hipotenusa ha de fer <strong>5</strong>.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 5 | 15 | 16 | 38 49",
+            "goalId": "repte-1b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

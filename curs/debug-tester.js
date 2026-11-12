@@ -108,20 +108,63 @@
       correct: ['A=(0,0)', 'B=(4,0)', 'p=Polygon(A,B,3)'],
       wrong:   ['A=(0,0)', 'B=(4,0)', 'C=(2,3)', 'p=Polygon(A,B,C)']   // isòsceles: (2, 3) en lloc de (2, 3.464)
     },
+    'repte-1b': {
+      label: 'Repte 1B — Triangle 3-4-5',
+      correct: ['A=(0,0)', 'B=(4,0)', 'C=(0,3)', 't=Polygon(A,B,C)'],
+      wrong:   ['A=(0,0)', 'B=(4,0)', 'C=(0,2)', 't=Polygon(A,B,C)']   // C mal posat: hipotenusa √20
+    },
+    'repte-1c': {
+      label: 'Repte 1C — Triangle medial',
+      correct: ['D=Midpoint(A,B)', 'E=Midpoint(B,C)', 'F=Midpoint(A,C)', 'm=Polygon(D,E,F)'],
+      wrong:   ['D=Midpoint(A,B)', 'E=Midpoint(B,C)', 'm=Polygon(A,D,E)']   // només dos punts mitjos; el polígon no és el triangle medial
+    },
     'repte-2a': {
       label: 'Repte 2A — Quadrat a l\'origen, costat 3',
       correct: ['A=(0,0)', 'B=(3,0)', 'q=Polygon(A,B,4)'],
       wrong:   ['A=(0,0)', 'B=(2,0)', 'q=Polygon(A,B,4)']    // costat 2 (incorrecte)
+    },
+    'repte-2b': {
+      // Inicial: A=(0,0), C=(5,5) [fixats]
+      label: 'Repte 2B — Quadrat per vèrtexs oposats',
+      correct: ['B=(5,0)', 'D=(0,5)', 'q=Polygon(A,B,C,D)'],
+      wrong:   ['B=(5,0)', 'D=(0,4)', 'q=Polygon(A,B,C,D)']   // quart vèrtex mal posat: àrea 22.5
+    },
+    'repte-2c': {
+      label: 'Repte 2C — Duplicació del quadrat',
+      correct: ['r=Polygon(A,C,4)'],
+      wrong:   ['E=(4,0)', 'r=Polygon(A,E,4)']   // costat doblat: àrea 16
     },
     'repte-3a': {
       label: 'Repte 3A — Circumferències concèntriques r=2 i r=4',
       correct: ['O=(0,0)', 'c=Circle(O,2)', 'd=Circle(O,4)'],
       wrong:   ['O=(0,0)', 'c=Circle(O,2)']    // només una circumferència
     },
+    'repte-3b': {
+      // Inicial: A=(-3,0), B=(3,0) [fixats]
+      label: 'Repte 3B — Circumferència per dos punts',
+      correct: ['K=(0,4)', 'd=Circle(K,A)'],
+      wrong:   ['K=(1,4)', 'd=Circle(K,A)']   // centre fora de l'eix Y: no passa per B
+    },
+    'repte-3c': {
+      label: 'Repte 3C — Cercle circumscrit',
+      correct: ['m=PerpendicularBisector(A,B)', 'n=PerpendicularBisector(B,C)', 'O=Intersect(m,n)', 'd=Circle(O,A)'],
+      wrong:   ['O=(0,0)', 'd=Circle(O,B)']   // centre a l'origen: passa per B i C, però no per A
+    },
     'repte-4a': {
       label: 'Repte 4A — Pentàgon regular',
       correct: ['A=(0,0)', 'B=(2,0)', 'p=Polygon(A,B,5)'],
       wrong:   ['A=(0,0)', 'B=(2,0)', 'p=Polygon(A,B,6)']   // hexàgon
+    },
+    'repte-4b': {
+      // Inicial: O=(0,0), c=Circle(O,3) [fixats]
+      label: 'Repte 4B — Hexàgon inscrit',
+      correct: ['A=(3,0)', 'B=Rotate(A,pi/3,O)', 'h=Polygon(A,B,6)'],
+      wrong:   ['A=(3,0)', 'B=(0,3)', 'h=Polygon(A,B,4)']   // quadrat inscrit: 4 punts sobre c
+    },
+    'repte-4c': {
+      label: 'Repte 4C — Octàgon dins d\'un quadrat',
+      correct: ['k=2*sqrt(2)-2', 'E=(k,-2)', 'F=(2,-k)', 'G=(2,k)', 'H=(k,2)', 'J=(-k,2)', 'K=(-2,k)', 'L=(-2,-k)', 'M=(-k,-2)', 'o=Polygon(E,F,G,H,J,K,L,M)'],
+      wrong:   ['E=(1.2,-2)', 'F=(2,-1.2)', 'G=(2,1.2)', 'H=(1.2,2)', 'J=(-1.2,2)', 'K=(-2,1.2)', 'L=(-2,-1.2)', 'M=(-1.2,-2)', 'o=Polygon(E,F,G,H,J,K,L,M)']   // cantonades retallades 0.8 en lloc de 1.172: no és regular
     },
     'repte-5a': {
       // Inicial: A=(-2,0), B=(4,0), s=Segment(A,B) [fixats]
@@ -139,11 +182,27 @@
       ],
       wrong: ['D=(2,2)']                        // punt qualsevol, no equidistant
     },
+    'repte-5c': {
+      label: 'Repte 5C — Tales i la hipotenusa',
+      correct: ['m=PerpendicularBisector(A,C)', 'n=PerpendicularBisector(B,C)', 'O=Intersect(m,n)', 'd=Circle(O,A)'],
+      wrong:   ['M=Midpoint(A,B)', 'd=Circle(M,A)']   // la circumferència bona, però sense cap mediatriu
+    },
     'repte-6a': {
       // Inicial: O=(0,0), A=(4,0), B=(√8,√8), f=Ray(O,A), g=Ray(O,B) [fixats]
       label: 'Repte 6A — Bisectriu d\'un angle',
       correct: ['b=AngleBisector(A,O,B)'],
       wrong:   ['b=Line(O,(4,2))']             // recta per O de pendent 0.5 (no 0.414)
+    },
+    'repte-6b': {
+      // Inicial: A=(0,0), B=(8,0), C=(3,6), t=Polygon(A,B,C) [fixats]
+      label: 'Repte 6B — L\'incentre',
+      correct: ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)'],
+      wrong:   ['m=PerpendicularBisector(A,B)', 'n=PerpendicularBisector(B,C)', 'I=Intersect(m,n)']   // circumcentre (4, 1.75)
+    },
+    'repte-6c': {
+      label: 'Repte 6C — Cercle inscrit',
+      correct: ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'h=PerpendicularLine(I,Line(A,B))', 'T=Intersect(h,Line(A,B))', 'd=Circle(I,T)'],
+      wrong:   ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'd=Circle(I,A)']   // centre a l'incentre, però passa per un vèrtex (radi √13)
     },
     'repte-7a': {
       // Inicial: f=Line((0,0),(4,1)), P=(3,4) [fixats]
@@ -151,11 +210,33 @@
       correct: ['g=PerpendicularLine(P,f)', 'F=Intersect(g,f)'],
       wrong:   ['F=(0,0)']                     // cap perpendicular, peu equivocat
     },
+    'repte-7b': {
+      // Inicial: O=(0,0), f=Line(O,(4,3)) [fixats]
+      label: 'Repte 7B — Paral·leles a distància 2',
+      correct: ['g=Line((-1.2,1.6),f)', 'h=Line((1.2,-1.6),f)'],
+      wrong:   ['g=Line((-1.2,1.6),f)', 'h=Line((-2.4,3.2),f)']   // totes dues a la mateixa banda (2 i 4)
+    },
+    'repte-7c': {
+      label: 'Repte 7C — L\'ortocentre',
+      correct: ['h=PerpendicularLine(C,Line(A,B))', 'k=PerpendicularLine(A,Line(B,C))', 'H=Intersect(h,k)'],
+      wrong:   ['M=Midpoint(B,C)', 'N=Midpoint(A,B)', 'h=Line(A,M)', 'k=Line(C,N)', 'G=Intersect(h,k)']   // medianes i baricentre (11/3, 2)
+    },
     'repte-8a': {
       // Inicial: A=(0,0), B=(3,0), C=(1,3), t=Polygon(A,B,C), v=Vector((0,0),(4,2)) [fixats]
       label: 'Repte 8A — Translació d\'un triangle',
       correct: ['Translate(t,v)'],
       wrong:   ['Translate(t,Vector((0,0),(2,4)))']   // un altre vector
+    },
+    'repte-8b': {
+      // Inicial: O=(0,0), A=(2,0), B=(5,0), C=(5,2), t=Polygon(A,B,C) [fixats]
+      label: 'Repte 8B — Rotació de 60°',
+      correct: ['Rotate(t,pi/3,O)'],
+      wrong:   ['Rotate(t,-pi/3,O)']   // gir en sentit horari
+    },
+    'repte-8c': {
+      label: 'Repte 8C — Reflexió amb lliscament',
+      correct: ['r=Reflect(t,f)', 'g=Translate(r,v)', 's=Reflect(g,f)', 'h=Translate(s,v)'],
+      wrong:   ['r=Reflect(t,f)', 'g=Translate(r,v)']   // la reflexió amb lliscament, aplicada només una vegada
     },
     'repte-9a': {
       // App graphing.
@@ -163,10 +244,33 @@
       correct: ['f(x)=x^2-4', 'Z=Intersect(f,xAxis)'],
       wrong:   ['f(x)=x^2-1', 'Z=Intersect(f,xAxis)']   // una altra paràbola: arrels a ±1
     },
+    'repte-9b': {
+      // App graphing.
+      label: 'Repte 9B — Paràbola i recta',
+      correct: ['f(x)=x^2', 'g(x)=x+2', 'P=Intersect(f,g)'],
+      wrong:   ['f(x)=x^2', 'g(x)=x+2']   // els punts de tall no s'han marcat
+    },
+    'repte-9c': {
+      // App classic: a l'app graphing, GeoGebra rebutja Tangent i Angle.
+      label: 'Repte 9C — Sinus i cosinus',
+      correct: ['f(x)=sin(x)', 'g(x)=cos(x)', 'P=Intersect(f,g,0,2)', 'Q=Intersect(f,g,3,5)', 'a=Tangent(P,f)', 'b=Tangent(P,g)', 'w=Angle(a,b)'],
+      wrong:   ['f(x)=sin(x)', 'g(x)=cos(x)', 'P=Intersect(f,g,0,2)', 'Q=Intersect(f,g,3,5)']   // punts de tall marcats, angle sense mesurar
+    },
     'repte-10a': {
       label: 'Repte 10A — Polígon dinàmic',
       correct: ['n=Slider(3,12,1)', 'A=(1,0)', 'B=Rotate(A,2*pi/n,(0,0))', 'p=Polygon(A,B,n)'],
       wrong:   ['n=Slider(3,12,1)', 'A=(1,0)', 'B=(0,1)', 'p=Polygon(A,B,4)']   // hi ha lliscador, però el polígon no en depèn
+    },
+    'repte-10b': {
+      // Inicial: O=(0,0), c=Circle(O,3), Q=(6,2) [fixats]
+      label: 'Repte 10B — Lloc del punt mig',
+      correct: ['P=Point(c)', 'M=Midpoint(P,Q)', 'l=Locus(M,P)'],
+      wrong:   ['P=Point(c)', 'M=Midpoint(P,Q)']   // sense el lloc geomètric
+    },
+    'repte-10c': {
+      label: 'Repte 10C — L\'el·lipse com a lloc geomètric',
+      correct: ['a=Slider(2,8,0.1)', 'SetValue(a,5)', 'c=Circle(F_1,a)', 'd=Circle(F_2,10-a)', 'M=Intersect(c,d,1)', 'l=Locus(M,a)'],
+      wrong:   ['a=Slider(2,8,0.1)', 'SetValue(a,5)', 'c=Circle(F_1,a)', 'd=Circle(F_2,8-a)', 'M=Intersect(c,d,1)', 'l=Locus(M,a)']   // suma focal 8 en lloc de 10
     }
   };
 

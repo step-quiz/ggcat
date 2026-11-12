@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "10b",
+  "titol": "Lloc del punt mig",
+  "difficulty": "mitja",
+  "prev": {
+    "url": "repte-10a.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-10c.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Amb l'eina «Punt en un objecte», fes clic a la circumferència per crear P. Amb «Punt mitjà o centre», fes clic a P i a Q per crear M. Amb l'eina «Lloc geomètric», fes clic primer a M i després a P. Amb la barra d'entrada: <code>P=Punt(c)</code>, <code>M=PuntMitjà(P, Q)</code> i <code>LlocGeomètric(M, P)</code>. El lloc és una circumferència de radi 1.5 (la meitat de 3) amb centre a (3, 1), el punt mig de O i Q.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>La circumferència <strong>c</strong> (centre l'origen O, radi 3) i el punt <strong>Q = (6, 2)</strong> ja estan construïts. Posa un punt <strong>P sobre la circumferència</strong>, construeix el <strong>punt mig M</strong> del segment PQ i dibuixa el <strong>lloc geomètric de M</strong> quan P recorre la circumferència. Quina figura és?</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "O=(0,0)\nc=Circle(O,3)\nQ=(6,2)",
+            "fixed": "O,c,Q",
+            "tools": "0 | 1 19 501 | 25 | 47 | 15",
+            "goalId": "repte-10b",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

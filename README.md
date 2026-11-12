@@ -23,7 +23,7 @@ style.css               Estils compartits (topbar, botons, temes)
 curs/
   index.html            Índex del curs (llista de capítols i graella de reptes)
   capitol-N.html        10 capítols del curs
-  repte-<tema><nivell>.html   Reptes de la graella (repte-1a.html, repte-5b.html…): 11 de 30. Es generen
+  repte-<tema><nivell>.html   Reptes de la graella (repte-1a.html … repte-10c.html): tots 30. Es generen
                         amb tools/generate-pages.js a partir de tools/pages/*.json: no s'editen a mà
   curs.css              Estils del curs
   capitols.js           Dades, sidebar, injecció de widgets, glossari
@@ -47,16 +47,16 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
   `tools/pages/*.json` són les que hi ha a `curs/`. GitHub ho fa a cada canvi
   (`.github/workflows/tests.yml`, juntament amb la sintaxi de tots els fitxers JS i els dos
   tests de sota).
-- `node test-validators.js` — comprova els validadors dels 11 reptes i dels 10 exercicis dels
+- `node test-validators.js` — comprova els validadors dels 30 reptes i dels 10 exercicis dels
   capítols amb una API de GeoGebra simulada: per a cada un, l'escena inicial, una solució correcta
-  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (81
+  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (161
   comprovacions). El simulacre fa servir els tipus d'objecte reals de GeoGebra (`circle`,
   `triangle`, `quadrilateral`…) i calcula de debò `Distance`, `ArePerpendicular` i
   `AreParallel` a partir dels punts. GitHub també ho executa a cada canvi.
 - `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
 - **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
-  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat de l'11/11/2026: 21/21.
+  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat del 12/11/2026: 40/40.
 
 ## Editor de text (`curs/edit.html`)
 
@@ -69,9 +69,8 @@ repositori.
 ## Estat del projecte
 
 - 10 capítols: ✅ complets (amb exercici validat al final)
-- Reptes: una graella de 10 temes × 3 nivells (30 reptes, de `repte-1a` a `repte-10c`). ✅ 11 publicats (els
-  deu de nivell A i el 5B); ⬜ en falten 19 (el pla és a `TODO.md` i el detall de cada repte, a
-  `REPTES_SPECIFICATION.md`)
+- Reptes: una graella de 10 temes × 3 nivells (30 reptes, de `repte-1a` a `repte-10c`). ✅ tots 30 publicats (el
+  detall de cada repte és a `REPTES_SPECIFICATION.md`, i el que queda pendent, a `TODO.md`)
 - Els 10 reptes de la numeració antiga (`repte-1` … `repte-10`) ja no hi són: 4 continuen a la graella
   (qui els tenia superats conserva el ✓) i 6 s'han retirat.
 

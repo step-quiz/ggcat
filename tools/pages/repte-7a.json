@@ -4,11 +4,11 @@
   "titol": "Perpendicular i peu",
   "difficulty": "facil",
   "prev": {
-    "url": "repte-6a.html",
+    "url": "repte-6c.html",
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-8a.html",
+    "url": "repte-7b.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Escriu <code>Perpendicular(P, f)</code> per crear la recta perpendicular a f que passa per P. Després escriu <code>Intersecció(f, g)</code> (on <code>g</code> és el nom de la perpendicular) per marcar el peu. El punt d'intersecció apareixerà sobre f.</p>",
