@@ -17,7 +17,7 @@ Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the auth
 | Blocks of `TODO.md` | All done (0, A–F). Nothing planned; `TODO.md` section 5 lists what was never checked |
 | Tests | `--comprova` 30 pages · `test-validators.js` 161/161 · `test-debug-tester-logic.js` 200/200 · end-to-end on the real applet 40/40 · 30/30 hints typed |
 
-Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. The next PR holds blocks E (`data-view`) and F (notice when GeoGebra is unreachable): if `main` has no `_aplicaVista` in `curs/capitols.js`, it is not merged.
+Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. #6 blocks E (`data-view`) and F (notice when GeoGebra is unreachable) — merged. #7 records the Cloudflare incident of section 7; merging it is what redeployed the site.
 
 ## 3. How the owner wants to work
 
@@ -57,6 +57,7 @@ Of the 19 cells built from the spec, 18 reference validators passed the real app
 
 ## 7. Open items worth knowing
 
+- **Cloudflare Pages deployment can stop silently.** From 2026-11-10 21:07 to 2026-11-12 the Pages project `ggcat` was disconnected from GitHub (dashboard banner «This project is disconnected from your Git account»): `ggcat.step-quiz.net` and `ggcat.pages.dev` kept serving the build of PR #2 while `main` moved on through PR #6. GitHub Pages (`step-quiz.github.io/ggcat`) is a separate host and stayed current, which hid the problem. The owner reconnected the project on 2026-11-12. How to spot it: every commit on `main` and every PR head should carry a check run named «Cloudflare Pages» (MCP `pull_request_read`, method `get_check_runs`); if only `tests` is there, Cloudflare is not receiving pushes. `step-quiz` is a personal GitHub account, not an organization: its GitHub Apps are at `https://github.com/settings/installations` (signed in as `step-quiz`). A new deployment needs a new commit on `main`; «Retry deployment» rebuilds the old commit.
 - Initial view: GeoGebra's default shows only y ∈ [−3.9, 3.9]. Give a new applet a `view` (JSON) / `data-view` (hand-written HTML) whenever its construction or its solution leaves that box; `TODO.md` block E has the probe.
 - GeoGebra unreachable: `_mostraErrorGeoGebra()` in `curs/capitols.js` (block F). Test it with Playwright's `page.route(/geogebra\.org/, r => r.abort())`.
 - `graphing` rejects some geometry commands (`Tangent`, `Angle` with lines); prefer `classic` for any cell that needs them.
