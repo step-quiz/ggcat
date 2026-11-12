@@ -756,23 +756,26 @@ pre.code-example {
 .glossari-hint {
   font-family: var(--mono);
   font-size: var(--fs-sm);
-  color: #4b5563;
+  color: #1a1a1a;
   margin: 0 0 8px;
   line-height: 1.5;
 }
-.glossari-hint code { color: #2563eb; font-weight: 700; background: none; padding: 0; }
+.glossari-hint code { color: inherit; font-weight: 700; background: none; padding: 0; }
 
+/* Totes les graelles amb la mateixa primera columna (hi cap la paraula més llarga,
+   «CircumferènciaInscrita(A,B,C)»): les descripcions comencen sempre al mateix lloc */
 .glossari-grid {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 30ch 1fr;
+  align-items: baseline;          /* la paraula, alineada amb la primera línia de la descripció */
   gap: 3px 14px;
   font-family: var(--mono);
   font-size: var(--fs-md);
   line-height: 1.7;
 }
-.glossari-grid > code { color: #2563eb; white-space: nowrap; background: none; padding: 0; }
-.glossari-grid > span { color: #4b5563; }
-.glossari-grid > span code { color: #2563eb; background: none; padding: 0; font-size: 1em; }
+.glossari-grid > code { color: #1a1a1a; white-space: nowrap; background: none; padding: 0; }
+.glossari-grid > span { color: #1a1a1a; }
+.glossari-grid > span code { color: inherit; background: none; padding: 0; font-size: 1em; }
 
 .glossari-example {
   font-family: var(--mono);
@@ -794,9 +797,10 @@ pre.code-example {
   color: #1a1a1a;
   line-height: 1.8;
 }
-.glossari-rules .glossari-rule code { color: #2563eb; font-weight: 700; background: none; padding: 0; }
+.glossari-rules .glossari-rule code { color: inherit; font-weight: 700; background: none; padding: 0; }
 
-/* Paraules del glossari: enllaç a un exemple (subratllat discontinu) */
+/* Paraules del glossari: enllaç a un exemple, en negre amb subratllat discontinu negre
+   (sense el blau dels enllaços) */
 .glossari-terme {
   justify-self: start;
   background: none;
@@ -807,7 +811,7 @@ pre.code-example {
   font: inherit;
 }
 .glossari-terme > code {
-  color: #2563eb;
+  color: #1a1a1a;
   white-space: nowrap;
   background: none;
   padding: 0;
@@ -815,7 +819,7 @@ pre.code-example {
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
-.glossari-terme:hover > code { text-decoration-style: solid; color: #1d4ed8; }
+.glossari-terme:hover > code { text-decoration-style: solid; }
 .glossari-terme:focus-visible { outline: 2px solid #000; outline-offset: 2px; border-radius: 2px; }
 
 /* Exemple obert: la finestra es fa més ampla per a l'applet */
@@ -833,13 +837,13 @@ pre.code-example {
   padding: 0;
   font: inherit;
   font-size: var(--fs-sm);
-  color: var(--accent);
+  color: #1a1a1a;
   cursor: pointer;
   margin-bottom: 10px;
 }
 .glossari-tornar:hover { text-decoration: underline; }
-.glossari-exemple-titol { font-size: var(--fs-lg); color: #2563eb; margin: 0 0 4px; }
-.glossari-exemple-desc { color: #4b5563; margin: 0 0 12px; }
+.glossari-exemple-titol { font-size: var(--fs-lg); color: #1a1a1a; margin: 0 0 4px; }
+.glossari-exemple-desc { color: #1a1a1a; margin: 0 0 12px; }
 .glossari-exemple-label { display: block; font-size: var(--fs-sm); font-weight: 700; margin-bottom: 4px; }
 .glossari-exemple-codi {
   width: 100%;
@@ -881,7 +885,9 @@ pre.code-example {
     touch-action: pan-y;
     padding: 14px 16px 24px;
   }
-  .glossari-grid { font-size: var(--fs-sm); gap: 2px 10px; }
+  /* Pantalla estreta: la paraula a dalt i la descripció a sota, sagnada */
+  .glossari-grid { font-size: var(--fs-sm); gap: 0; grid-template-columns: 1fr; }
+  .glossari-grid > span { padding-left: 1.5em; margin-bottom: 6px; }
   .glossari-example { font-size: var(--fs-sm); padding: 6px 10px; }
 }
 
