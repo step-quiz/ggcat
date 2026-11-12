@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-3b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-4a.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Construeix dues mediatrius amb l'eina «Mediatriu» (per exemple, la de AB i la de BC) i marca'n el punt de tall amb «Intersecció»: és el circumcentre. Després, amb «Circumferència donats el centre i un punt per on passa», fes clic al circumcentre i a qualsevol vèrtex. La circumferència passarà també pels altres dos. Amb la barra d'entrada: <code>m=Mediatriu(A, B)</code>, <code>n=Mediatriu(B, C)</code>, <code>O=Intersecció(m, n)</code> i <code>Circumferència(O, A)</code>.</p>",
   "sections": [

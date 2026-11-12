@@ -5,11 +5,11 @@
   "difficulty": "dificil",
   "prev": {
     "url": "repte-6b.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-7a.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Troba l'incentre tallant dues bisectrius. Per saber el radi, traça la perpendicular al costat AB que passa per l'incentre i marca on talla AB: és el punt de tangència. Dibuixa la circumferència de centre l'incentre que passa per aquest punt. Amb la barra d'entrada: <code>m=Bisectriu(B, A, C)</code>, <code>n=Bisectriu(A, B, C)</code>, <code>I=Intersecció(m, n)</code>, <code>h=Perpendicular(I, c)</code>, <code>T=Intersecció(h, c)</code> i <code>Circumferència(I, T)</code> (<code>c</code> és el costat AB). Ha de sortir de centre (3, 2) i radi 2.</p>",
   "sections": [

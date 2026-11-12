@@ -5,11 +5,11 @@
   "difficulty": "facil",
   "prev": {
     "url": "repte-8c.html",
-    "label": "← Repte anterior"
+    "label": "Repte anterior"
   },
   "next": {
     "url": "repte-9b.html",
-    "label": "Repte següent →"
+    "label": "Repte següent"
   },
   "hint": "<p>Escriu <code>f(x) = x^2 - 4</code> a la barra d'entrada (després d'escriure l'exponent, prem la tecla → per sortir-ne). Les arrels són on f(x) = 0, és a dir, x² = 4: x = 2 i x = −2. Marca-les amb l'eina «Intersecció» de la pestanya «Eines» (clic a la paràbola i a l'eix X) o escriu <code>Arrel(f)</code>.</p>",
   "sections": [

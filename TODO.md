@@ -19,7 +19,7 @@ Never break these:
 
 - **Zero install.** Static HTML, CSS and JavaScript; no build step, no server. A page works by opening it in a browser with an internet connection (GeoGebra is loaded from `geogebra.org`; there is no offline mode and no Service Worker).
 - **Catalan** for every text the student sees.
-- **Local progress only**: `localStorage['geocat_progress']`. No accounts, no server, no student data in the repository.
+- **Local progress only**: `localStorage['geocat_progress']` (plus two conveniences: `geocat_ultim_repte`, the last challenge visited, and `geocat-theme`). No accounts, no server, no student data in the repository.
 - **Automatic feedback** ✓ / ✗ through the «Comprova» button.
 - **Validators live only in `curs/validators.js`** (map `VALIDATORS`, keyed by `goalId`). Never inline in HTML or JSON.
 - **Shared files are read-only here**: `LICENSE`, `LLICENCIA.md` and `curs/progress.js` come from `step-quiz-commons` and are overwritten daily.
@@ -97,7 +97,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F (all done)**.
+Order: **0, A, B, C, D, E, F, G (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -187,6 +187,19 @@ The course pages load `https://www.geogebra.org/apps/deployggb.js` synchronously
   - after 30 s (`_GGB_ESPERA_MS`), when deployggb.js loaded but the applet did not arrive; if it arrives later, `appletOnLoad` removes the notice.
   - Verified with Playwright by aborting requests: every `geogebra.org` request blocked → notice at once (1/1 on 5B, 5/5 on chapter 3); only the applet blocked → nothing at 5 s, notice at 32 s; normal load → no notice.
   - Not covered: a CDN that accepts the connection and never answers. deployggb.js is a synchronous `<script>` in `<head>`, so the browser waits for its own timeout before rendering the page; after that the notice appears. Making the script `async` would change the loading pattern documented at the top of `renderSimuladors()`.
+
+
+### Block G — UI/UX, first round (done, 2026-11-12)
+
+Asked by the owner after the grid was complete. All in `curs/capitols.js`, `curs/curs.css`, `style.css`, `index.html`, the generator skeleton and the hand-written pages:
+
+1. **No jump to the input bar at load.** The `classic` applet focused «Entrada…» and the browser scrolled down to it (5B opened 294 px down). `preventFocus: true` alone does not stop it; `_evitaFocusInicial()` removes any focus an applet takes before the student's first click, key, wheel or touch, and scrolls back to the top. Measured: `scrollY` 0 and focus on `<body>` after load on 1A, 5B and 9B.
+2. **Collapsible themes** in the challenge sidebar (`<details>`), closed except the current theme.
+3. **«Reptes» opens the last challenge visited** in that browser (`geocat_ultim_repte`), from every header and the landing page.
+4. **The GeoCat logo links to the landing page** everywhere.
+5. **Glossary** 25 % wider (540 → 675 px) and its content font 25 % larger (title unchanged).
+6. **1A has no «← Capítols» link**; «Repte següent» stays on the right (`margin-left: auto`).
+7. **Nicer arrows** on previous/next: drawn by CSS (a disc with a cut-out arrow that slides on hover); the labels lost their `←`/`→`, in the challenges' JSON and in the chapters.
 
 ---
 
