@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-8a.html",
+    "url": "repte-7c.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Amb l'eina «Recta perpendicular», traça la perpendicular a f que passa per O. Amb «Circumferència: Centre i Radi», dibuixa la circumferència de centre O i radi 2, i marca amb «Intersecció» els dos punts on talla la perpendicular: són a distància 2 de f, un a cada banda. Amb l'eina «Recta paral·lela», fes passar per cadascun una paral·lela a f. Amb la barra d'entrada: <code>p=Perpendicular(O, f)</code>, <code>k=Circumferència(O, 2)</code>, <code>P=Intersecció(p, k, 1)</code>, <code>Q=Intersecció(p, k, 2)</code>, <code>Recta(P, f)</code> i <code>Recta(Q, f)</code>.</p>",

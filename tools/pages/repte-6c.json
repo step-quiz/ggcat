@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "6c",
+  "titol": "Cercle inscrit",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-6b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-7a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Troba l'incentre tallant dues bisectrius. Per saber el radi, traça la perpendicular al costat AB que passa per l'incentre i marca on talla AB: és el punt de tangència. Dibuixa la circumferència de centre l'incentre que passa per aquest punt. Amb la barra d'entrada: <code>m=Bisectriu(B, A, C)</code>, <code>n=Bisectriu(A, B, C)</code>, <code>I=Intersecció(m, n)</code>, <code>h=Perpendicular(I, c)</code>, <code>T=Intersecció(h, c)</code> i <code>Circumferència(I, T)</code> (<code>c</code> és el costat AB). Ha de sortir de centre (3, 2) i radi 2.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El triangle ABC amb <strong>A = (0, 0)</strong>, <strong>B = (7, 0)</strong> i <strong>C = (2.5, 6)</strong> ja està construït. Troba l'<strong>incentre</strong> i dibuixa la <strong>circumferència inscrita</strong>: la que és tangent als tres costats.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nB=(7,0)\nC=(2.5,6)\nt=Polygon(A,B,C)",
+            "fixed": "A,B,C,t",
+            "tools": "0 | 1 5 | 15 2 | 9 4 | 10 34 | 38",
+            "goalId": "repte-6c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

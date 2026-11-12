@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-4a.html",
+    "url": "repte-3c.html",
     "label": "Repte següent →"
   },
   "hint": "<p>El centre d'una circumferència que passa per A i per B és a la mateixa distància de tots dos: és un punt de la mediatriu de AB, que aquí és l'eix Y. Tria'n un qualsevol, per exemple (0, 4), i amb l'eina «Circumferència donats el centre i un punt per on passa» fes clic al centre i després a A. Amb la barra d'entrada: <code>K=(0,4)</code> i <code>Circumferència(K, A)</code>. Hi ha infinites solucions.</p>",

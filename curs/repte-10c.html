@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repte 10C — L'el·lipse com a lloc geomètric | GeoCat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="curs.css">
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+
+<header class="curs-header">
+  <button id="sidebar-toggle" aria-label="Mostra/amaga els reptes" aria-expanded="false">☰</button>
+  <span class="curs-header-logo">
+    <span class="logo-icon"></span>
+    GeoCat
+  </span>
+  <nav class="curs-nav">
+    <a href="capitol-1.html">Capítols</a>
+    <a href="repte-1a.html" class="active">Reptes</a>
+  </nav>
+  <span class="curs-header-title">Repte 10C — L'el·lipse com a lloc geomètric</span>
+  <div class="curs-header-actions"></div>
+</header>
+
+<div class="curs-layout">
+  <div id="sidebar-overlay" aria-hidden="true"></div>
+  <nav id="sidebar" class="curs-sidebar" aria-label="Reptes del curs">
+    <div id="sidebar-nav"></div>
+  </nav>
+
+  <main class="curs-content">
+
+    <header class="chapter-header">
+      <span class="chapter-badge" style="background: #fee2e2; color: #991b1b;">⚡ Repte 10C — Difícil</span>
+      <h1>L'el·lipse com a lloc geomètric</h1>
+    </header>
+
+    <section class="chapter-section">
+      <h2>Objectiu</h2>
+<p>Els focus <strong>F₁ = (−3, 0)</strong> i <strong>F₂ = (3, 0)</strong> ja estan construïts. Una el·lipse és el conjunt dels punts M en què la suma de distàncies als dos focus és constant. Dibuixa, com a <strong>lloc geomètric</strong>, l'el·lipse dels punts amb <strong>MF₁ + MF₂ = 10</strong>.</p>
+
+      <h2>Widget</h2>
+<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+
+      <div class="geogebra"
+           data-commands="F_1=(-3,0)
+F_2=(3,0)"
+           data-fixed="F_1,F_2"
+           data-tools="0 | 1 19 5 501 | 25 | 47 | 10 34 | 38"
+           data-goal-id="repte-10c"
+           data-height="440">
+      </div>
+    </section>
+
+    <details style="margin-top: 1.5rem;">
+      <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
+      <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
+        <p>Crea un lliscador <code>a</code> que vagi de 2 a 8 i posa'l a 5. Dibuixa la circumferència de centre F₁ i radi <code>a</code>, i la de centre F₂ i radi <code>10 - a</code> (eina «Circumferència: Centre i Radi»). Marca un dels punts on es tallen, M: la suma de distàncies als focus és a + (10 − a) = 10. Amb l'eina «Lloc geomètric», fes clic a M i després al lliscador. Amb la barra d'entrada: <code>a=PuntLliscant(2, 8, 0.1)</code>, <code>a=5</code>, <code>c=Circumferència(F_1, a)</code>, <code>d=Circumferència(F_2, 10 - a)</code>, <code>M=Intersecció(c, d, 1)</code> i <code>LlocGeomètric(M, a)</code>. Surt mitja el·lipse; l'altre punt de tall dibuixa l'altra meitat.</p>
+      </div>
+    </details>
+
+    <nav class="chapter-nav">
+      <a href="repte-10b.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="index.html" class="btn-nav btn-nav--next">Inici →</a>
+    </nav>
+
+  </main>
+</div>
+
+<script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
+<script src="progress.js"></script>
+<script src="capitols.js"></script>
+<script>
+  injectCursLogo();
+  renderReptesSidebar('10c');
+  renderSimuladors();
+  initSidebarToggle();
+</script>
+
+</body>
+</html>

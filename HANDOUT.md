@@ -1,6 +1,6 @@
 # GeoCat — Handout for a cold-start Claude session
 
-> Written 2026-11-11 at the end of a long session; updated the same day after block C. Audience: a Claude instance that picks the project up with no memory of that session. Talk to the owner (David) in **Catalan**; write MD files for AI readers in English.
+> Written 2026-11-11 at the end of a long session; updated after block C (2026-11-11) and block D (2026-11-12). Audience: a Claude instance that picks the project up with no memory of that session. Talk to the owner (David) in **Catalan**; write MD files for AI readers in English.
 
 ## 1. What this is
 
@@ -8,16 +8,16 @@ GeoCat (`step-quiz/ggcat`) is a static course (HTML + CSS + JS, no build, no ser
 
 Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the authority on *what is next*), `REPTES_SPECIFICATION.md` (the 30 challenges — the authority on *what each one is*), `tools/README.md` (page generator), `README.md`.
 
-## 2. State (2026-11-11)
+## 2. State (2026-11-12)
 
 | Item | State |
 |---|---|
 | Chapters `curs/capitol-1…10.html` | 10/10, hand-written HTML, each with a validated exercise `cap-N-ex` |
-| Challenges | **20/30** live: the whole A and B columns. Grid = 10 themes × 3 levels (A/B/C); id `3b` → `curs/repte-3b.html`, goalId `repte-3b` |
-| Blocks of `TODO.md` | 0, A, B, C done. **Next: block D** (the ten C cells: 1c … 10c). E (debts) and F (CDN-down banner) are open |
-| Tests | `--comprova` 20 pages · `test-validators.js` 119/119 · `test-debug-tester-logic.js` 150/150 · end-to-end on the real applet 30/30 · 20/20 hints typed |
+| Challenges | **30/30** live: the grid is complete. Grid = 10 themes × 3 levels (A/B/C); id `3b` → `curs/repte-3b.html`, goalId `repte-3b` |
+| Blocks of `TODO.md` | 0, A, B, C, D done. **Open: E** (verification debts) and **F** (banner when the GeoGebra CDN is down) |
+| Tests | `--comprova` 30 pages · `test-validators.js` 161/161 · `test-debug-tester-logic.js` 200/200 · end-to-end on the real applet 40/40 · 30/30 hints typed |
 
-Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. Block C (nine B cells) is the next pull request after #4: check on GitHub whether it is merged (if `main` has no `curs/repte-1b.html`, it is not).
+Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 holds blocks C and D (all 19 new cells): check on GitHub whether it is merged (if `main` has no `curs/repte-10c.html`, it is not).
 
 ## 3. How the owner wants to work
 
@@ -49,15 +49,16 @@ The cloud environment «ggcat» allows `www.geogebra.org`. Chromium + Playwright
 4. To act like a student in `classic`: click the `input` inside the wrapper, `keyboard.type(...)`, Enter, then click «Comprova» and read `.ggb-badge`. **Do this for every new hint**: five of the first eleven hints were wrong.
 5. In the `graphing` app the input row is `.avInputItem` (click it; there is no `input` element). Playwright's `keyboard.type` drops accented letters there (it works in `classic`); send each non-ASCII character as a CDP key event instead: `cdp = await page.context().newCDPSession(page)`, then `cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ó', text: 'ó' })` and the matching `keyUp`. With that, `Intersecció(f,g)` is accepted: accented names work for students.
 
-## 6. Recipe for one new cell (block C)
+## 6. Recipe for one new cell (used for blocks C and D)
 
-(Block D uses the same recipe.) Spec section 10 is the checklist. In short: write `tools/pages/repte-<id>.json` from the cell's fields → `node tools/generate-pages.js` → validator in `curs/validators.js` → entry in `REPTES_DATA` (`curs/capitols.js`, grid order) → fix `prev`/`next` in the JSON of both neighbours and regenerate → scenes in `test-validators.js` (`CORRECT_SOLUTIONS`, `WRONG_SOLUTIONS`, `INITIAL`) → `TEST_SOLUTIONS` in `curs/debug-tester.js` → Node tests → browser (tester + typed hint) → counters (`index.html` stat `11/30`, grid table in `TODO.md`, `README.md`, the ✅ marks and **Status** lines in the spec).
+The grid is complete, but the recipe applies if a cell is ever replaced. Spec section 10 is the checklist. In short: write `tools/pages/repte-<id>.json` from the cell's fields → `node tools/generate-pages.js` → validator in `curs/validators.js` → entry in `REPTES_DATA` (`curs/capitols.js`, grid order) → fix `prev`/`next` in the JSON of both neighbours and regenerate → scenes in `test-validators.js` (`CORRECT_SOLUTIONS`, `WRONG_SOLUTIONS`, `INITIAL`) → `TEST_SOLUTIONS` in `curs/debug-tester.js` → Node tests → browser (tester + typed hint) → counters (`index.html` stat, grid table in `TODO.md`, `README.md`, the ✅ marks and **Status** lines in the spec).
 
-The reference validators and test solutions of the 10 unbuilt C cells were only run against a throw-away emulator: expect some to fail on the real applet, fix the validator, keep the pass condition, update the spec. (All nine B cells passed unchanged.) Give the hint the input-bar commands too, naming objects the next command refers to (`m=Bisectriu(…)`, `P=Intersecció(p, k, 1)`): a line/circle intersection has two points, so use the index form.
+Of the 19 cells built from the spec, 18 reference validators passed the real applet unchanged; 9C had to move from `graphing` to `classic` because the `graphing` app rejects `Tangent` and `Angle`. A new validator is proven only by the browser. Give the hint the input-bar commands too, naming objects the next command refers to (`m=Bisectriu(…)`, `P=Intersecció(p, k, 1)`): a line/circle intersection has two points, so use the index form.
 
 ## 7. Open items worth knowing
 
 - 5B: vertex C = (2, 5) is outside the initial view (inherited).
+- `graphing` rejects some geometry commands (`Tangent`, `Angle` with lines); prefer `classic` for any cell that needs them.
 - 9A: settled. `Intersecció(f, EixX)` typed with CDP key events gives ✓; the hint's `Arrel(f)` also works.
 - The generator (`tools/generate-pages.js`) is shared with the sibling courses PyCat and JSCat; GeoCat's copy is ahead (grid ids, `tools`) and still accepts numeric `num`.
 - Chapter prose was only audited for command names, not for content.

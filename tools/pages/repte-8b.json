@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-9a.html",
+    "url": "repte-8c.html",
     "label": "Repte següent →"
   },
   "hint": "<p>Amb l'eina «Rotació al voltant d'un punt», fes clic al triangle, després al centre O, i indica 60° en sentit antihorari. Amb la barra d'entrada: <code>Rotació(t, 60°, O)</code>. Amb l'eina «Àrea», fes clic a cada triangle: tots dos fan 3. Un gir no canvia ni les longituds ni les àrees.</p>",

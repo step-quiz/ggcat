@@ -8,8 +8,8 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "index.html",
-    "label": "Inici →"
+    "url": "repte-10c.html",
+    "label": "Repte següent →"
   },
   "hint": "<p>Amb l'eina «Punt en un objecte», fes clic a la circumferència per crear P. Amb «Punt mitjà o centre», fes clic a P i a Q per crear M. Amb l'eina «Lloc geomètric», fes clic primer a M i després a P. Amb la barra d'entrada: <code>P=Punt(c)</code>, <code>M=PuntMitjà(P, Q)</code> i <code>LlocGeomètric(M, P)</code>. El lloc és una circumferència de radi 1.5 (la meitat de 3) amb centre a (3, 1), el punt mig de O i Q.</p>",
   "sections": [

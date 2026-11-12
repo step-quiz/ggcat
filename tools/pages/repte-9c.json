@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "9c",
+  "titol": "Sinus i cosinus",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-9b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-10a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Escriu <code>f(x) = sin(x)</code> i <code>g(x) = cos(x)</code> a la barra d'entrada. Les gràfiques es tallen quan sin(x) = cos(x): a x = π/4 ≈ 0.785 i a x = 5π/4 ≈ 3.927. Marca aquests punts amb «Intersecció» o escrivint <code>P=Intersecció(f, g, 0, 2)</code> i <code>Q=Intersecció(f, g, 3, 5)</code> (busca el tall entre x = 0 i x = 2, i entre 3 i 5). En un d'ells, traça la tangent a cada corba amb l'eina «Tangents» (<code>a=Tangent(P, f)</code> i <code>b=Tangent(P, g)</code>) i mesura l'angle entre les dues rectes amb l'eina «Angle» (<code>Angle(a, b)</code>). Segons l'ordre dels clics, GeoGebra mostrarà 70.53°, 109.47°, 250.53° o 289.47°: totes quatre mesures corresponen al mateix angle entre les dues rectes, 70.53°.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>Defineix les funcions <strong>f(x) = sin(x)</strong> i <strong>g(x) = cos(x)</strong>. Marca <strong>dos punts on es tallen</strong> les gràfiques i <strong>mesura l'angle</strong> amb què es tallen en un d'ells (l'angle entre les dues rectes tangents).</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "",
+            "fixed": "",
+            "tools": "0 | 1 5 501 | 13 | 36 38",
+            "goalId": "repte-9c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

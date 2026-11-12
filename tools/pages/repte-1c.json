@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "1c",
+  "titol": "Triangle medial",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-1b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-2a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Amb l'eina «Punt mitjà o centre», fes clic a cada costat: obtindràs (4, 0), (5, 3) i (1, 3). Uneix-los amb «Polígon». Amb la barra d'entrada: <code>D=PuntMitjà(A, B)</code>, <code>E=PuntMitjà(B, C)</code>, <code>F=PuntMitjà(A, C)</code> i <code>Polígon(D, E, F)</code>. Amb l'eina «Àrea» veuràs que el triangle gran fa 24 i el medial fa 6: una quarta part.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El triangle ABC amb <strong>A = (0, 0)</strong>, <strong>B = (8, 0)</strong> i <strong>C = (2, 6)</strong> ja està construït. Marca els <strong>punts mitjos dels tres costats</strong> i uneix-los per formar el <strong>triangle medial</strong>. Comprova que la seva àrea és exactament <strong>una quarta part</strong> de la del triangle original.</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(0,0)\nB=(8,0)\nC=(2,6)\nt=Polygon(A,B,C)",
+            "fixed": "A,B,C,t",
+            "tools": "0 | 1 19 5 | 15 | 16 | 38 49",
+            "goalId": "repte-1c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

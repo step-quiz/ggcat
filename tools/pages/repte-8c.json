@@ -1,0 +1,36 @@
+{
+  "type": "repte",
+  "id": "8c",
+  "titol": "Reflexió amb lliscament",
+  "difficulty": "dificil",
+  "prev": {
+    "url": "repte-8b.html",
+    "label": "← Repte anterior"
+  },
+  "next": {
+    "url": "repte-9a.html",
+    "label": "Repte següent →"
+  },
+  "hint": "<p>Fes quatre passos: reflecteix t respecte de f («Simetria axial»), trasllada el resultat amb v («Translació segons un vector»), torna a reflectir respecte de f i torna a traslladar amb v. Amb la barra d'entrada: <code>r=Simetria(t, f)</code>, <code>g=Translació(r, v)</code>, <code>s=Simetria(g, f)</code> i <code>Translació(s, v)</code>. El triangle final és el triangle t desplaçat 4 unitats a la dreta i 4 amunt: aplicar dues vegades una reflexió amb lliscament equival a una translació de vector 2v.</p>",
+  "sections": [
+    {
+      "parts": [
+        {
+          "h2": "Objectiu",
+          "body": "<p>El triangle <strong>t</strong>, la recta <strong>f</strong> (y = x) i el vector <strong>v = (2, 2)</strong>, paral·lel a f, ja estan construïts. Una <strong>reflexió amb lliscament</strong> consisteix a reflectir respecte de f i després traslladar amb v. <strong>Aplica-la dues vegades seguides</strong>: primer al triangle t, i després al resultat. Quina transformació porta directament de t al triangle final?</p>"
+        },
+        {
+          "h2": "Widget",
+          "simulador": {
+            "commands": "A=(1,0)\nB=(3,0)\nC=(3,2)\nt=Polygon(A,B,C)\nf=Line((0,0),(1,1))\nv=Vector((0,0),(2,2))",
+            "fixed": "A,B,C,t,f,v",
+            "tools": "0 | 1 | 7 | 2 15 16 | 29 30 31 32 33 | 49",
+            "goalId": "repte-8c",
+            "height": 440
+          },
+          "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>"
+        }
+      ]
+    }
+  ]
+}

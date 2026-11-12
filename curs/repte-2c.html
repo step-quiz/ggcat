@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repte 2C — Duplicació del quadrat | GeoCat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="curs.css">
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+
+<header class="curs-header">
+  <button id="sidebar-toggle" aria-label="Mostra/amaga els reptes" aria-expanded="false">☰</button>
+  <span class="curs-header-logo">
+    <span class="logo-icon"></span>
+    GeoCat
+  </span>
+  <nav class="curs-nav">
+    <a href="capitol-1.html">Capítols</a>
+    <a href="repte-1a.html" class="active">Reptes</a>
+  </nav>
+  <span class="curs-header-title">Repte 2C — Duplicació del quadrat</span>
+  <div class="curs-header-actions"></div>
+</header>
+
+<div class="curs-layout">
+  <div id="sidebar-overlay" aria-hidden="true"></div>
+  <nav id="sidebar" class="curs-sidebar" aria-label="Reptes del curs">
+    <div id="sidebar-nav"></div>
+  </nav>
+
+  <main class="curs-content">
+
+    <header class="chapter-header">
+      <span class="chapter-badge" style="background: #fee2e2; color: #991b1b;">⚡ Repte 2C — Difícil</span>
+      <h1>Duplicació del quadrat</h1>
+    </header>
+
+    <section class="chapter-section">
+      <h2>Objectiu</h2>
+<p>El quadrat ABCD de costat 2 (àrea 4) ja està construït. Construeix un altre <strong>quadrat que tingui exactament el doble d'àrea</strong> (àrea 8).</p>
+
+      <h2>Widget</h2>
+<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>
+
+      <div class="geogebra"
+           data-commands="A=(0,0)
+B=(2,0)
+C=(2,2)
+D=(0,2)
+q=Polygon(A,B,C,D)"
+           data-fixed="A,B,C,D,q"
+           data-tools="0 | 1 19 5 | 15 4 8 | 51 16 | 38 49"
+           data-goal-id="repte-2c"
+           data-height="440">
+      </div>
+    </section>
+
+    <details style="margin-top: 1.5rem;">
+      <summary style="cursor:pointer; font-size:0.82rem; color:var(--muted);">💡 Pista</summary>
+      <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">
+        <p>Doblar el costat no serveix: l'àrea es multiplicaria per 4. La idea, que ja explica Plató al diàleg <em>Menó</em>, és fer servir la <strong>diagonal</strong> del quadrat com a costat del nou. Amb l'eina «Polígon regular», fes clic a A, després a C i indica 4 vèrtexs (<code>Polígon(A, C, 4)</code>). La diagonal fa 2√2, i (2√2)² = 8.</p>
+      </div>
+    </details>
+
+    <nav class="chapter-nav">
+      <a href="repte-2b.html" class="btn-nav btn-nav--prev">← Repte anterior</a>
+      <a href="repte-3a.html" class="btn-nav btn-nav--next">Repte següent →</a>
+    </nav>
+
+  </main>
+</div>
+
+<script src="glossari-data.js"></script>
+<script src="geovalidator.js"></script>
+<script src="validators.js"></script>
+<script src="progress.js"></script>
+<script src="capitols.js"></script>
+<script>
+  injectCursLogo();
+  renderReptesSidebar('2c');
+  renderSimuladors();
+  initSidebarToggle();
+</script>
+
+</body>
+</html>

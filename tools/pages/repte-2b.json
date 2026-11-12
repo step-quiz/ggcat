@@ -8,7 +8,7 @@
     "label": "← Repte anterior"
   },
   "next": {
-    "url": "repte-3a.html",
+    "url": "repte-2c.html",
     "label": "Repte següent →"
   },
   "hint": "<p>El segment AC és una diagonal del quadrat. L'altra diagonal fa la mateixa longitud, passa pel punt mig de AC i hi és perpendicular: és un tros de la mediatriu de AC. Els vèrtexs que falten són (5, 0) i (0, 5). Crea'ls i uneix els quatre punts, per ordre, amb «Polígon». Amb la barra d'entrada: <code>B=(5,0)</code>, <code>D=(0,5)</code> i <code>Polígon(A, B, C, D)</code>.</p>",
