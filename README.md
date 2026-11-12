@@ -61,7 +61,7 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
 
 ## Com es veu una pàgina
 
-Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Les mides de lletra són sis i prou (12, 14, 16, 20, 28 i 40 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`.
+Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Les mides de lletra són sis i prou (11, 12, 14, 18, 24 i 36 px; el text normal fa 14 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`. En pantalles de 900 px d'amplada o més, el 10 % dret de la finestra queda buit.
 
 ## Editor de text (`curs/edit.html`)
 
