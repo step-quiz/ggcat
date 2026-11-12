@@ -69,7 +69,8 @@ Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teo
 
 ## Glossari
 
-El botó **📐 Glossari** obre la llista d'ordres i de termes. Cada paraula (amb subratllat discontinu) obre
+El botó **📐 Glossari** obre la llista d'ordres i de termes, en dues columnes: totes les descripcions
+comencen a la mateixa distància del marge. Cada paraula (en negre, amb subratllat discontinu) obre
 un exemple fet expressament per a aquella paraula (`curs/glossari-exemples.js`): les ordres en català en un
 quadre que l'alumne pot editar, **▶ Executa** (o Ctrl+Enter), **↺ Exemple original** i un applet amb la
 vista algebraica, on es veuen els valors. Una proposta «Prova-ho» diu què canviar. GeoGebra només entén
