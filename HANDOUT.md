@@ -16,10 +16,10 @@ Read, in this order: `CLAUDE.md` (rules), `TODO.md` (plan and state — the auth
 |---|---|
 | Chapters `curs/capitol-1…10.html` | 10/10, hand-written HTML, each with a validated exercise `cap-N-ex` |
 | Challenges | **30/30** live: the grid is complete. Grid = 10 themes × 3 levels (A/B/C); id `3b` → `curs/repte-3b.html`, goalId `repte-3b` |
-| Blocks of `TODO.md` | All done (0, A–K; G–J = UI/UX rounds, K = glossary examples). One open item: the virtual keyboard on phones (`TODO.md` section 5) | Nothing planned; `TODO.md` section 5 lists what was never checked |
+| Blocks of `TODO.md` | All done (0, A–L; G–J = UI/UX rounds, K = glossary examples, L = authorship footer). One open item: the virtual keyboard on phones (`TODO.md` section 5) | Nothing planned; `TODO.md` section 5 lists what was never checked |
 | Tests | `--comprova` 30 pages · `test-validators.js` 161/161 · `test-debug-tester-logic.js` 200/200 · end-to-end on the real applet 40/40 · 30/30 hints typed |
 
-Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. #6 blocks E (`data-view`) and F (notice when GeoGebra is unreachable) — merged. #7 Cloudflare incident note (section 7) — merged; merging it redeployed the site. #8 block G (UI/UX, first round) — merged. #9 block H (second UI round) — merged. #10 block I (zones, applet labels, type scale) — merged. #11 block J — merged. #12 is block K (a worked, editable example for every glossary word).
+Pull requests: #1 input bar, #2 validators (real object types), #3 grid ids + 11 cells, #4 Catalan command names in chapters and glossary — merged. #5 blocks C and D (all 19 new cells) — merged. #6 blocks E (`data-view`) and F (notice when GeoGebra is unreachable) — merged. #7 Cloudflare incident note (section 7) — merged; merging it redeployed the site. #8 block G (UI/UX, first round) — merged. #9 block H (second UI round) — merged. #10 block I (zones, applet labels, type scale) — merged. #11 block J — merged. #12 holds blocks K (a worked, editable example for every glossary word) and L (authorship and licence footer, `footer.js`, a hand-kept copy of the commons one).
 
 ## 3. How the owner wants to work
 

@@ -99,6 +99,12 @@ diferent aquest web (`comuns.json`). El workflow `.github/workflows/comuns.yml` 
 cada dia (o a mà: Actions → «Fitxers comuns» → Run workflow). **No els editis aquí**: el canvi es
 perdria l'endemà. Canvia'ls a step-quiz-commons.
 
+
+`footer.js` (a l'arrel) és el **peu de pàgina amb l'autoria i la llicència** que porten totes les
+pàgines: «© 2026 David Arso Civil · INS Miquel Tarradell. Contingut: CC BY-NC-SA 4.0 · Codi: llicència
+MIT». És una còpia del `footer.js` comú de step-quiz-commons amb el mateix text, però Ggcat no el rep de
+`comuns.json` (no forma part de la família de cursos amb selector i certificat): si el text canvia allà,
+s'ha de copiar aquí a mà.
 ## Progrés de l'alumne
 
 Es guarda localment al navegador (`localStorage`, clau `geocat_progress`). Cap dada s'envia a cap servidor.

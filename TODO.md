@@ -98,7 +98,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D, E, F, G, H, I, J, K (all done)**.
+Order: **0, A, B, C, D, E, F, G, H, I, J, K, L (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -236,6 +236,11 @@ Asked by the owner: every word of the glossary is a link (dashed underline) to a
 - **Live fact**: `evalCommand` does **not** accept Catalan command names (`Circumferència(P,2)` → false) although the input bar does. `GLOSSARI_ORDRES` translates them (table of spec section 6); `test-glossari.js` checks that nothing is left untranslated.
 - **Live fact**: a line can return true and its object vanish later: a polygon names its sides `f`, `g`, `h`…, so a later `f=Recta(…)` destroys it (it happened in the `Simetria(obj,f)` example). After running, every `name=…` line whose object no longer exists is reported as an error, to the student and to the tester.
 - **Tests**: `node test-glossari.js` (structure and translation; added to `tests.yml`); in the browser `GLOSSARI_PROVA_TOTS(cb)` runs every example on the live applet: **50/50, no failing line** (2026-11-12). The 50 figures were also looked at one by one.
+
+
+### Block L — Authorship and licence on every page (done, 2026-11-12)
+
+The owner sent a ZIP of `step-quiz-commons` «to copy all the licences and the authorship», explicitly **not** to join the family of courses (no «EXPLORA» selector, no certificate, no `comuns.json` entry). Findings: `LICENSE` and `LLICENCIA.md` were already identical to the commons ones (they are synced daily), and so was the README authorship block. What the sibling courses had and Ggcat lacked was the commons `footer.js`, a page footer with the authorship and both licences. It is now `footer.js` at the root, loaded by every page (landing, course index, chapters, challenges through the generator; not `curs/edit.html`): same text as commons («© 2026 David Arso Civil · INS Miquel Tarradell. Contingut: CC BY-NC-SA 4.0 · Codi: llicència MIT»), configuration written in (`ggcat-footer`, not fixed) and the course's font and type scale. It is **not** synced: if commons changes the text, copy it by hand.
 
 ---
 

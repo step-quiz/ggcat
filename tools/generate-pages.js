@@ -45,6 +45,7 @@ const PROJECTE = {
     'validators.js',
     'progress.js',
     'capitols.js',
+    '../footer.js',               // peu amb l'autoria i la llicència
     { inline: page => `  injectCursLogo();
   ${page.type === 'capitol' ? 'renderSidebar' : 'renderReptesSidebar'}(${refJs(page)});
   renderSimuladors();
