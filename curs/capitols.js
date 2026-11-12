@@ -367,44 +367,6 @@ function _creaZona(tipus, nodes, oberta) {
   return d;
 }
 
-// Reptes: quan l'alumne baixa fins a l'applet i la zona «Objectiu» ja no es veu,
-// l'objectiu continua visible en una franja fixa sota la capçalera, de l'amplada de
-// la zona Exercici. Als portàtils de 768 px d'alçada, l'applet i «Comprova» no hi
-// caben amb l'objectiu a sobre; així l'alumne no l'ha de tornar a buscar.
-function _objectiuEnganxat(zObj, zEx) {
-  if (typeof IntersectionObserver === 'undefined') return;
-  var p = zObj.querySelector('.zona-cos p');
-  if (!p) return;
-  var bar = document.createElement('div');
-  bar.className = 'objectiu-fix';
-  bar.hidden = true;
-  bar.setAttribute('aria-hidden', 'true');      // és una repetició: els lectors de pantalla ja tenen la zona
-  bar.innerHTML = '<span class="objectiu-fix-cap">🎯 Objectiu</span><span class="objectiu-fix-text"></span>';
-  bar.querySelector('.objectiu-fix-text').innerHTML = p.innerHTML;
-  document.body.appendChild(bar);
-  var veigObjectiu = true, veigExercici = false;
-  function col() {
-    var r = zEx.getBoundingClientRect();
-    bar.style.left = r.left + 'px';
-    bar.style.width = r.width + 'px';
-  }
-  function actualitza() {
-    var mostra = !veigObjectiu && veigExercici;
-    if (mostra) col();
-    bar.hidden = !mostra;
-  }
-  var obs = new IntersectionObserver(function(entrades) {
-    entrades.forEach(function(e) {
-      if (e.target === zObj) veigObjectiu = e.isIntersecting || e.boundingClientRect.top > 0;
-      else veigExercici = e.isIntersecting;
-    });
-    actualitza();
-  }, { rootMargin: '-38px 0px 0px 0px' });    // la capçalera (38 px) tapa la part de dalt
-  obs.observe(zObj);
-  obs.observe(zEx);
-  window.addEventListener('resize', function() { if (!bar.hidden) col(); });
-}
-
 function _treuTitol(seccio) {
   var h2 = seccio.querySelector(':scope > h2');
   if (h2) h2.remove();
@@ -427,9 +389,8 @@ function _organitzaZones() {
         dins.push(n);
       }
     });
-    var zObj = objectiu.length ? _creaZona('objectiu', objectiu, true) : null;
-    var zEx  = exercici.length ? _creaZona('exercici', exercici, true) : null;
-    if (zObj && zEx) _objectiuEnganxat(zObj, zEx);
+    if (objectiu.length) _creaZona('objectiu', objectiu, true);
+    if (exercici.length) _creaZona('exercici', exercici, true);
     var pista = main.querySelector('details.pista');
     if (pista) {
       var cosPista = Array.prototype.slice.call(pista.childNodes).filter(function(n) { return n.tagName !== 'SUMMARY'; });
@@ -627,7 +588,7 @@ function renderSimuladors() {
     H = Math.round((parseInt(cfg.height, 10) || 420) * 1.1);
     // Als portàtils de poca alçada (1366×768, 1280×720), l'applet i «Comprova» han
     // de cabre sencers a la pantalla: com a molt l'alçada de la finestra − 230 px
-    // (capçalera, etiqueta, barra de «Comprova», objectiu enganxat), i mai menys de 340.
+    // (capçalera, etiqueta, barra de «Comprova»), i mai menys de 340.
     if (!cfg.readonly) H = Math.max(340, Math.min(H, window.innerHeight - 230));
 
     var wrapper = document.getElementById(cfg.id).parentElement;
