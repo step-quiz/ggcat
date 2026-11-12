@@ -262,7 +262,7 @@ The owner asked for an exhaustive review: is the code clean and bug-free, do UI 
 **UI**
 
 - **U1** Values were invisible: the applets hide the algebra view and the texts refer to it. New attribute `data-algebra="true"` (perspective `AG`) on the 14 chapter applets whose text talks about values (chapters 1, 2, 3, 4, 7 and 9, some with a new `data-view`); the texts say «la columna de l'esquerra (la vista algebraica)».
-- **U2** Laptops of 1366×768: «Comprova» was below the fold. A non-read-only applet is now at most `innerHeight − 230` px high (never under 340), so applet and «Comprova» fit; on challenges the objective is repeated in a fixed band under the header (`.objectiu-fix`, `_objectiuEnganxat()`) while the objective zone is out of view and the exercise zone is in view.
+- **U2** Laptops of 1366×768: «Comprova» was below the fold. A non-read-only applet is now at most `innerHeight − 230` px high (never under 340), so applet and «Comprova» fit. A fixed band repeating the challenge objective under the header was added too and **removed at the owner's request** the same day (he does not want it: do not bring it back).
 
 **Pedagogy**
 
