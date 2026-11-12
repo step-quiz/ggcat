@@ -25,6 +25,7 @@
             "commands": "A=(0,0)\nB=(6,0)\nC=(2,5)\nt=Polygon(A,B,C)",
             "fixed": "A,B,C,t",
             "tools": "0 | 1 19 5 | 15 | 8 | 10 34",
+            "view": "-1 7 -1 6",
             "goalId": "repte-5b",
             "height": 440
           },

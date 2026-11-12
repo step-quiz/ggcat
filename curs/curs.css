@@ -290,6 +290,23 @@ pre.code-example {
 .simulador-feedback.fb-ok { color: #16a34a; }
 .simulador-feedback.fb-ko { color: #dc2626; }
 
+/* Avís quan GeoGebra no es pot carregar (sense connexió o geogebra.org caigut) */
+.ggb-error {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  text-align: center;
+  color: #991b1b;
+  background: #fef2f2;
+  font-size: 0.95rem;
+}
+.ggb-error p { margin: 0; }
+.ggb-error .ggb-btn { margin-top: 0.6rem; }
+
 /* Overlay de reload quan GeoGebra no renderitza */
 .ggb-reload-overlay {
   position: absolute;

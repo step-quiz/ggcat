@@ -25,6 +25,7 @@
             "commands": "A=(-3,0)\nB=(3,0)",
             "fixed": "A,B",
             "tools": "0 | 1 19 | 8 4 | 10 11 34 | 15",
+            "view": "-6 6 -2 9",
             "goalId": "repte-3b",
             "height": 440
           },

@@ -25,6 +25,7 @@
             "commands": "A=(1,0)\nB=(3,0)\nC=(3,2)\nt=Polygon(A,B,C)\nf=Line((0,0),(1,1))\nv=Vector((0,0),(2,2))",
             "fixed": "A,B,C,t,f,v",
             "tools": "0 | 1 | 7 | 2 15 16 | 29 30 31 32 33 | 49",
+            "view": "-1 8 -1 7",
             "goalId": "repte-8c",
             "height": 440
           },

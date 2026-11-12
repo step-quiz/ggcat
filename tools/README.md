@@ -72,16 +72,22 @@ Dins d'una `part` o `section`, el camp `simulador` genera el `<div class="geogeb
   "fixed":    "A,B",               // objectes que l'alumne no pot moure
   "app":      "graphing",          // només per als reptes de funcions (si no: classic)
   "tools":    "0 | 1 19 | 8",      // paleta d'eines (identificadors de GeoGebra; «|» separa grups)
+  "view":     "-1 7 -1 6",         // regió visible en carregar: xmin xmax ymin ymax (opcional)
   "height":   440
 }
 ```
+
+`view` serveix perquè la figura no quedi tallada: la vista per defecte de GeoGebra només mostra
+y entre −3.9 i 3.9. `curs/capitols.js` centra la regió i n'eixampla un dels eixos perquè tots dos
+tinguin la mateixa escala (una circumferència ha de semblar una circumferència). També s'aplica
+després de «Reinicia». Als capítols, que no es generen, s'escriu a mà com a `data-view="…"`.
 
 **Els validadors no van al JSON ni a l'HTML**: són a `curs/validators.js`, al mapa `VALIDATORS`
 (clau: `goalId`). Cada repte nou en necessita un, i també la seva entrada a `REPTES_DATA`
 (`curs/capitols.js`). Vegeu `REPTES_SPECIFICATION.md`.
 
 Un repte també pot portar `"num"` (un número) en lloc de `"id"`: és com funciona el generador a PyCat i
-JSCat. La còpia de GeoCat és la que entén `"id"` i `"tools"`.
+JSCat. La còpia de GeoCat és la que entén `"id"`, `"tools"` i `"view"`.
 
 `prev` i `next` segueixen l'ordre de `REPTES_DATA`: quan s'afegeix un repte, cal canviar-los també als JSON
 dels dos veïns i tornar-los a generar.

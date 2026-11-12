@@ -45,7 +45,7 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid ids and offers all 30 challenges. The legacy pages `repte-1` … `repte-10` are gone. What is left is blocks E (debts) and F (CDN-down banner).
+As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid ids and offers all 30 challenges. The legacy pages `repte-1` … `repte-10` are gone. Blocks E and F were closed on 2026-11-12. Nothing is planned; see section 5 for what remains unchecked.
 
 | Area | State |
 |---|---|
@@ -59,6 +59,8 @@ As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid i
 | Generator (`tools/generate-pages.js`, `tools/extreu-pagina.js`) | ✅ grid ids (`"id": "3b"`) and `simulador.tools` → `data-tools`; numeric `num` still works. Chapter pages are hand-written HTML. This copy is now ahead of the one in PyCat and JSCat (the owner knows). |
 | Tool palettes | ✅ every challenge page has its `data-tools` |
 | Input bar | Shown in every non-read-only applet since 2026-11-10 (check 0.1). |
+| Initial view | ✅ `data-view` on the 16 cells and 9 chapter applets whose figure left GeoGebra's default view (block E, 2026-11-12) |
+| GeoGebra unreachable | ✅ each widget shows a notice instead of «carregant…» (block F, 2026-11-12) |
 
 Test results on 2026-11-12:
 
@@ -95,7 +97,7 @@ Totals: 30 ✅. The grid is complete.
 
 ## 4. Work blocks
 
-Order: **0, A, B, C, D (all done)**. Blocks E and F can be done at any time.
+Order: **0, A, B, C, D, E, F (all done)**.
 
 ### Block 0 — Browser checks that gate the design
 
@@ -173,18 +175,24 @@ What the browser confirmed (headless Chromium, live applet):
 - [x] `getValue(polygonLabel)` is the area: confirmed on 2026-11-10 against the live applet (`t=Polygon((0,0),(6,0),(3,4))` → 12).
 - [x] **Catalan names in hints.** Read from the live applet on 2026-11-11 (spec section 6) and applied to every hint of the spec; the 11 published hints were typed and pass. All 30 hints have been typed and pass (the last ten on 2026-11-12).
 - [x] **Catalan command names in the chapters and the glossary** — fixed on 2026-11-11. Every command of `curs/capitol-N.html` and `curs/glossari-data.js` was typed into the live applet: `PuntMig` → `PuntMitjà`, `Cercle` → `Circumferència`, `Raig` → `Semirecta`, `Paral·lela(f,A)` → `Recta(A,f)`, `CercleCircumscrit(p)` → `Circumferència(A,B,C)`, `CercleInscrit(p)` → `CircumferènciaInscrita(A,B,C)`, `PolígonRegular` → `Polígon`, `Rotació(obj,A,α)` → `Rotació(obj,α,A)`, `Reflexió` → `Simetria`, `Homotècia(obj,O,k)` → `Homotècia(obj,k,O)`, `Lliscador` → `PuntLliscant`, `Lloc` → `LlocGeomètric`, `f(x,a,b)` → `Funció(f,a,b)`, `eixX` → `EixX`, `Punt(x,y)` (does not exist) → `(x,y)`. Also: chapter 4 `a=Àrea(p)` → `S=Àrea(p)` (`a` is a side of the triangle) and chapter 10 said the midpoint locus is an ellipse (it is a circle). The 95 lines of the chapters' code examples are all accepted by the applet. Not checked: the chapters' prose beyond the commands.
-- [ ] **5B: vertex C = (2, 5) is outside the initial view** (the applet shows y up to about 4). Inherited from `repte-9`; the student can drag the view. Either set the view in `data-commands` or leave it.
-- [ ] Known limits of the validators, accepted as they are: "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.
+- [x] **Objects outside the initial view** — fixed on 2026-11-12. It was not only 5B: GeoGebra's default view in a challenge applet shows x ∈ [−10.6, 10.6] but only y ∈ [−3.9, 3.9], and a probe on the live applet (initial construction plus the tester's correct solution, points and circles) found 25 applets leaving it: 17 exercises (16 cells and `cap-8-ex`) and 8 chapter demos (chapter 3 #3, chapter 6 #2 #3, chapter 7 #1 #2 #3, chapter 8 #0 #3; numbered from 0 in page order). New optional attribute `data-view="xmin xmax ymin ymax"` (JSON `simulador.view`, generator and extractor updated): `_aplicaVista()` in `curs/capitols.js` keeps that region visible with equal scales on both axes, at load and after «Reinicia». After the change the same probe finds nothing outside the view.
+- [x] Known limits of the validators, accepted as they are (decision, nothing to do): "measure it" steps cannot be enforced (`1b`, `8b`: the polygon already carries its sides and its area); `7a` only requires *some* second line plus the foot point.
 
 ### Block F — Robustness when the GeoGebra CDN is down
 
 The course pages load `https://www.geogebra.org/apps/deployggb.js` synchronously in `<head>`. If the CDN does not answer, the widgets stay on «carregant…» forever with no message.
 
-- [ ] At the end of `renderSimuladors()`, test `typeof GGBApplet === 'undefined'` and show an error banner in each wrapper instead of the perpetual «carregant…».
+- [x] Done on 2026-11-12 (`curs/capitols.js`, `_mostraErrorGeoGebra()`, styles `.ggb-error` in `curs/curs.css`). Each widget shows «No s'ha pogut carregar GeoGebra…» with a reload button, and the badge reads «sense GeoGebra»:
+  - at once, when `GGBApplet` is undefined (deployggb.js failed);
+  - after 30 s (`_GGB_ESPERA_MS`), when deployggb.js loaded but the applet did not arrive; if it arrives later, `appletOnLoad` removes the notice.
+  - Verified with Playwright by aborting requests: every `geogebra.org` request blocked → notice at once (1/1 on 5B, 5/5 on chapter 3); only the applet blocked → nothing at 5 s, notice at 32 s; normal load → no notice.
+  - Not covered: a CDN that accepts the connection and never answers. deployggb.js is a synchronous `<script>` in `<head>`, so the browser waits for its own timeout before rendering the page; after that the notice appears. Making the script `async` would change the loading pattern documented at the top of `renderSimuladors()`.
 
 ---
 
 ## 5. Notes for the assistant
+
+- **Still unchecked** (no block owns it): the chapters' prose beyond their GeoGebra commands; how the pages look at phone width with an applet inside.
 
 - **Tolerances** are in spec 7.2. In short: 0.15 for coordinates and lengths, 0.2 for images and irrational centres, 0.3 for areas, 1.5° for angles; `GV.eps` (0.001) is too strict for student constructions.
 - **Never test labels chosen by the student**: iterate with `getAllObjectNames(type)`. Labels of pre-built objects can be used and excluded.

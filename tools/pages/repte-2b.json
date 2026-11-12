@@ -25,6 +25,7 @@
             "commands": "A=(0,0)\nC=(5,5)",
             "fixed": "A,C",
             "tools": "0 | 1 19 5 | 15 4 8 | 16",
+            "view": "-1 6 -1 6",
             "goalId": "repte-2b",
             "height": 440
           },

@@ -192,6 +192,55 @@ function renderReptesSidebar(currentId) {
 
 var _ggbWidgetCount = 0;
 
+// GeoGebra no disponible. deployggb.js i l'applet es carreguen de geogebra.org:
+// sense connexió (o si el servidor no respon) el widget es quedaria per sempre a
+// «carregant…». En aquest cas es mostra un avís dins el widget.
+//   · si deployggb.js no s'ha carregat (GGBApplet no existeix), de seguida;
+//   · si s'ha carregat però l'applet no arriba en _GGB_ESPERA_MS, en aquell
+//     moment. Si l'applet arriba més tard, appletOnLoad treu l'avís.
+var _GGB_ESPERA_MS = 30000;
+
+function _mostraErrorGeoGebra(wrapper) {
+  if (!wrapper || wrapper._ggbApi || wrapper.querySelector('.ggb-error')) return;
+  var host = document.getElementById(wrapper._ggbId) || wrapper;
+  var box = document.createElement('div');
+  box.className = 'ggb-error';
+  box.setAttribute('role', 'alert');
+  box.innerHTML =
+    '<p><strong>No s\'ha pogut carregar GeoGebra.</strong></p>' +
+    '<p>GeoGebra arriba des de geogebra.org: comprova la connexió a internet i torna-ho a provar.</p>' +
+    '<button class="ggb-btn" type="button">↻ Torna a carregar la pàgina</button>';
+  box.querySelector('button').addEventListener('click', function() { window.location.reload(); });
+  host.appendChild(box);
+  var badge = wrapper.querySelector('.ggb-badge');
+  if (badge) { badge.textContent = 'sense GeoGebra'; badge.className = 'ggb-badge ggb-ko'; }
+}
+
+// Vista inicial. data-view="xmin xmax ymin ymax" és la regió que ha de quedar
+// visible (la construcció inicial i la solució). La vista per defecte de
+// GeoGebra només mostra y entre −3.9 i 3.9, i molts triangles hi queden tallats.
+// Es conserva la mateixa escala als dos eixos (una circumferència ha de semblar
+// una circumferència): la regió es centra i s'eixampla pel costat que calgui.
+function _aplicaVista(api, cfg) {
+  if (!cfg.view) return;
+  var r = cfg.view.trim().split(/[\s,]+/).map(Number);
+  if (r.length !== 4 || r.some(function(n) { return !isFinite(n); })) {
+    console.warn('[GeoCat] data-view no vàlid:', cfg.view);
+    return;
+  }
+  var xmin = r[0], xmax = r[1], ymin = r[2], ymax = r[3];
+  try {
+    var v = JSON.parse(api.getViewProperties());
+    if (v.width > 0 && v.height > 0) {
+      var s  = Math.max((xmax - xmin) / v.width, (ymax - ymin) / v.height);   // unitats per píxel
+      var cx = (xmin + xmax) / 2, cy = (ymin + ymax) / 2;
+      xmin = cx - s * v.width / 2;  xmax = cx + s * v.width / 2;
+      ymin = cy - s * v.height / 2; ymax = cy + s * v.height / 2;
+    }
+  } catch (e) {}
+  try { api.setCoordSystem(xmin, xmax, ymin, ymax); } catch (e) {}
+}
+
 
 function renderSimuladors() {
   var divs = document.querySelectorAll('.geogebra');
@@ -226,6 +275,7 @@ function renderSimuladors() {
       goalId:    div.getAttribute('data-goal-id') || '',
       app:       div.getAttribute('data-app') || '',
       tools:     div.getAttribute('data-tools') || '',
+      view:      div.getAttribute('data-view') || '',
       height:    div.getAttribute('data-height') || '420',
       validator: validatorFn
     });
@@ -299,6 +349,7 @@ function renderSimuladors() {
           cfg.fixed.forEach(function(lbl) {
             if (lbl) try { api.setFixed(lbl, true, true); api.setColor(lbl, 60, 100, 220); } catch(e) {}
           });
+          _aplicaVista(api, cfg);
           var badge = tb.querySelector('.ggb-badge');
           if (badge) { badge.textContent = 'llest'; badge.className = 'ggb-badge ggb-ready'; }
         });
@@ -327,6 +378,14 @@ function renderSimuladors() {
   // deployggb.js ja està carregat al <head> (síncron).
   // GGBApplet EXISTEIX aquí, garantit.
   // ══════════════════════════════════════════════════════════
+
+  if (typeof GGBApplet === 'undefined') {
+    console.warn('[GeoCat] deployggb.js no s\'ha carregat: GeoGebra no és disponible');
+    entries.forEach(function(cfg) {
+      _mostraErrorGeoGebra(document.getElementById(cfg.id).parentElement);
+    });
+    return;
+  }
 
   var H;
 
@@ -357,6 +416,8 @@ function renderSimuladors() {
       appletOnLoad: function(api) {
         console.log('[GeoCat] ✓ Applet ' + cfg.id + ' carregat OK');
         wrapper._ggbApi = api;
+        var avis = wrapper.querySelector('.ggb-error');     // l'applet ha arribat tard
+        if (avis) avis.remove();
 
         // Només Vista Gràfica (amaga la columna d'àlgebra de l'esquerra).
         // Excepció: als exercicis (goalId) amb l'app graphing. Allà la barra d'entrada
@@ -382,6 +443,9 @@ function renderSimuladors() {
             api.setColor(lbl, 60, 100, 220);
           } catch(e) {}
         });
+
+        // Vista inicial (data-view)
+        _aplicaVista(api, cfg);
 
         // Badge
         var badge = wrapper.querySelector('.ggb-badge');
@@ -416,7 +480,12 @@ function renderSimuladors() {
       ggbParams.customToolBar = cfg.tools.trim();
     }
 
-    new GGBApplet(ggbParams, true).inject(cfg.id);
+    try {
+      new GGBApplet(ggbParams, true).inject(cfg.id);
+    } catch (e) {
+      console.warn('[GeoCat] GeoGebra no s\'ha pogut injectar:', e);
+    }
+    setTimeout(function() { _mostraErrorGeoGebra(wrapper); }, _GGB_ESPERA_MS);
   });
 }
 

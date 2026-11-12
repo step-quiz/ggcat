@@ -136,6 +136,7 @@ Every challenge is `curs/repte-<id>.html`, generated from `tools/pages/repte-<id
 | `data-goal-id` | `.geogebra` div | `repte-3b` |
 | `data-app` | `.geogebra` div | omitted (classic) or `graphing` |
 | `data-tools` | `.geogebra` div | the palette of the cell (section 6) |
+| `data-view` | `.geogebra` div | optional: `xmin xmax ymin ymax`, the region that must be visible at load and after «Reinicia» (since 2026-11-12). `curs/capitols.js` centres it and widens one axis so that both axes keep the same scale. GeoGebra's default view shows only y ∈ [−3.9, 3.9] (x ∈ [−10.6, 10.6]) in a challenge applet, so every cell whose initial construction or correct solution leaves that box has one (16 cells; they are listed in the cells' metadata) |
 | `data-height` | `.geogebra` div | always `440` |
 | Hint | `<details>` after the section | the *Hint* of the cell |
 | Navigation | `.chapter-nav` | section 4.3 |
@@ -165,7 +166,7 @@ Generator JSON for a challenge (`num` is replaced by `id`; `simulador` gains `to
     { "h2": "Widget",
       "body": "<p>Construeix la solució i prem <strong>✓ Comprova</strong> quan acabis.</p>",
       "simulador": { "goalId": "repte-3b", "commands": "A=(-3,0)\nB=(3,0)", "fixed": "A,B",
-                     "tools": "0 | 1 19 | 8 4 | 10 11 34 | 15", "height": 440 } }
+                     "tools": "0 | 1 19 | 8 4 | 10 11 34 | 15", "view": "-6 6 -2 9", "height": 440 } }
   ] } ]
 }
 ```
@@ -610,6 +611,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 19 5 | 15 | 16 | 38 49` — Move · Point, Midpoint or centre, Intersect · Segment · Polygon · Distance or length, Area
+- **`data-view`:** `-1 9 -1 7` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -717,6 +719,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,C`
 - **`data-tools`:** `0 | 1 19 5 | 15 4 8 | 16` — Move · Point, Midpoint or centre, Intersect · Segment, Perpendicular line, Perpendicular bisector · Polygon
+- **`data-view`:** `-1 6 -1 6` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -766,6 +769,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,D,q`
 - **`data-tools`:** `0 | 1 19 5 | 15 4 8 | 51 16 | 38 49` — Move · Point, Midpoint or centre, Intersect · Segment, Perpendicular line, Perpendicular bisector · Regular polygon, Polygon · Distance or length, Area
+- **`data-view`:** `-3 3 -1 5` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -822,6 +826,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** *(empty)*
 - **`data-tools`:** `0 | 1 | 34 10` — Move · Point · Circle: centre and radius, Circle: centre and point
+- **`data-view`:** `-5 5 -5 5` — region kept visible at load (section 5)
 - **`data-commands`:** *(empty — the student starts from a blank view)*
 
 **Objectiu** (Catalan; inner HTML of the first `<p>`):
@@ -870,6 +875,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B`
 - **`data-tools`:** `0 | 1 19 | 8 4 | 10 11 34 | 15` — Move · Point, Midpoint or centre · Perpendicular bisector, Perpendicular line · Circle: centre and point, Circle through 3 points, Circle: centre and radius · Segment
+- **`data-view`:** `-6 6 -2 9` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -922,6 +928,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 19 5 | 8 | 10 34 | 15` — Move · Point, Midpoint or centre, Intersect · Perpendicular bisector · Circle: centre and point, Circle: centre and radius · Segment
+- **`data-view`:** `-4 4 -3 5` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1193,6 +1200,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 19 5 | 15 | 8 | 10 34` — Move · Point, Midpoint or centre, Intersect · Segment · Perpendicular bisector · Circle: centre and point, Circle: centre and radius
+- **`data-view`:** `-1 7 -1 6` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1240,6 +1248,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 19 5 | 15 | 8 | 10 | 38 49` — Move · Point, Midpoint or centre, Intersect · Segment · Perpendicular bisector · Circle: centre and point · Distance or length, Area
+- **`data-view`:** `-1 7 -2 6` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1358,6 +1367,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 19 5 | 2 15 | 9 | 10 38` — Move · Point, Midpoint or centre, Intersect · Line, Segment · Angle bisector · Circle: centre and point, Distance or length
+- **`data-view`:** `-1 9 -1 7` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1410,6 +1420,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 5 | 15 2 | 9 4 | 10 34 | 38` — Move · Point, Intersect · Segment, Line · Angle bisector, Perpendicular line · Circle: centre and point, Circle: centre and radius · Distance or length
+- **`data-view`:** `-1 8 -1 7` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1472,6 +1483,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `f,P`
 - **`data-tools`:** `0 | 1 5 | 2 | 4` — Move · Point, Intersect · Line · Perpendicular line
+- **`data-view`:** `-2 8 -1 5` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1579,6 +1591,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t`
 - **`data-tools`:** `0 | 1 5 | 2 15 | 3 4 8 | 38` — Move · Point, Intersect · Line, Segment · Parallel line, Perpendicular line, Perpendicular bisector · Distance or length
+- **`data-view`:** `-1 9 -1 7` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1640,6 +1653,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t,v`
 - **`data-tools`:** `0 | 1 | 15 16 | 31` — Move · Point · Segment, Polygon · Translate by vector
+- **`data-view`:** `-1 8 -1 6` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1692,6 +1706,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `O,A,B,C,t`
 - **`data-tools`:** `0 | 1 | 7 | 15 16 | 29 30 31 32 | 49` — Move · Point · Vector · Segment, Polygon · Reflect about point, Reflect about line, Translate by vector, Rotate around point · Area
+- **`data-view`:** `-1 6 -1 6` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -1751,6 +1766,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `A,B,C,t,f,v`
 - **`data-tools`:** `0 | 1 | 7 | 2 15 16 | 29 30 31 32 33 | 49` — Move · Point · Vector · Line, Segment, Polygon · Reflect about point, Reflect about line, Translate by vector, Rotate around point, Dilate from point · Area
+- **`data-view`:** `-1 8 -1 7` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```
@@ -2114,6 +2130,7 @@ Each cell gives: metadata, initial construction, palette, the student-facing tex
 - **App:** `classic` (omit `data-app`)
 - **`data-fixed`:** `F_1,F_2`
 - **`data-tools`:** `0 | 1 19 5 501 | 25 | 47 | 10 34 | 38` — Move · Point, Midpoint or centre, Intersect, Point on object · Slider · Locus · Circle: centre and point, Circle: centre and radius · Distance or length
+- **`data-view`:** `-6 6 -5 5` — region kept visible at load (section 5)
 - **`data-commands`:**
 
   ```

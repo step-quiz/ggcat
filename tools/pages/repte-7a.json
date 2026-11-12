@@ -25,6 +25,7 @@
             "commands": "f=Line((0,0),(4,1))\nP=(3,4)",
             "fixed": "f,P",
             "tools": "0 | 1 5 | 2 | 4",
+            "view": "-2 8 -1 5",
             "goalId": "repte-7a",
             "height": 440
           },
