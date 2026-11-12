@@ -186,6 +186,11 @@ var GLOSSARI_EXEMPLES = {
     prova: 'Base 5 i altura 4: àrea 10. Canvia (1,3) per (1,5).',
     view: '-4 5 -2 6'
   },
+  'Angle(r,s)': {
+    codi: ['r=Recta((-2,3),(2,-1))', 's=Recta((-3,-1),(3,2))', 'α=Angle(r,s)'],
+    prova: 'Canvia l\'ordre, <code>α=Angle(s,r)</code>: GeoGebra mesura en sentit antihorari, de la primera recta a la segona, i surt l\'angle que falta fins a 360°.',
+    view: '-4 4 -3 4'
+  },
   'Perímetre(p)': {
     codi: ['q=Polígon((-2,-1),(2,-1),(2,2),(-2,2))', 'per=Perímetre(q)'],
     prova: 'Un rectangle de 4 per 3: 4 + 3 + 4 + 3 = 14. Fes-lo de 5 per 3.',
@@ -197,6 +202,12 @@ var GLOSSARI_EXEMPLES = {
     codi: ['f=Recta((0,0),(4,1))', 'g=Recta((0,0),(1,3))', 'Bisectriu(f,g)'],
     prova: 'Dues rectes que es tallen fan quatre angles: per això surten dues bisectrius. Canvia g.',
     view: '-4 4 -3 3'
+  },
+
+  'Bisectriu(A,B,C)': {
+    codi: ['K=(4,-1)', 'V=(-1,0)', 'L=(1,3)', 'Semirecta(V,K)', 'Semirecta(V,L)', 'Bisectriu(K,V,L)'],
+    prova: 'El vèrtex va al mig. Prova <code>Bisectriu(V,K,L)</code>: ara parteix l\'angle que té el vèrtex a K.',
+    view: '-3 5 -2 4'
   },
 
   // ── Transformacions ──
@@ -249,6 +260,12 @@ var GLOSSARI_EXEMPLES = {
     view: '-4 4 -3 3'
   },
 
+  'Tangent(P,f)': {
+    codi: ['f(x)=x^2/2-1', 'P=(2,1)', 't=Tangent(P,f)'],
+    prova: 'Canvia P per <code>P=(0,-1)</code> o <code>P=(-3,3.5)</code>: la tangent sempre toca la corba en P.',
+    view: '-4 4 -2 5'
+  },
+
   // ── Lliscadors i dinàmica ──
   'PuntLliscant(min,max,pas)': {
     codi: ['a=PuntLliscant(1,4,0.5)', 'c=Circumferència((0,0),a)'],
@@ -258,6 +275,11 @@ var GLOSSARI_EXEMPLES = {
   'LlocGeomètric(B,A)': {
     codi: ['c=Circumferència((0,0),2)', 'A=Punt(c)', 'Q=(4,0)', 'M=PuntMitjà(A,Q)', 'LlocGeomètric(M,A)'],
     prova: 'Quan A dona la volta, M dibuixa una altra circumferència, la meitat de gran. Canvia Q.',
+    view: '-3 5 -3 3'
+  },
+  'LlocGeomètric(P,a)': {
+    codi: ['a=PuntLliscant(0,6.28,0.05)', 'P=(2cos(a)+1,2sin(a))', 'LlocGeomètric(P,a)'],
+    prova: 'Arrossega el lliscador a. Canvia els dos 2 per 3: la circumferència es fa més gran.',
     view: '-3 5 -3 3'
   },
   'Seqüència(exp,var,i,f)': {

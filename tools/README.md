@@ -80,11 +80,13 @@ Dins d'una `part` o `section`, el camp `simulador` genera el `<div class="geogeb
 `view` serveix perquè la figura no quedi tallada: la vista per defecte de GeoGebra només mostra
 y entre −3.9 i 3.9. `curs/capitols.js` centra la regió i n'eixampla un dels eixos perquè tots dos
 tinguin la mateixa escala (una circumferència ha de semblar una circumferència). També s'aplica
-després de «Reinicia». Als capítols, que no es generen, s'escriu a mà com a `data-view="…"`.
+després de «Reinicia». Als capítols, que no es generen, s'escriu a mà com a `data-view="…"`; també
+`data-algebra="true"`, que mostra la columna d'àlgebra a l'esquerra quan el text parla de valors.
 
 **Els validadors no van al JSON ni a l'HTML**: són a `curs/validators.js`, al mapa `VALIDATORS`
 (clau: `goalId`). Cada repte nou en necessita un, i també la seva entrada a `REPTES_DATA`
-(`curs/capitols.js`). Vegeu `REPTES_SPECIFICATION.md`.
+(`curs/capitols.js`). Un validador torna `true` si la construcció és correcta i, si no, una frase en
+català que diu a l'alumne què li falta (secció 7.1 de `REPTES_SPECIFICATION.md`).
 
 Un repte també pot portar `"num"` (un número) en lloc de `"id"`: és com funciona el generador a PyCat i
 JSCat. La còpia de Ggcat és la que entén `"id"`, `"tools"` i `"view"`.

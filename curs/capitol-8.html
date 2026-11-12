@@ -40,7 +40,7 @@
       <header class="chapter-header">
         <span class="chapter-badge">Capítol 8</span>
         <h1>Transformacions</h1>
-        <p class="chapter-lead">Les <strong>transformacions geomètriques</strong> mouen, giren o reflecteixen figures mantenint certes propietats. GeoGebra permet aplicar translacions, rotacions, reflexions i homotècies en una sola comanda, i veure el resultat al moment.</p>
+        <p class="chapter-lead">Les <strong>transformacions geomètriques</strong> mouen, giren o reflecteixen figures mantenint certes propietats. GeoGebra permet aplicar translacions, rotacions, reflexions i homotècies en una sol'ordre, i veure el resultat al moment.</p>
       </header>
 
 
@@ -83,19 +83,18 @@ t2=Translate(t,v)"
 
         <p>Una <strong>rotació</strong> gira un objecte un angle α al voltant d'un punt central A. L'angle es pot expressar en graus (posant el símbol °):</p>
 
-        <pre class="code-example">A=(0,0)
-B=(3,1)
-C=(4,3)
-D=(1,2)
-p=Polígon(A,B,C,D)
+        <pre class="code-example">A=(3,1)
+B=(4,3)
+C=(1,2)
+p=Polígon(A,B,C)
 O=(0,0)
 p2=Rotació(p,90°,O)</pre>
 
         <div class="geogebra"
-             data-commands="B=(3,1)
-C=(4,3)
-D=(1,2)
-p=Polygon(B,C,D)
+             data-commands="A=(3,1)
+B=(4,3)
+C=(1,2)
+p=Polygon(A,B,C)
 O=(0,0)
 p2=Rotate(p,90°,O)"
              data-readonly="true"
@@ -132,7 +131,7 @@ t2=Reflect(t,eix)"
              data-height="400">
         </div>
 
-        <p>La reflexió respecte l'eix Y (la recta x=0) transforma cada punt (x,y) en (−x,y). El triangle reflectit és simètric al original respecte l'eix vertical.</p>
+        <p>La reflexió respecte l'eix Y (la recta x=0) transforma cada punt (x,y) en (−x,y). El triangle reflectit és simètric a l'original respecte l'eix vertical.</p>
       </section>
 
 

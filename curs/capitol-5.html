@@ -40,7 +40,7 @@
       <header class="chapter-header">
         <span class="chapter-badge">Capítol 5</span>
         <h1>Construccions clàssiques I</h1>
-        <p class="chapter-lead">Les construccions clàssiques de la geometria euclidiana —mediatriu, bisectriu, perpendicular— eren fetes amb regle i compàs. GeoGebra les resol en una sola comanda. En aquest capítol dominaràs les tres construccions fonamentals.</p>
+        <p class="chapter-lead">Les construccions clàssiques de la geometria euclidiana —mediatriu, bisectriu, perpendicular— eren fetes amb regle i compàs. GeoGebra les resol en una sol'ordre. En aquest capítol dominaràs les tres construccions fonamentals.</p>
       </header>
 
 
@@ -75,16 +75,18 @@ m=PerpendicularBisector(A,B)"
       <section class="chapter-section">
         <h2>Recta perpendicular: <code>Perpendicular(A,f)</code></h2>
 
-        <p>La comanda <code>Perpendicular(A,f)</code> crea la recta que passa pel punt A i és perpendicular a la recta f:</p>
+        <p>L'ordre <code>Perpendicular(A,f)</code> crea la recta que passa pel punt A i és perpendicular a la recta f:</p>
 
-        <pre class="code-example">A=(0,2)
-B=(4,0)
+        <pre class="code-example">B=(4,0)
 C=(0,0)
 f=Recta(B,C)
+A=(1,2)
 Perpendicular(A,f)</pre>
 
         <div class="geogebra"
-             data-commands="f=Line((4,0),(0,0))
+             data-commands="B=(4,0)
+C=(0,0)
+f=Line(B,C)
 A=(1,2)
 p=PerpendicularLine(A,f)"
              data-readonly="true"
@@ -101,7 +103,7 @@ p=PerpendicularLine(A,f)"
       <section class="chapter-section">
         <h2>Bisectriu d'angle: <code>Bisectriu(f,g)</code></h2>
 
-        <p>La <strong>bisectriu</strong> d'un angle és la semirecta que divideix l'angle en dues parts iguals. La comanda <code>Bisectriu(f,g)</code> rep dues rectes que es creuen i retorna les dues bisectrius (de l'angle i del seu suplement):</p>
+        <p>La <strong>bisectriu</strong> d'un angle és la semirecta que divideix l'angle en dues parts iguals. L'ordre <code>Bisectriu(f,g)</code> rep dues rectes que es creuen i retorna les dues bisectrius (de l'angle i del seu suplement):</p>
 
         <pre class="code-example">f=Recta((0,0),(4,2))
 g=Recta((0,0),(2,-3))
@@ -118,6 +120,34 @@ b=AngleBisector(f,g)"
         <p>GeoGebra retorna dues rectes bisectrius perpendiculars entre elles. La bisectriu d'un angle i la bisectriu del seu angle adjacent formen sempre 90°.</p>
       </section>
 
+
+      <!-- ─────────────────────────────────────────
+           SECCIÓ 3b — Bisectriu d'un angle donat per tres punts
+           ───────────────────────────────────────── -->
+      <section class="chapter-section">
+        <h2>Bisectriu d'un angle donat per tres punts: <code>Bisectriu(A,B,C)</code></h2>
+
+        <p>Sovint l'angle no ve donat per dues rectes, sinó per tres punts: un a cada costat i el vèrtex al mig. <code>Bisectriu(A,B,C)</code> dona la bisectriu de l'angle ABC, el que té el vèrtex a B. Ara GeoGebra en dona només una:</p>
+
+        <pre class="code-example">A=(5,2)
+B=(1,0)
+C=(2,4)
+Bisectriu(A,B,C)</pre>
+
+        <div class="geogebra"
+             data-commands="A=(5,2)
+B=(1,0)
+C=(2,4)
+s1=Ray(B,A)
+s2=Ray(B,C)
+b=AngleBisector(A,B,C)"
+             data-readonly="true"
+             data-view="-1 6 -1 5"
+             data-height="360">
+        </div>
+
+        <p>L'ordre de les lletres importa: el vèrtex sempre va al mig. Si escrius <code>Bisectriu(B,A,C)</code>, GeoGebra parteix l'angle que té el vèrtex a A. Arrossega A o C i mira com la bisectriu sempre parteix l'angle en dues meitats iguals.</p>
+      </section>
 
       <!-- ─────────────────────────────────────────
            SECCIÓ 4 — Combinació
@@ -166,7 +196,7 @@ s=Segment(A,B)"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Tres construccions clàssiques en una comanda: <code>Mediatriu(A,B)</code> — recta perpendicular al segment que passa pel punt mig; <code>Perpendicular(A,f)</code> — recta per un punt perpendicular a una recta donada; <code>Bisectriu(f,g)</code> — semirectes que divideixen en dos un angle.</p>
+        <p>Les construccions clàssiques, cadascuna amb una sola ordre: <code>Mediatriu(A,B)</code> — recta perpendicular al segment que passa pel punt mig; <code>Perpendicular(A,f)</code> — recta per un punt perpendicular a una recta donada; <code>Bisectriu(f,g)</code> — les dues rectes que parteixen per la meitat els angles entre f i g; <code>Bisectriu(A,B,C)</code> — la bisectriu de l'angle ABC, amb el vèrtex B al mig.</p>
       </section>
 
 

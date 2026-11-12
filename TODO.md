@@ -46,13 +46,13 @@ Decided by the owner on 2026-11-10. These decisions are closed; do not reopen th
 
 ## 3. State of the code
 
-As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid ids and offers all 30 challenges. The legacy pages `repte-1` … `repte-10` are gone. Blocks E and F were closed on 2026-11-12. Nothing is planned; see section 5 for what remains unchecked.
+As of 2026-11-12. **Blocks 0, A, B, C and D are done**: the site runs the grid ids and offers all 30 challenges. The legacy pages `repte-1` … `repte-10` are gone. Blocks E and F were closed on 2026-11-12, and block M (the final review) the same day. Nothing is planned; see section 5 for what remains unchecked.
 
 | Area | State |
 |---|---|
 | Data and UI (`curs/capitols.js`) | ✅ `TEMES_DATA`, `REPTES_DATA` (grid shape, 30 entries), sidebar grouped by theme, migration of the four legacy progress keys |
-| `curs/validators.js` | ✅ 10 chapter exercises + 30 cells; all pass the end-to-end tester |
-| `curs/geovalidator.js` | ✅ includes the `GV` extension of spec 7.3 |
+| `curs/validators.js` | ✅ 10 chapter exercises + 30 cells; each returns `true` or a Catalan reason that the page shows (block M); all pass the end-to-end tester |
+| `curs/geovalidator.js` | ✅ only the tolerant helpers of spec 7.3 (the strict legacy ones were removed in block M) |
 | Course index (`curs/index.html`) | ✅ chapter list + theme × level table of the challenges (empty cells are dashed boxes) |
 | Landing page (`index.html`) | ✅; the stat reads `30` |
 | Chapters `curs/capitol-1.html` … `capitol-10.html` | ✅ 10/10, each with a validated exercise (`cap-N-ex`). Command names in their text and in the glossary verified against the live applet (2026-11-11) |
@@ -68,10 +68,11 @@ Test results on 2026-11-12:
 | Command | Result |
 |---|---|
 | `node tools/generate-pages.js --comprova` | 30 pages checked, all match |
-| `node test-validators.js` | 161/161 (30 cells and 10 chapter exercises) |
-| `node test-debug-tester-logic.js` | 200/200 |
+| `node test-validators.js` | 210/210 (30 cells and 10 chapter exercises; every reason printed and well formed; the `cap-10-ex` slider cases) |
+| `node test-debug-tester-logic.js` | 213/213 |
+| `node test-glossari.js` | 553/553 |
 | `node --check` on every `.js` | all pass |
-| End-to-end (`curs/index.html?debug=1`, real GeoGebra, headless Chromium) | **40/40 green** |
+| End-to-end (`curs/index.html?debug=1`, real GeoGebra, headless Chromium) | **50/50 green** (30 cells, 10 chapter exercises, 10 chapter demo checks) |
 | Hints typed by hand (the Catalan commands of each hint typed into the input bar, then «Comprova») | **30/30 ✓** |
 | Progress migration (a browser holding `repte-3` and `repte-9`) | ✓ appears on 3A and 5B |
 
@@ -231,7 +232,7 @@ The owner looked at a chapter as a 14-year-old would. Decided through mock-ups a
 
 Asked by the owner: every word of the glossary is a link (dashed underline) to a GeoGebra example built for that word alone, which the student can modify.
 
-- **Data**: `curs/glossari-exemples.js`, `GLOSSARI_EXEMPLES` keyed by the exact text of the glossary `<code>` (53 words, 50 examples: `Mediatriu(A,B)`, `Perpendicular(A,f)` and `Recta(A,f)` appear twice in the glossary). Each: `codi` (Catalan commands, one per line), `prova` (what to change), `view`. No figure or coordinate is taken from the chapters or the challenges.
+- **Data**: `curs/glossari-exemples.js`, `GLOSSARI_EXEMPLES` keyed by the exact text of the glossary `<code>` (53 words, 50 examples at the time; 57 and 54 after block M: `Mediatriu(A,B)`, `Perpendicular(A,f)` and `Recta(A,f)` appear twice in the glossary). Each: `codi` (Catalan commands, one per line), `prova` (what to change), `view`. No figure or coordinate is taken from the chapters or the challenges.
 - **UI** (`_preparaExemplesGlossari()` in `curs/capitols.js`): the word becomes a `<button class="glossari-terme">`; the example opens inside the glossary window (wider: 900 px): editable textarea, ▶ Executa (Ctrl+Enter), ↺ Exemple original, «Prova-ho», and one `classic` applet per page with perspective `AG` (algebra view: values of areas, distances… are visible), created on first use; `deployggb.js` is loaded on demand on pages that have no applet (`curs/index.html`). Errors name the line.
 - **Live fact**: `evalCommand` does **not** accept Catalan command names (`Circumferència(P,2)` → false) although the input bar does. `GLOSSARI_ORDRES` translates them (table of spec section 6); `test-glossari.js` checks that nothing is left untranslated.
 - **Live fact**: a line can return true and its object vanish later: a polygon names its sides `f`, `g`, `h`…, so a later `f=Recta(…)` destroys it (it happened in the `Simetria(obj,f)` example). After running, every `name=…` line whose object no longer exists is reported as an error, to the student and to the tester.
@@ -243,18 +244,55 @@ Asked by the owner: every word of the glossary is a link (dashed underline) to a
 
 The owner sent a ZIP of `step-quiz-commons` «to copy all the licences and the authorship», explicitly **not** to join the family of courses (no «EXPLORA» selector, no certificate, no `comuns.json` entry). Findings: `LICENSE` and `LLICENCIA.md` were already identical to the commons ones (they are synced daily), and so was the README authorship block. What the sibling courses had and Ggcat lacked was the commons `footer.js`, a page footer with the authorship and both licences. It is now `footer.js` at the root, loaded by every page (landing, course index, chapters, challenges through the generator; not `curs/edit.html`): same text as commons («© 2026 David Arso Civil · INS Miquel Tarradell. Contingut: CC BY-NC-SA 4.0 · Codi: llicència MIT»), configuration written in (`ggcat-footer`, not fixed) and the course's font and type scale. It is **not** synced: if commons changes the text, copy it by hand.
 
+
+
+### Block M — Final review (done, 2026-11-12)
+
+The owner asked for an exhaustive review: is the code clean and bug-free, do UI and UX work on PC, laptop and landscape tablet, is the pedagogy right (can the student do what each page asks), and real, relevant improvements. The findings went to a review artifact with 19 items; the owner approved 18 and **rejected M2** (a «📖 Repassa el capítol N» link on every challenge — do not reopen it). Done:
+
+**Bugs**
+
+- **B1** Chapter 6, parallel demo: `g=Parallel(f,P)` is not a GeoGebra command (an error dialog covered the applet) → `g=Line(P,f)`.
+- **B2** Chapter 4, area and perimeter demos: `a=Area(p)` redefined the side `a` of p and destroyed the polygon → `S=Area(p)` and `per=Perimeter(t)`.
+- **B3** Labels: in the graphics-only perspective GeoGebra shows no labels, while the texts say «el triangle ABC», «la recta f». `_posaNoms()` (`curs/capitols.js`) shows the label of every point, line, ray, circle, vector and conic at load, after «Reinicia» and for every object the student creates (`registerAddListener`; types in `_TIPUS_AMB_NOM`).
+- **B4** Tablet: GeoGebra's virtual keyboard opened by itself at load (iPad landscape) and covered a third of the screen; no applet parameter stops it. `_tancaTeclatGeoGebra()` closes it by dispatching pointer and mouse events on `.closeTabbedKeyboardButton` (a plain `click()` does nothing) at 0.3, 1, 2 and 3.5 s, only while the student has not touched the page (trusted events only); the glossary closes it after running an example. A real tap on «Entrada…» opens it again. Verified in iPad emulation only: confirm on a real school tablet.
+- **B5** Glossary: lines `x=…`, `y=…`, `z=…` (equations) were reported as errors by the vanished-object check; closing the glossary with Esc or a click outside left the last example open instead of the list (event `glossari-tancat`).
+- **B6** 3A accepted the centre within 0.02 and the radius within 0.01 → `GV.tol` like every other cell.
+
+**UI**
+
+- **U1** Values were invisible: the applets hide the algebra view and the texts refer to it. New attribute `data-algebra="true"` (perspective `AG`) on the 14 chapter applets whose text talks about values (chapters 1, 2, 3, 4, 7 and 9, some with a new `data-view`); the texts say «la columna de l'esquerra (la vista algebraica)».
+- **U2** Laptops of 1366×768: «Comprova» was below the fold. A non-read-only applet is now at most `innerHeight − 230` px high (never under 340), so applet and «Comprova» fit; on challenges the objective is repeated in a fixed band under the header (`.objectiu-fix`, `_objectiuEnganxat()`) while the objective zone is out of view and the exercise zone is in view.
+
+**Pedagogy**
+
+- **P1** False sentences or code that did not match its applet: chapter 1 (coordinates), chapter 7 («widget lliure», area and perimeter now visible), chapter 9 (the `Funció(f,a,b)` demo is now `classic` with `g=Function(cos(x),0,2*pi)`), chapters 5 and 8 (the code shown is now the applet's).
+- **P2** «cercle» → «circumferència» wherever the curve is meant: chapters 3, 6 and 10; challenges 3C «Circumferència circumscrita» and 6C «Circumferència inscrita» (JSON, regenerated pages, `REPTES_DATA`, debug labels, spec).
+- **P3** «comanda» → «ordre» (29 times).
+- **P4** Language errors («l'intersecció», «la paral·lelisme», «diferentss», «al original», a broken sentence, «s'intersecten», «dóna»).
+- **P5** Chapter 1 title «Ets a Ggcat: aprendràs GeoGebra», without the comparison with Python.
+- **P6** Commands the challenges need and the course did not teach: chapter 5 section «Bisectriu(A,B,C)» (6A–6C), chapter 9 «Tangent i angle entre dues corbes» (`Tangent`, `Angle(s,r)` = 108.43°; 9C), chapter 10 «Lloc geomètric amb un lliscador» (`LlocGeomètric(P,a)`; 10C), and four glossary rows with their editable examples: 57 rows, 54 distinct words, 54 examples (all run on the live applet, no failing line). Live fact: GeoGebra measures `Angle(r,s)` between two lines counterclockwise from the first to the second, so `Angle(r,s)` + `Angle(s,r)` = 360° (not 180°): the chapter text and the glossary example say so.
+- **P7** `cap-10-ex` passed without the slider controlling anything. It now moves every slider (numbers and angle sliders, `GV.sliders(true)`) and requires a polygon or a conic to change (`GV.sliderMoves`, `GV.figureState`: area and first two vertices of a polygon, so translations and rotations count; centre, radius and equation of a conic). When the slider and the figure exist but do not depend on each other, the reason says exactly that, naming both (owner's request). Verified on the live applet: radius, translation, rotation by an angle slider, ellipse, `Polygon(A,B,n)`, slider at the end of its interval; the slider is always put back.
+
+**Improvements**
+
+- **M1** Every validator returns `true` or a short Catalan reason (spec 7.1), shown as «✗ Encara no és correcte. <reason>». Checks run in construction order and never give away a value to find. Pass conditions unchanged except B6 and P7. `test-validators.js` now requires exactly `true` for correct scenes and a well-formed reason (`esMotiu`) for the initial and wrong ones, and prints every reason: read them there.
+- **M3** Demo check in the debug tester («▶ Demostracions dels capítols», also part of «▶ Tots»): loads each chapter and reports, applet by applet, the commands GeoGebra rejected at load (`wrapper._ordresRebutjades`, filled by `curs/capitols.js`) and every named object (`nomDeLOrdre()`, unit-tested in `test-debug-tester-logic.js`) that does not exist or is undefined. It would have caught B1 and B2; it was checked against a deliberately broken copy of chapter 4. 10/10 chapters clean.
+- **M4** Removed: the `message` listener for `geocat-result` (it accepted messages from any local page and nothing sent them), the 12 unused strict `GV` helpers and `GV.eps`, and stale comments (georunner.js, «arquitectura §7.3»).
+
 ---
 
 ## 5. Notes for the assistant
 
-- **Still unchecked** (no block owns it): the chapters' prose beyond their GeoGebra commands (e.g. chapter 3 says «GeoGebra mostra l'equació … a la vista algebraica», but the algebra view is hidden in every applet).
-- **Open — phone:** on a phone (Playwright «iPhone 13»), GeoGebra's virtual keyboard opens by itself when a challenge loads and covers half of the screen. It already happened before blocks G–I. `showKeyboardOnFocus` (boolean or the string `'false'`) does not stop it; not investigated further.
+- **Read in full in block M**: the chapters' prose (P1–P5) and every demo (M3 now checks the demos on every run of «▶ Tots»).
+- **Virtual keyboard**: closed at load by `_tancaTeclatGeoGebra()` (block M, B4). Verified in iPad emulation only; confirm on a real tablet and a real phone. `showKeyboardOnFocus` and `preventFocus` do not stop it.
 
-- **Tolerances** are in spec 7.2. In short: 0.15 for coordinates and lengths, 0.2 for images and irrational centres, 0.3 for areas, 1.5° for angles; `GV.eps` (0.001) is too strict for student constructions.
+- **Tolerances** are in spec 7.2. In short: 0.15 for coordinates and lengths, 0.2 for images and irrational centres, 0.3 for areas, 1.5° for angles. The strict `GV.eps` helpers were removed (block M).
+- **Reasons**: a validator returns `true` or a Catalan sentence that says what is missing (spec 7.1). Never return `false`: the student would only read «Revisa la construcció.».
 - **Never test labels chosen by the student**: iterate with `getAllObjectNames(type)`. Labels of pre-built objects can be used and excluded.
 - **After every edit**: `node --check <file>.js`, then the three commands of section 3. Report the results to the owner before delivering.
 - **Delivery**: either a pull request (an assistant with Git access; the owner merges it — files can be deleted this way) or a ZIP whose root is the repository root, uploaded by the owner to `_uploads/` (a ZIP cannot delete files, and files under `.github/` in it are ignored). Give the owner numbered, copy-paste steps for anything they must do (see `CLAUDE.md`).
-- **Browser tests**: a sandbox that allows `www.geogebra.org` can run them itself with headless Chromium (Playwright): serve the repository with `python3 -m http.server`, open `curs/index.html?debug=1`, click `#dbg-all` and wait for `#dbg-summary`. To type like a student in `classic`, click the `input` inside `.geogebra-wrap`; the live API of each applet is `wrapper._ggbApi`.
+- **Browser tests**: a sandbox that allows `www.geogebra.org` can run them itself with headless Chromium (Playwright): serve the repository with `python3 -m http.server`, open `curs/index.html?debug=1`, click `#dbg-all` and wait for `#dbg-summary` (50 tests, about 15 minutes). To type like a student in `classic`, click the `input` inside `.geogebra-wrap`; the live API of each applet is `wrapper._ggbApi`.
 - **Docs with the code**: when behaviour changes, update `README.md`, `tools/README.md`, this file and the spec in the same delivery.
 - **What the spec has and has not verified** is stated in its section 7.4. The reference validators were logic-tested against an emulator that is not in the repository; the real proof is `test-validators.js` plus the end-to-end tester.
 - `TODO.md` and `REPTES_SPECIFICATION.md` are written in English for AI readers; `README.md` and `tools/README.md` are in Catalan.

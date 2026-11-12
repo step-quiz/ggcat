@@ -63,6 +63,7 @@ var GLOSSARI_HTML = `
             <code>Angle(A,B,C)</code><span>Angle format per BA i BC (vèrtex a B)</span>
             <code>Àrea(p)</code><span>Àrea del polígon o figura <code>p</code></span>
             <code>Perímetre(p)</code><span>Perímetre del polígon <code>p</code></span>
+            <code>Angle(r,s)</code><span>Angle entre les rectes <code>r</code> i <code>s</code></span>
           </div>
         </div>
 
@@ -71,6 +72,7 @@ var GLOSSARI_HTML = `
           <div class="glossari-grid">
             <code>Mediatriu(A,B)</code><span>Mediatriu d'un segment (perpendicular pel punt mig)</span>
             <code>Bisectriu(f,g)</code><span>Bisectriu de l'angle entre les rectes <code>f</code> i <code>g</code></span>
+            <code>Bisectriu(A,B,C)</code><span>Bisectriu de l'angle ABC (el vèrtex B, al mig)</span>
             <code>Perpendicular(A,f)</code><span>Perpendicular a <code>f</code> per A</span>
             <code>Recta(A,f)</code><span>Paral·lela a <code>f</code> per A</span>
           </div>
@@ -95,6 +97,7 @@ var GLOSSARI_HTML = `
             <code>Intersecció(f,g)</code><span>Punts d'intersecció de dues corbes</span>
             <code>Intersecció(f,EixX)</code><span>Zeros de la funció f</span>
             <code>Arrel(f,a,b)</code><span>Zero de f en l'interval [a,b]</span>
+            <code>Tangent(P,f)</code><span>Recta tangent a la gràfica de f en el punt P</span>
           </div>
         </div>
 
@@ -103,6 +106,7 @@ var GLOSSARI_HTML = `
           <div class="glossari-grid">
             <code>PuntLliscant(min,max,pas)</code><span>Crea un lliscador amb rang i pas</span>
             <code>LlocGeomètric(B,A)</code><span>Lloc geomètric de B quan A es mou</span>
+            <code>LlocGeomètric(P,a)</code><span>Lloc geomètric de P quan es mou el lliscador <code>a</code></span>
             <code>Seqüència(exp,var,i,f)</code><span>Seqüència d'objectes</span>
           </div>
         </div>
@@ -132,7 +136,7 @@ var GLOSSARI_HTML = `
           <h3>Recorda</h3>
           <div class="glossari-rule">① Els punts s'escriuen amb <strong>majúscula</strong>: <code>A</code>, <code>B</code>, <code>P</code></div>
           <div class="glossari-rule">② Les rectes i funcions s'escriuen amb <strong>minúscula</strong>: <code>f</code>, <code>g</code>, <code>r</code></div>
-          <div class="glossari-rule">③ Per crear un objecte, escriu la comanda al camp d'entrada i prem <code>Enter</code></div>
+          <div class="glossari-rule">③ Per crear un objecte, escriu l'ordre al camp d'entrada i prem <code>Enter</code></div>
           <div class="glossari-rule">④ Pots fer clic dret sobre qualsevol objecte per veure les seves propietats</div>
           <div class="glossari-rule">⑤ Usa el botó <strong>Reinicia</strong> per tornar a l'estat inicial de l'exercici</div>
         </div>

@@ -137,6 +137,24 @@ Object.keys(TEST_SOLUTIONS).forEach(g => {
         `no correspon a cap capítol o repte de capitols.js`);
 });
 
+// 3e. Demostracions dels capítols: el nom de l'objecte que crea cada ordre
+//     (nomDeLOrdre, a la secció 4b de debug-tester.js)
+console.log(COL.cyan + COL.bold + '\n  ▸ Demostracions: nom de l\'objecte de cada ordre' + COL.reset);
+const fnMatch = src.match(/function nomDeLOrdre\(cmd\) \{[\s\S]*?\n  \}/);
+check('debug-tester.js té nomDeLOrdre', !!fnMatch);
+if (fnMatch) {
+  const nomDeLOrdre = eval('(' + fnMatch[0] + ')');
+  [
+    ['A=(1,2)', 'A'], ['f(x)=x^2', 'f'], ["A'=Reflect(A,f)", "A'"], ['f: y=2x+1', 'f'],
+    ['P_1=(1,1)', 'P_1'], ['α=Angle(r,s)', 'α'], ['loc=Locus(P,a)', 'loc'],
+    ['ShowAxes(false)', null], ['y=2x+1', null], ['Text("a=3",(1,1))', null],
+    ['Polygon(A,B,C)', null], ['{A,B}=Intersect(c,d)', null]
+  ].forEach(([cmd, nom]) => {
+    const r = nomDeLOrdre(cmd);
+    check(`«${cmd}» → ${nom === null ? 'cap nom' : '«' + nom + '»'}`, r === nom, 'obtingut ' + JSON.stringify(r));
+  });
+}
+
 // ── 4. Resum ──────────────────────────────────────────────
 
 console.log('');

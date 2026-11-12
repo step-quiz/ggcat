@@ -10,6 +10,10 @@
 //   4. Reinicia i SIMULA UNA SOLUCIÓ INCORRECTA → clica "Comprova" → espera "✗ Incorrecte".
 //   5. Un test passa només si les dues simulacions donen el resultat esperat.
 //
+// A més, per a cada capítol, comprova les DEMOSTRACIONS: que GeoGebra no hagi
+// rebutjat cap ordre de data-commands i que cada objecte que s'hi anomena
+// existeixi i estigui definit (secció 4b).
+//
 // És "end-to-end": no fa servir mocks, sinó la pipeline real
 // (validator + GeoGebra API + actualització de l'UI).
 // ════════════════════════════════════════════════════════════════
@@ -95,9 +99,9 @@
       wrong:   ['f(x)=2x+1', 'P=(0,1)']        // punt al Y-intercept, no al X-intercept
     },
     'cap-10-ex': {
-      label: 'Cap 10 — Lliscador + cercle dinàmic',
+      label: 'Cap 10 — Lliscador i circumferència que en depèn',
       correct: ['a=Slider(1,5)', 'O=(0,0)', 'c=Circle(O,a)'],
-      wrong:   ['O=(0,0)', 'c=Circle(O,3)']    // sense lliscador
+      wrong:   ['a=Slider(1,5)', 'O=(0,0)', 'c=Circle(O,3)']    // hi ha lliscador, però c no en depèn
     },
 
 
@@ -146,7 +150,7 @@
       wrong:   ['K=(1,4)', 'd=Circle(K,A)']   // centre fora de l'eix Y: no passa per B
     },
     'repte-3c': {
-      label: 'Repte 3C — Cercle circumscrit',
+      label: 'Repte 3C — Circumferència circumscrita',
       correct: ['m=PerpendicularBisector(A,B)', 'n=PerpendicularBisector(B,C)', 'O=Intersect(m,n)', 'd=Circle(O,A)'],
       wrong:   ['O=(0,0)', 'd=Circle(O,B)']   // centre a l'origen: passa per B i C, però no per A
     },
@@ -200,7 +204,7 @@
       wrong:   ['m=PerpendicularBisector(A,B)', 'n=PerpendicularBisector(B,C)', 'I=Intersect(m,n)']   // circumcentre (4, 1.75)
     },
     'repte-6c': {
-      label: 'Repte 6C — Cercle inscrit',
+      label: 'Repte 6C — Circumferència inscrita',
       correct: ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'h=PerpendicularLine(I,Line(A,B))', 'T=Intersect(h,Line(A,B))', 'd=Circle(I,T)'],
       wrong:   ['m=AngleBisector(B,A,C)', 'n=AngleBisector(A,B,C)', 'I=Intersect(m,n)', 'd=Circle(I,A)']   // centre a l'incentre, però passa per un vèrtex (radi √13)
     },
@@ -445,6 +449,90 @@
 
 
   // ══════════════════════════════════════════════════════════
+  // 4b. DEMOSTRACIONS DELS CAPÍTOLS
+  //
+  // Cada applet d'un capítol executa les ordres de data-commands quan es
+  // carrega. Si GeoGebra en rebutja una, o si una ordre posterior n'esborra
+  // un objecte (a=Area(p) esborra el polígon p si un costat de p ja es deia
+  // a), l'alumne veu una figura incompleta i ningú no ho avisa. Aquí es
+  // carrega cada capítol i es mira, applet per applet:
+  //   · que GeoGebra no hagi rebutjat cap ordre (wrapper._ordresRebutjades,
+  //     que omple capitols.js);
+  //   · que cada objecte que una ordre anomena («nom=…», «f(x)=…» o
+  //     «nom: …») existeixi i estigui definit. Una ordre que en crea
+  //     diversos (Intersect, AngleBisector…) els numera: «P» pot ser P_1.
+  // ══════════════════════════════════════════════════════════
+
+  // Nom de l'objecte que crea una ordre, o null si no n'anomena cap
+  // (x, y i z no compten: «y=2x+1» és una recta sense nom).
+  function nomDeLOrdre(cmd) {
+    var s = String(cmd).trim();
+    var m = s.match(/^([^\s=:(),{}\[\]"]+)\s*:/) ||                       // «f: y = 2x + 1»
+            s.match(/^([^\s=:(),{}\[\]"]+)\s*(?:\([a-z]\))?\s*=(?!=)/);    // «A=(1,2)», «f(x)=x^2»
+    if (!m || /^[xyz]$/.test(m[1])) return null;
+    return m[1];
+  }
+
+  // El nom amb què l'objecte és a l'applet («P» o «P_1»), o null.
+  function nomALApplet(api, nom) {
+    var noms = [nom, nom + '_1', nom + '_{1}'];
+    for (var i = 0; i < noms.length; i++) {
+      try { if (api.exists(noms[i])) return noms[i]; } catch (_) {}
+    }
+    return null;
+  }
+
+  function comprovaDemos(arxiu) {
+    var iframe = document.createElement('iframe');
+    iframe.src = arxiu;
+    iframe.style.cssText =
+      'position:fixed; left:-10000px; top:0; ' +
+      'width:900px; height:700px; border:0; visibility:hidden;';
+    document.body.appendChild(iframe);
+    function cleanup() { try { iframe.remove(); } catch (_) {} }
+
+    return waitFor(function() {
+      return iframe.contentDocument &&
+             iframe.contentDocument.readyState === 'complete';
+    }, 25000).then(function() {
+      // appletOnLoad posa _ggbApi i executa les ordres en el mateix pas:
+      // quan tots els applets tenen _ggbApi, totes les ordres ja s'han executat.
+      return waitFor(function() {
+        var ws = iframe.contentDocument.querySelectorAll('.geogebra-wrap');
+        if (!ws.length) return null;
+        for (var i = 0; i < ws.length; i++) if (!ws[i]._ggbApi) return null;
+        return ws;
+      }, 60000);
+    }).then(function(ws) {
+      return delay(800).then(function() {
+        var problemes = [], objectes = 0;
+        Array.prototype.forEach.call(ws, function(w, i) {
+          var cfg = w._ggbCfg || {}, api = w._ggbApi;
+          var on = 'applet ' + (i + 1) + (cfg.goalId ? ' (exercici)' : '');
+          (w._ordresRebutjades || []).forEach(function(cmd) {
+            problemes.push(on + ': GeoGebra ha rebutjat «' + cmd + '»');
+          });
+          (cfg.commands || []).forEach(function(cmd) {
+            var nom = nomDeLOrdre(cmd);
+            if (!nom) return;
+            objectes++;
+            var real = nomALApplet(api, nom);
+            if (!real) problemes.push(on + ': no hi ha l\'objecte «' + nom + '» (' + cmd + ')');
+            else if (!api.isDefined(real)) problemes.push(on + ': «' + real + '» no està definit (' + cmd + ')');
+          });
+        });
+        cleanup();
+        return { demos: true, arxiu: arxiu, applets: ws.length, objectes: objectes,
+                 problemes: problemes, passed: problemes.length === 0 };
+      });
+    }).catch(function(err) {
+      cleanup();
+      return { demos: true, arxiu: arxiu, passed: false, error: (err && err.message) || String(err) };
+    });
+  }
+
+
+  // ══════════════════════════════════════════════════════════
   // 5. INTERFÍCIE D'USUARI
   // ══════════════════════════════════════════════════════════
 
@@ -589,6 +677,16 @@
     statusEl.textContent = passed ? '✓' : '✗';
     statusEl.className = 'dbg-row-status ' + (passed ? 's-pass' : 's-fail');
 
+    if (result.demos) {
+      detailEl.innerHTML = passed
+        ? result.applets + ' applets, ' + result.objectes + ' objectes amb nom: ' +
+          '<span class="ok">tots hi són i estan definits</span>'
+        : result.problemes.map(function(p) {
+            return '<span class="ko">✗</span> ' + escapeHTML(p);
+          }).join('<br>');
+      return;
+    }
+
     var corr = result.correctResult || {};
     var wrng = result.wrongResult || {};
 
@@ -666,7 +764,8 @@
         var detailEl = row.querySelector('[data-detail]');
         detailEl.innerHTML = 'Carregant l\'applet GeoGebra de <code>' +
                              escapeHTML(t.arxiu) + '</code>…';
-        return runTestForFile(t.arxiu, t.goalId).then(function(result) {
+        var run = t.demos ? comprovaDemos(t.arxiu) : runTestForFile(t.arxiu, t.goalId);
+        return run.then(function(result) {
           updateRow(row, result);
           st.done++;
           if (result.passed) st.pass++; else st.fail++;
@@ -693,6 +792,12 @@
         return { arxiu: c.arxiu, goalId: c.goalId,
                  label: 'Cap ' + c.num + ' — ' + c.titol };
       });
+  }
+  function tasksForAllDemos() {
+    return CAPITOLS_DATA.map(function(c) {
+      return { arxiu: c.arxiu, goalId: 'demos-cap-' + c.num, demos: true,
+               label: 'Cap ' + c.num + ' — demostracions' };
+    });
   }
   function tasksForAllReptes() {
     return REPTES_DATA
@@ -771,16 +876,19 @@
         '&nbsp;&nbsp;2) una <strong>solució incorrecta</strong> → s\'espera el badge "<strong>✗ Incorrecte</strong>"<br>' +
         'Un test passa només si les dues simulacions donen el resultat esperat. ' +
         'Cada test carrega la pàgina dos cops en iframes ocults (un per cada simulació) ' +
-        'i triga uns 10–20 segons.' +
+        'i triga uns 10–20 segons.<br>' +
+        'Les <strong>demostracions</strong> carreguen cada capítol un cop i miren que GeoGebra ' +
+        'no hagi rebutjat cap ordre i que cada objecte amb nom existeixi i estigui definit.' +
       '</p>' +
 
       fileProtocolWarning +
 
       '<div class="debug-actions">' +
         '<button class="debug-btn debug-btn-primary" id="dbg-all">' +
-          '▶ Tots (capítols + reptes)</button>' +
+          '▶ Tots (capítols, reptes i demostracions)</button>' +
         '<button class="debug-btn" id="dbg-all-cap">▶ Tots els capítols</button>' +
         '<button class="debug-btn" id="dbg-all-rep">▶ Tots els reptes</button>' +
+        '<button class="debug-btn" id="dbg-demos">▶ Demostracions dels capítols</button>' +
       '</div>' +
 
       '<div class="debug-individual">' +
@@ -803,7 +911,10 @@
     // ── Handlers ────────────────────────────────────────────
 
     document.getElementById('dbg-all').addEventListener('click', function() {
-      runTestList(tasksForAllCapitols().concat(tasksForAllReptes()));
+      runTestList(tasksForAllCapitols().concat(tasksForAllReptes(), tasksForAllDemos()));
+    });
+    document.getElementById('dbg-demos').addEventListener('click', function() {
+      runTestList(tasksForAllDemos());
     });
     document.getElementById('dbg-all-cap').addEventListener('click', function() {
       runTestList(tasksForAllCapitols());

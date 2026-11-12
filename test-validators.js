@@ -6,8 +6,9 @@
 // cada exercici (reptes i capítols), executa el validador, i comprova que:
 //   ✓  La solució correcta retorna true
 //   ✗  L'escena inicial (buida, o amb els objectes que ja porta la pàgina)
-//      retorna false
-//   ✗  Una solució parcialment correcta retorna false
+//      retorna un motiu: un text en català que diu què falta
+//   ✗  Una solució parcialment correcta retorna un motiu
+// Els motius s'escriuen a la sortida: és la manera de llegir-los tots.
 //
 // El mock imita tres coses de l'applet real que, si no s'imiten, amaguen
 // errors (comprovades amb el GeoGebra real el 10/11/2026):
@@ -52,9 +53,12 @@ const TIPUS_REALS = ['point', 'segment', 'line', 'ray', 'circle', 'ellipse',
 
 function createMockAPI(objects) {
   // objects: array de { name, type, x?, y?, value?, length?, midpoint?, center?,
-  //                     radius?, moveable?, fn?, valueFn? }
-  // valueFn(valorDe): valor que depèn d'altres objectes (p. ex. l'àrea d'un
-  // polígon que depèn d'un lliscador); valorDe('n') torna el valor actual de n.
+  //                     radius?, verts?, moveable?, fn?, valueFn?, centerFn?,
+  //                     radiusFn?, vertsFn? }
+  // valueFn(valorDe), centerFn(valorDe), radiusFn(valorDe), vertsFn(valorDe):
+  // el valor, el centre, el radi o els vèrtexs ([[x, y], …]) d'un objecte que
+  // depèn d'altres (p. ex. un polígon que depèn d'un lliscador);
+  // valorDe('n') torna el valor actual de n.
   const byName = {};
   objects.forEach(function(o) {
     if (TIPUS_REALS.indexOf(o.type) === -1) {
@@ -62,6 +66,11 @@ function createMockAPI(objects) {
     }
     byName[o.name] = o;
   });
+
+  function valorDe(nom) { return byName[nom] ? byName[nom].value : NaN; }
+  function centreDe(o) { return o.centerFn ? o.centerFn(valorDe) : o.center; }
+  function radiDe(o)   { return o.radiusFn ? o.radiusFn(valorDe) : o.radius; }
+  function vertexsDe(o) { return o.vertsFn ? o.vertsFn(valorDe) : o.verts; }
 
   // Coordenades d'un punt: nom («A»), Midpoint(X,Y) o literal «(1,2)»
   function puntDe(expr) {
@@ -124,9 +133,13 @@ function createMockAPI(objects) {
 
     // Canvia el valor d'un objecte (un lliscador). Com a l'applet real, el que
     // en depèn (valueFn) canvia a l'instant.
+    // Un lliscador amb interval (min, max) hi queda dins, com a l'applet real.
     setValue: function(label, v) {
       var o = byName[label];
-      if (o) o.value = v;
+      if (!o) return;
+      if (o.min != null) v = Math.max(o.min, v);
+      if (o.max != null) v = Math.min(o.max, v);
+      o.value = v;
     },
 
     isMoveable: function(label) {
@@ -161,25 +174,25 @@ function createMockAPI(objects) {
         return o && o.midpoint ? o.midpoint[1] : NaN;
       }
 
-      // x(Center(name))
-      m = expr.match(/^x\(Center\((\w+)\)\)$/);
+      // x(Center(name)), y(Center(name))
+      m = expr.match(/^([xy])\(Center\((\w+)\)\)$/);
       if (m) {
-        var o = byName[m[1]];
-        return o && o.center ? o.center[0] : NaN;
-      }
-
-      // y(Center(name))
-      m = expr.match(/^y\(Center\((\w+)\)\)$/);
-      if (m) {
-        var o = byName[m[1]];
-        return o && o.center ? o.center[1] : NaN;
+        var o = byName[m[2]], c = o && centreDe(o);
+        return c ? c[m[1] === 'x' ? 0 : 1] : NaN;
       }
 
       // Radius(name)
       m = expr.match(/^Radius\((\w+)\)$/);
       if (m) {
-        var o = byName[m[1]];
-        return o && o.radius != null ? o.radius : NaN;
+        var o = byName[m[1]], r = o && radiDe(o);
+        return r != null ? r : NaN;
+      }
+
+      // x(Vertex(polígon, i)), y(Vertex(polígon, i)): el vèrtex i-èsim (des d'1)
+      m = expr.match(/^([xy])\(Vertex\((\w+),(\d+)\)\)$/);
+      if (m) {
+        var o = byName[m[2]], vs = o && vertexsDe(o), v = vs && vs[parseInt(m[3], 10) - 1];
+        return v ? v[m[1] === 'x' ? 0 : 1] : NaN;
       }
 
       // Distance(punt, punt) i Distance(punt, recta). El punt pot ser un nom,
@@ -222,9 +235,7 @@ function createMockAPI(objects) {
 
       // Nom d'un objecte → el seu valor (NaN si no en té, com un punt)
       var o = byName[expr];
-      if (o && o.valueFn) {
-        return o.valueFn(function(nom) { return byName[nom] ? byName[nom].value : NaN; });
-      }
+      if (o && o.valueFn) return o.valueFn(valorDe);
       if (o) return o.value != null ? o.value : NaN;
 
       // Qualsevol altra cosa (p. ex. «IsOnPath(...)», que no existeix): 0,
@@ -1035,10 +1046,11 @@ const EXTRA_CORRECT = {
     { name: 'e', type: 'segment', length: 1 }, { name: 'f', type: 'segment', length: 1 },
   ],
 
-  // Capítol 10: lliscador i polígon (en lloc de circumferència)
+  // Capítol 10: lliscador i polígon regular de n costats (en lloc de circumferència)
   'cap-10-ex': [
     { name: 'n', type: 'numeric', value: 5, moveable: true },
-    { name: 'p', type: 'polygon', value: 1.72 },
+    { name: 'p', type: 'polygon',
+      valueFn: function(valorDe) { var n = valorDe('n'); return n / (4 * Math.tan(Math.PI / n)); } },
   ],
 };
 
@@ -1225,10 +1237,11 @@ const CAP_CORRECT = {
     { name: 'f', type: 'function', fn: function(x) { return 2 * x + 1; } },
     { name: 'P', type: 'point', x: -0.5, y: 0 },
   ],
-  'cap-10-ex': [
+  'cap-10-ex': [                                    // circumferència de radi a
     { name: 'a', type: 'numeric', value: 1, moveable: true },
     { name: 'O', type: 'point', x: 0, y: 0 },
-    { name: 'c', type: 'circle', center: [0, 0], radius: 1 },
+    { name: 'c', type: 'circle', center: [0, 0],
+      radiusFn: function(valorDe) { return valorDe('a'); } },
   ],
 };
 
@@ -1270,13 +1283,15 @@ Object.keys(CAP_CORRECT).forEach(function(id) {
 
 // ── 5. Execució dels tests ──────────────────────────────
 
+// Torna el que torna el validador: true o un motiu (un text). Una excepció
+// torna { error }, que no és ni una cosa ni l'altra.
 function runValidator(goalId, objects) {
   var api = createMockAPI(objects);
   sandbox.ggbApplet = api;        // GV usa ggbApplet global
   var fn = VALIDATORS[goalId];
   if (!fn) throw new Error('Validator no trobat: ' + goalId);
   try {
-    return !!fn(api, GV);
+    return fn(api, GV);
   } catch (e) {
     return { error: e.message };
   }
@@ -1309,6 +1324,32 @@ function test(label, actual, expected) {
   }
 }
 
+// Un motiu ben fet: una frase en català que comença en majúscula, acaba en
+// punt i no porta cap valor que no s'hagi pogut escriure.
+function esMotiu(res) {
+  return typeof res === 'string' && res.length > 8 &&
+         /^[A-ZÀ-ÚÇ]/.test(res) && /[.!?]$/.test(res) &&
+         !/undefined|NaN|null|\[object/.test(res);
+}
+
+// La construcció ha de ser correcta: el validador torna exactament true.
+function correcte(label, res) { test(label, res, true); }
+
+// La construcció no és correcta: el validador torna un motiu, que s'escriu.
+function motiu(label, res, conte) {
+  var ok = esMotiu(res) && (!conte || res.indexOf(conte) !== -1);
+  if (ok) {
+    totalPass++;
+    process.stdout.write(COL.green + '    ✓ ' + COL.reset + label +
+      COL.dim + '  «' + res + '»' + COL.reset + '\n');
+  } else {
+    totalFail++;
+    process.stdout.write(COL.red + '    ✗ ' + COL.reset + label +
+      COL.dim + '  (esperava un motiu' + (conte ? ' amb «' + conte + '»' : '') +
+      ', obtingut ' + JSON.stringify(res) + ')' + COL.reset + '\n');
+  }
+}
+
 // ── Llançar ─────────────────────────────────────────────
 
 console.log('');
@@ -1323,20 +1364,30 @@ Object.keys(CORRECT_SOLUTIONS).forEach(function(id) {
   var amb = function(objs) { return inicial.concat(objs); };
 
   // Test 1: Solució correcta → true
-  test('Solució correcta → true',  runValidator(id, amb(CORRECT_SOLUTIONS[id])), true);
+  correcte('Solució correcta → true', runValidator(id, amb(CORRECT_SOLUTIONS[id])));
   if (EXTRA_CORRECT[id]) {
-    test('Una altra solució correcta → true', runValidator(id, amb(EXTRA_CORRECT[id])), true);
+    correcte('Una altra solució correcta → true', runValidator(id, amb(EXTRA_CORRECT[id])));
   }
 
-  // Test 2: Escena inicial (buida, o el que ja porta la pàgina) → false
-  test('Escena inicial → false',   runValidator(id, inicial), false);
+  // Test 2: Escena inicial (buida, o el que ja porta la pàgina) → motiu
+  motiu('Escena inicial → motiu', runValidator(id, inicial));
 
-  // Test 3: Solució parcial/incorrecta → false
-  test('Solució incorrecta → false', runValidator(id, amb(WRONG_SOLUTIONS[id])), false);
-  if (EXTRA_WRONG[id]) test('Error típic → false', runValidator(id, amb(EXTRA_WRONG[id])), false);
+  // Test 3: Solució parcial/incorrecta → motiu
+  motiu('Solució incorrecta → motiu', runValidator(id, amb(WRONG_SOLUTIONS[id])));
+  if (EXTRA_WRONG[id]) motiu('Error típic → motiu', runValidator(id, amb(EXTRA_WRONG[id])));
 
   console.log('');
 });
+
+// Cada validador té les seves escenes de prova.
+(function() {
+  console.log(COL.cyan + COL.bold + '  ▸ Tots els validadors tenen escenes' + COL.reset);
+  Object.keys(VALIDATORS).forEach(function(id) {
+    test(id + ' té una solució correcta i una d\'incorrecta',
+         !!(CORRECT_SOLUTIONS[id] && WRONG_SOLUTIONS[id]), true);
+  });
+  console.log('');
+})();
 
 // El validador del repte 10A mou el lliscador: l'ha de deixar on era.
 (function() {
@@ -1348,6 +1399,72 @@ Object.keys(CORRECT_SOLUTIONS).forEach(function(id) {
   ];
   test('Solució correcta → true', runValidator('repte-10a', escena), true);
   test('El lliscador torna a valer 7', escena[0].value, 7);
+  console.log('');
+})();
+
+// L'exercici del capítol 10 demana que el lliscador faci canviar la figura:
+// el validador mou cada lliscador i el torna on era (GV.sliderMoves).
+(function() {
+  console.log(COL.cyan + COL.bold + '  ▸ cap-10-ex: la figura depèn del lliscador' + COL.reset);
+  function radiA(valorDe) { return valorDe('a'); }
+
+  var escena = [
+    { name: 'a', type: 'numeric', value: 2.5, moveable: true },
+    { name: 'O', type: 'point', x: 0, y: 0 },
+    { name: 'c', type: 'circle', center: [0, 0], radiusFn: radiA },
+  ];
+  correcte('Radi a → true', runValidator('cap-10-ex', escena));
+  test('El lliscador torna a valer 2.5', escena[0].value, 2.5);
+
+  correcte('Lliscador al màxim del seu interval (només es pot moure cap avall) → true',
+    runValidator('cap-10-ex', [
+      { name: 'a', type: 'numeric', value: 5, min: 1, max: 5, moveable: true },
+      { name: 'c', type: 'circle', center: [0, 0], radiusFn: radiA },
+    ]));
+
+  correcte('Circumferència que es desplaça amb el lliscador (el radi no canvia) → true',
+    runValidator('cap-10-ex', [
+      { name: 'a', type: 'numeric', value: 1, moveable: true },
+      { name: 'c', type: 'circle', radius: 2, centerFn: function(valorDe) { return [valorDe('a'), 0]; } },
+    ]));
+
+  correcte('Triangle traslladat pel lliscador (l\'àrea no canvia) → true',
+    runValidator('cap-10-ex', [
+      { name: 'k', type: 'numeric', value: 0, moveable: true },
+      { name: 't', type: 'triangle', value: 6,
+        vertsFn: function(valorDe) { var k = valorDe('k'); return [[k, 0], [k + 4, 0], [k, 3]]; } },
+    ]));
+
+  correcte('Triangle girat al voltant del primer vèrtex per un lliscador d\'angle → true',
+    runValidator('cap-10-ex', [
+      { name: 'α', type: 'angle', value: 0.5, moveable: true },
+      { name: 't', type: 'triangle', value: 6,
+        vertsFn: function(valorDe) {
+          var g = valorDe('α');
+          return [[0, 0], [4 * Math.cos(g), 4 * Math.sin(g)], [-3 * Math.sin(g), 3 * Math.cos(g)]];
+        } },
+    ]));
+
+  motiu('Lliscador i circumferència que no en depèn → motiu que ho explica',
+    runValidator('cap-10-ex', [
+      { name: 'a', type: 'numeric', value: 1, moveable: true },
+      { name: 'O', type: 'point', x: 0, y: 0 },
+      { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+    ]), 'Has creat el lliscador a i la figura c, però c no depèn de a');
+
+  motiu('Dos lliscadors i dues figures que no en depenen → motiu que ho explica',
+    runValidator('cap-10-ex', [
+      { name: 'a', type: 'numeric', value: 1, moveable: true },
+      { name: 'b', type: 'numeric', value: 2, moveable: true },
+      { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+      { name: 't_1', type: 'triangle', value: 6, verts: [[0, 0], [4, 0], [0, 3]] },
+    ]), 'cap figura no depèn de cap lliscador');
+
+  motiu('Un angle mesurat (no és cap lliscador) i una circumferència → motiu',
+    runValidator('cap-10-ex', [
+      { name: 'α', type: 'angle', value: 0.5 },
+      { name: 'c', type: 'circle', center: [0, 0], radius: 3 },
+    ]), 'Falta un lliscador');
   console.log('');
 })();
 

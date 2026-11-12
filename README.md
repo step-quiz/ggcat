@@ -31,7 +31,7 @@ curs/
   progress.js           Progrés de l'alumne (fitxer comú; clau geocat_progress)
   geovalidator.js       Llibreria d'assertions geomètriques (objecte GV)
   validators.js         Mapa goalId → funció validadora per a cada exercici
-  glossari-data.js      Contingut HTML del glossari de comandes
+  glossari-data.js      Contingut HTML del glossari d'ordres
   debug-tester.js       Test end-to-end del botó «Comprova» (curs/index.html?debug=1)
   edit.html             Editor de revisió del text dels capítols (vegeu més avall)
 tools/                  Generador de pàgines JSON → HTML i el seu invers (vegeu tools/README.md)
@@ -50,22 +50,26 @@ test-debug-tester-logic.js  Test Node de la lògica de debug-tester.js
   tests de sota).
 - `node test-validators.js` — comprova els validadors dels 30 reptes i dels 10 exercicis dels
   capítols amb una API de GeoGebra simulada: per a cada un, l'escena inicial, una solució correcta
-  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (161
-  comprovacions). El simulacre fa servir els tipus d'objecte reals de GeoGebra (`circle`,
+  i una d'incorrecta, i en alguns casos altres solucions correctes i errors típics (210
+  comprovacions). Cada validador torna `true` o una frase que diu a l'alumne què li falta; el test
+  escriu totes aquestes frases, i és la manera de revisar-les. El simulacre fa servir els tipus d'objecte reals de GeoGebra (`circle`,
   `triangle`, `quadrilateral`…) i calcula de debò `Distance`, `ArePerpendicular` i
   `AreParallel` a partir dels punts. GitHub també ho executa a cada canvi.
 - `node test-debug-tester-logic.js` — la lògica del provador end-to-end.
 - `node test-glossari.js` — cada paraula del glossari té el seu exemple, i la traducció de les ordres
   al nom anglès que entén GeoGebra no deixa cap ordre sense traduir. Que GeoGebra accepti cada exemple
   es comprova al navegador: a la consola d'una pàgina del curs, `GLOSSARI_PROVA_TOTS(console.log)`.
-  Resultat del 12/11/2026: 50 exemples, cap error.
+  Resultat del 12/11/2026: 54 exemples, cap error.
 - **End-to-end al navegador:** obre `curs/index.html?debug=1`. En lloc de l'índex, es carrega
   `debug-tester.js`, que obre cada capítol i repte en un iframe, hi simula una solució
-  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. Resultat del 12/11/2026: 40/40.
+  correcta i una d'incorrecta, i comprova que «Comprova» digui ✓ i ✗. També carrega cada capítol i
+  mira que GeoGebra no hagi rebutjat cap ordre de les demostracions i que hi siguin, i estiguin
+  definits, tots els objectes que anomenen. Resultat del 12/11/2026: 50/50 (30 reptes, 10 exercicis
+  i les demostracions dels 10 capítols).
 
 ## Com es veu una pàgina
 
-Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Les mides de lletra són sis i prou (11, 12, 14, 18, 24 i 36 px; el text normal fa 14 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`. En pantalles de 900 px d'amplada o més, el 10 % dret de la finestra queda buit.
+Cada capítol es llegeix en tres zones desplegables amb una franja de color (Teoria, Exercici i Resum), i cada repte també (Objectiu, Exercici i Pista, aquesta última tancada). Cada applet porta una etiqueta: «👁 Exemple per mirar» (vora grisa discontínua) o «✍️ Et toca a tu» (vora blava gruixuda). Els punts, les rectes i les circumferències hi porten el nom (A, B, f…), també els que crea l'alumne. Els applets on el text parla de valors (distàncies, àrees, equacions) mostren a l'esquerra la columna d'àlgebra (`data-algebra="true"`). Quan una construcció no és correcta, «Comprova» diu què hi falta. Als reptes, mentre l'alumne treballa a la zona Exercici, l'objectiu es repeteix en una franja sota la capçalera; en un portàtil de 768 px d'alçada, l'applet i «Comprova» hi caben sencers. A la tauleta, el teclat de GeoGebra no s'obre sol en carregar la pàgina. Les mides de lletra són sis i prou (11, 12, 14, 18, 24 i 36 px; el text normal fa 14 px), definides com a variables `--fs-*` a `curs/curs.css` i `style.css`. En pantalles de 900 px d'amplada o més, el 10 % dret de la finestra queda buit.
 
 ## Glossari
 

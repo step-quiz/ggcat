@@ -75,7 +75,7 @@ g(x)=x^2-3"
       <section class="chapter-section">
         <h2>Intersecció de funcions: <code>Intersecció(f,g)</code></h2>
 
-        <p>La comanda <code>Intersecció(f,g)</code> calcula els punts on dues funcions (o una funció i un eix) es tallen. Retorna un o més punts:</p>
+        <p>L'ordre <code>Intersecció(f,g)</code> calcula els punts on dues funcions (o una funció i un eix) es tallen. Retorna un o més punts:</p>
 
         <pre class="code-example">f(x) = x^2 - 3
 g(x) = x + 1
@@ -87,10 +87,12 @@ g(x)=x+1
 P=Intersect(f,g)"
              data-app="graphing"
              data-readonly="true"
+             data-algebra="true"
+             data-view="-4 4 -4 5"
              data-height="400">
         </div>
 
-        <p>La paràbola i la recta es tallen en dos punts. GeoGebra els etiqueta i mostra les coordenades exactes a la vista algebraica.</p>
+        <p>La paràbola i la recta es tallen en dos punts. GeoGebra els posa nom i en mostra les coordenades a la columna de l'esquerra (la <strong>vista algebraica</strong>).</p>
       </section>
 
 
@@ -110,6 +112,7 @@ Intersecció(f, EixX)</pre>
 Z=Intersect(f,xAxis)"
              data-app="graphing"
              data-readonly="true"
+             data-algebra="true"
              data-height="380">
         </div>
 
@@ -123,12 +126,11 @@ Z=Intersect(f,xAxis)"
       <section class="chapter-section">
         <h2>Restricció de domini</h2>
 
-        <p>Pots restringir el domini d'una funció amb la comanda <code>Funció(f,a,b)</code>, que dibuixa la funció f només per a x entre a i b:</p>
+        <p>Pots restringir el domini d'una funció amb l'ordre <code>Funció(f,a,b)</code>, que dibuixa la funció f només per a x entre a i b:</p>
 
         <div class="geogebra"
              data-commands="f(x)=sin(x)
-g(x)=If(x >= 0 && x <= 2*pi, cos(x))"
-             data-app="graphing"
+g=Function(cos(x),0,2*pi)"
              data-readonly="true"
              data-height="360">
         </div>
@@ -136,6 +138,37 @@ g(x)=If(x >= 0 && x <= 2*pi, cos(x))"
         <p>El sinus es dibuixa sencer; el cosinus només entre 0 i 2π. Aquesta tècnica és útil per mostrar funcions a trossos o limitar la visualització a un interval significatiu.</p>
       </section>
 
+
+      <!-- ─────────────────────────────────────────
+           SECCIÓ 5 — Tangent i angle entre corbes
+           ───────────────────────────────────────── -->
+      <section class="chapter-section">
+        <h2>Tangent i angle entre dues corbes: <code>Tangent(P,f)</code></h2>
+
+        <p>La <strong>recta tangent</strong> a la gràfica de f en un punt P és la recta que la toca en P amb la mateixa inclinació que la corba. L'ordre <code>Tangent(P,f)</code> la dibuixa. Amb les tangents de dues corbes en un punt on es tallen, <code>Angle</code> mesura l'angle amb què es tallen les corbes:</p>
+
+        <pre class="code-example">f(x)=x^2
+g(x)=2-x
+P=(1,1)
+r=Tangent(P,f)
+s=Tangent(P,g)
+α=Angle(s,r)</pre>
+
+        <div class="geogebra"
+             data-commands="f(x)=x^2
+g(x)=2-x
+P=(1,1)
+r=Tangent(P,f)
+s=Tangent(P,g)
+α=Angle(s,r)"
+             data-readonly="true"
+             data-algebra="true"
+             data-view="-3 4 -1 5"
+             data-height="380">
+        </div>
+
+        <p>La tangent a una recta és la mateixa recta: per això s coincideix amb g. Les dues tangents formen dos angles, 71,57° i 108,43°, que sumen 180°; l'angle entre les corbes és el menor, 71,57°. GeoGebra mesura en sentit antihorari, de la primera recta a la segona: <code>Angle(s,r)</code> dona 108,43° i <code>Angle(r,s)</code> dona 251,57°, el que falta fins a 360°. Aquestes ordres funcionen a l'applet clàssic; la Calculadora gràfica no les accepta.</p>
+      </section>
 
       <!-- ─────────────────────────────────────────
            EXERCICI
@@ -157,7 +190,7 @@ g(x)=If(x >= 0 && x <= 2*pi, cos(x))"
 
       <section class="chapter-section">
         <h2>Resum</h2>
-        <p>Definir funcions amb <code>f(x) = expressió</code>. Trobar interseccions amb <code>Intersecció(f,g)</code>. Per zeros, usar <code>Intersecció(f, EixX)</code>. Restricció de domini: <code>Funció(f, a, b)</code>. GeoGebra suporta <code>x^n</code> per potències, <code>sqrt(x)</code>, <code>sin(x)</code>, <code>cos(x)</code>, <code>exp(x)</code>, <code>log(x)</code> i moltes altres funcions.</p>
+        <p>Definir funcions amb <code>f(x) = expressió</code>. Trobar interseccions amb <code>Intersecció(f,g)</code>. Per zeros, usar <code>Intersecció(f, EixX)</code>. Restricció de domini: <code>Funció(f, a, b)</code>. Tangent en un punt: <code>Tangent(P, f)</code>, i angle entre dues rectes: <code>Angle(r, s)</code>. GeoGebra suporta <code>x^n</code> per potències, <code>sqrt(x)</code>, <code>sin(x)</code>, <code>cos(x)</code>, <code>exp(x)</code>, <code>log(x)</code> i moltes altres funcions.</p>
       </section>
 
 
